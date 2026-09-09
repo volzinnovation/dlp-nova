@@ -4,6 +4,38 @@ A runnable implementation of **Description Logic Programs** from Raphael Volz's 
 
 The package provides position-sensitive L0–L3 profiles, equality with congruence, consistency constraints, RDF queries, and materialization maintenance. It is a DLP reasoner, not a complete OWL DL or OWL Full reasoner. Unsupported logical constructs fail explicitly.
 
+## Paper and citation
+
+Raphael Volz (Pforzheim University), **Description Logic Programs Revisited:
+The Benefits and Limits of Specialized Ontology Reasoning**.
+Submitted to arXiv in **cs.AI** on **9 September 2026**.
+Submission reference: [arXiv:submit/8059314](https://arxiv.org/submit/8059314/view).
+
+Read the [complete paper with technical appendices](output/pdf/combined-report.pdf).
+The [paper documentation](docs/paper/README.md) includes the LaTeX source,
+submission archive, and reproducible build instructions.
+
+The submission link requires author access. `submit/8059314` is a submission
+reference; the [permanent arXiv identifier](https://info.arxiv.org/help/arxiv_identifier.html)
+will use the form `YYMM.NNNNN`. Until that identifier is available, use this
+BibTeX entry, which links to the manuscript in this repository:
+
+```bibtex
+@misc{volz2026dlp,
+  author       = {Volz, Raphael},
+  title        = {{Description Logic Programs Revisited}: The Benefits and Limits of Specialized Ontology Reasoning},
+  year         = {2026},
+  month        = sep,
+  howpublished = {Preprint},
+  note         = {Submitted to arXiv on 9 September 2026; submission 8059314, category cs.AI},
+  url          = {https://github.com/volzinnovation/my-phd-thesis-gpt-6-astra/blob/main/output/pdf/combined-report.pdf}
+}
+```
+
+Once the paper is announced, replace `url` with its public arXiv abstract URL,
+add `eprint`, `archivePrefix = {arXiv}`, and `primaryClass = {cs.AI}`, and remove
+the temporary submission note.
+
 ## Run it
 
 Requires Python 3.11 or later. With [uv](https://docs.astral.sh/uv/):

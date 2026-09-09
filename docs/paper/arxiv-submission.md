@@ -2,7 +2,11 @@
 
 Use this metadata with the
 [combined manuscript source archive](../../output/arxiv/combined-report-source.tar.gz).
-These are prepared metadata entries; this document does not record a submission.
+The author reports submission to arXiv in **cs.AI** on **9 September 2026**:
+[arXiv:submit/8059314](https://arxiv.org/submit/8059314/view).
+This link requires author access. The permanent public arXiv identifier is not
+yet recorded here; see the [README citation](../../README.md#paper-and-citation)
+for an interim BibTeX entry.
 
 Keep this copy aligned with the authoritative abstract in
 [`research-report.tex`](research-report.tex). The build assembles that source

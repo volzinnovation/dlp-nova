@@ -1,5 +1,11 @@
 # Research preprint
 
+Submitted to arXiv in **cs.AI** on **9 September 2026**, with author-provided
+submission reference [arXiv:submit/8059314](https://arxiv.org/submit/8059314/view).
+The submission link requires author access; the public arXiv identifier is not
+yet recorded here. See [Paper and citation](../../README.md#paper-and-citation)
+for the current BibTeX entry.
+
 The **combined arXiv manuscript** is
 [`output/pdf/combined-report.pdf`](../../output/pdf/combined-report.pdf).
 Upload **[`output/arxiv/combined-report-source.tar.gz`](../../output/arxiv/combined-report-source.tar.gz)**
@@ -76,7 +82,7 @@ latexmk -norc -pdf -interaction=nonstopmode -halt-on-error research-report.tex
 
 For the separate supplement bundle, use `technical-supplement.tex` instead.
 Authorship and affiliation follow the author's supplied instructions.
-No submission or publication is performed.
+The build script does not submit or publish the manuscript.
 For the upload archive, compile `combined-report.tex` with pdfLaTeX. The
 [arXiv TeX guidance](https://info.arxiv.org/help/submit_tex.html) requires TeX
 source and its dependencies for TeX-authored manuscripts. The
