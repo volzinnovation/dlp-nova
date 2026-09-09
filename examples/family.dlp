@@ -1,0 +1,27 @@
+// The family demonstration, in the thesis Appendix A concrete DLP syntax.
+Namespace(ex = <https://example.org/family#>)
+
+Ontology(
+    SubClassOf(ex:Musician ex:Person)
+    SubClassOf(ex:Composer ex:Musician)
+    EquivalentClasses(ex:Parent intersectionOf(
+        ex:Person restriction(ex:hasChild value(ex:wilhelm))
+    ))
+    ObjectProperty(ex:hasChild
+        super(ex:ancestorOf)
+        inverseOf(ex:hasParent)
+        domain(ex:Person)
+        range(ex:Person)
+    )
+    ObjectProperty(ex:ancestorOf Transitive)
+    ObjectProperty(ex:hasSSN InverseFunctional)
+    DisjointClasses(ex:Person ex:Composition)
+
+    Individual(ex:johann
+        type(ex:Composer)
+        value(ex:hasChild ex:wilhelm)
+        value(ex:hasSSN ex:ssn1)
+    )
+    Individual(ex:jsbach value(ex:hasSSN ex:ssn1))
+    Individual(ex:wilhelm value(ex:hasChild ex:grandchild))
+)

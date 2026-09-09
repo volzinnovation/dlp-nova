@@ -1,0 +1,63 @@
+// Raphael Volz, Web Ontology Reasoning with Logic Databases (2004).
+// Figure 6.2, p. 150, Table 6.1, p. 151, Example 6.3.2, pp. 158-159.
+// Independent L0 maintenance example: two TBox axioms and nine initial
+// ancestorOf assertions. This does not import the chapter 2 bach.dlp example.
+// The arrows specify ancestorOf, with no extra hasChild or gender assertions.
+//
+// The future insertion Johann Christian (jc2) is absent from the initial ABox.
+// Figure 6.2 distinguishes him from Johann Christoph (jc1).
+// Fact transaction: remove ancestorOf(js,wf), add ancestorOf(js,jc2).
+// The prose and resulting deltas resolve p. 159's "jc" insertion typo.
+// Rule scenarios remove/reinsert ancestorOf subPropertyOf inDynasty, then
+// add/remove symmetry of inDynasty. Symmetry does not connect the unrelated
+// jc1 and c branches (p. 151 erratum).
+Namespace(bach = <http://www.jsbach.org/bach#>)
+Namespace(rdfs = <http://www.w3.org/2000/01/rdf-schema#>)
+
+Ontology(<http://www.jsbach.org/bach-family>
+    Annotation(rdfs:label "Bach Family Maintenance Example (Figure 6.2)")
+    Annotation(rdfs:comment "Raphael Volz (2004), Figure 6.2 and Table 6.1, printed pages 150-151; initial ABox from Example 6.3.2, page 158. DLP L0.")
+
+    // Table 6.1 T0/T1; symmetry T2 is a later benchmark update.
+    ObjectProperty(bach:ancestorOf super(bach:inDynasty) Transitive)
+    ObjectProperty(bach:inDynasty)
+
+    // Example 6.3.2 initial ABox: (j,h), (j,c), (h,jc1), (jc1,jm),
+    // (jm,mb), (mb,wf), (js,wf), (ja,js), (c,ja).
+    Individual(bach:johannes
+        annotation(rdfs:label "Johannes (j)")
+        value(bach:ancestorOf bach:heinrich)
+        value(bach:ancestorOf bach:christoph)
+    )
+    Individual(bach:heinrich
+        annotation(rdfs:label "Heinrich (h)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#johann-christoph>)
+    )
+    Individual(<http://www.jsbach.org/bach#johann-christoph>
+        annotation(rdfs:label "Johann Christoph (jc1)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#johann-michael>)
+    )
+    Individual(<http://www.jsbach.org/bach#johann-michael>
+        annotation(rdfs:label "Johann Michael (jm)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#maria-barbara>)
+    )
+    Individual(<http://www.jsbach.org/bach#maria-barbara>
+        annotation(rdfs:label "Maria Barbara (mb)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#wilhelm-friedemann>)
+    )
+    Individual(<http://www.jsbach.org/bach#johann-sebastian>
+        annotation(rdfs:label "Johann Sebastian (js)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#wilhelm-friedemann>)
+    )
+    Individual(<http://www.jsbach.org/bach#johann-ambrosius>
+        annotation(rdfs:label "Johann Ambrosius (ja)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#johann-sebastian>)
+    )
+    Individual(bach:christoph
+        annotation(rdfs:label "Christoph (c)")
+        value(bach:ancestorOf <http://www.jsbach.org/bach#johann-ambrosius>)
+    )
+    Individual(<http://www.jsbach.org/bach#wilhelm-friedemann>
+        annotation(rdfs:label "Wilhelm Friedemann (wf)")
+    )
+)

@@ -1,0 +1,8 @@
+// Section 5.1.4 L3 existential heads: Appendix A omits someValuesFrom
+// from descriptionRight; this implementation supports the chapter 5 extension.
+Namespace(ex = <https://example.org/existential#>)
+
+Ontology(
+    SubClassOf(ex:Parent restriction(ex:hasChild someValuesFrom(ex:Person)))
+    Individual(ex:alice type(ex:Parent))
+)

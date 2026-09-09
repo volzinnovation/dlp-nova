@@ -225,3 +225,63 @@ affected configuration/task from performance rankings. See the
 [protocol and reproduction instructions](../docs/BACH_EXTERNAL_BENCHMARK.md)
 for the OWL/Datalog boundary, fresh HermiT reconstructions, native incremental
 updates, pinned sources and separate task/process timing intervals.
+
+## Native execution feasibility
+
+The [native performance experiment](../docs/NATIVE_PERFORMANCE.md) profiles the
+existing engine and compares a Python/C++ binary join with identical integer
+inputs, separate RDF conversion timings, and independently checked complete
+outputs. Its [raw report](native-performance-results.json) is separate from the
+historical benchmarks. The prototype is not a production backend, and its
+kernel ratios are not whole-reasoner speedups.
+
+```sh
+PYTHONHASHSEED=0 uv run python -m benchmarks.native_performance --repeats 7 \
+  --output /tmp/dlp-native-performance.json
+```
+
+## Persistent native backend
+
+The [backend measurements](../docs/NATIVE_BACKEND_PERFORMANCE.md) compare the
+actual Python and persistent C++ backends through public `Reasoner` construction,
+queries and updates. Five workloads run in five alternating backend pairs, with
+11 independent update scenarios. Complete RDF graph comparisons, independent
+workload checks and fresh Python rebuilds validate every result outside timing.
+Compilation of the native library precedes timing; cached backend initialization
+remains inside the public construction boundary.
+
+```sh
+PYTHONHASHSEED=0 uv run python -m benchmarks.native_backend --repeats 5 \
+  --output /tmp/dlp-native-backend-results.json
+```
+
+The separate [raw report](native-backend-results.json) retains all samples,
+source/toolchain hashes and counters. Transitive construction improved modestly
+on the recorded host, while the other construction workloads regressed. These
+single-process observations support keeping native execution optional and do
+not measure memory consumption. They do not replace the historical baseline or
+the earlier isolated-join experiment.
+
+## Repeated queries on stable ontologies
+
+The [query performance experiment](../docs/QUERY_PERFORMANCE.md) separates first
+query cost from repeated-query latency. It compares the preserved pre-change
+package, current indexed queries with answer caching disabled, and current
+queries with a bounded answer cache. Each uses fresh materialization of the same
+input, rotating mode order, both Python/native backends and five repetitions.
+The first and final warmed query suites must match complete expected answers;
+the exported closures must be isomorphic, including witnesses.
+
+```sh
+PYTHONHASHSEED=0 uv run python -m benchmarks.query_performance --repeats 5 \
+  --warm-loops 10 --output /tmp/dlp-query-performance.json
+```
+
+The source-only [pre-change archive](query-baseline-source.tar.gz) includes its
+file hashes and is loaded under an isolated Python package namespace. New
+[raw observations](query-performance-results.json) retain source hashes, all
+samples, cache counters, first-use/warm timings and materialization timings.
+Answer validation and initial materialization remain outside query timers.
+Anonymous expressions are parsed once and their identifiers reused, matching a
+stable source graph. These measurements neither overwrite earlier reports nor
+describe shared caches across independent CLI processes.

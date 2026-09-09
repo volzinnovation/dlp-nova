@@ -8,6 +8,7 @@ Page numbers below are the printed thesis page numbers. For chapters 1 onward, a
 
 | Concern | Thesis source | Engineering consequence |
 | --- | --- | --- |
+| Parse the concrete DLP language | Appendix A, pp. 233–236; §5.1.5, p. 119; Table 5.4, p. 126 | Lower concrete syntax to the existing OWL graph compiler. Document Chapter 5 L3 forms omitted from the printed BNF. |
 | Normalize expressions before determining the fragment | Section 4.3, Tables 4.1-4.2, pp. 83-87 | Simplify and normalize constructors, preserving classical semantics; a superficially unsupported expression can normalize into DLP. |
 | Define four fragments by constructor position | Definitions 5.1.1-5.1.24, pp. 115-118; Figure 5.1 | Validate left and right positions recursively. A feature list alone is insufficient. |
 | Compile ontology axioms into logic rules | Tables 5.1-5.3, pp. 116, 120, 122; Table 7.1, p. 184 | Translate classes to unary predicates and properties to binary predicates, preserving variable scopes. |
@@ -20,6 +21,10 @@ Page numbers below are the printed thesis page numbers. For chapters 1 onward, a
 | Report benchmark evidence | Chapter 8, pp. 193-223; especially Tables 8.4-8.13 | Measure query, initial inference, equality, existentials, and updates separately on deterministic, parameterized inputs. |
 
 The historical implementation uses Java, an OWL API, KAON, XSB and Racer (chapter 7). These are implementation choices rather than semantic requirements. A modern RDF parser and an indexed rules engine can serve the same architecture. Generic OWL RL closure alone does not reproduce the four DLP languages, particularly the L3 existential rules.
+
+The [concrete syntax guide](DLP_SYNTAX.md) documents the `.dlp` parser and rewritten
+examples. Syntax parsing and L0–L3 semantic validation remain separate stages;
+the `.dlp` and RDF inputs share the same compiler and evaluator.
 
 ## Language matrix
 

@@ -4,9 +4,11 @@ The Bach benchmark parses and reasons over two examples from Raphael Volz's [*We
 
 | Artifact | Source and role | DLP profile |
 | --- | --- | --- |
+| [bach.dlp](../examples/bach.dlp) | Table 2.5 in Appendix A concrete syntax, with Chapter 5's L3 forms | L3 |
 | [bach.ttl](../examples/bach.ttl) | Table 2.5, p. 35: T1–T17 and A1–A15, with source labels in comments | L3 |
 | [bach.owl](../examples/bach.owl) | The same ontology in RDF/XML | L3 |
 | [bach-family.ttl](../examples/bach-family.ttl) | Figure 6.2, p. 150; Table 6.1, p. 151; initial assertions in Example 6.3.2, p. 158 | L0 |
+| [bach-family.dlp](../examples/bach-family.dlp) | The same independent chapter 6 example in concrete DLP syntax | L0 |
 | [bach-queries.json](../examples/bach-queries.json) | Executable query definitions, expected answers, and source references | Per example |
 
 The shared namespace is `http://www.jsbach.org/bach#`, following Example 3.2.1, pp. 46–47. Individual names use readable local names such as `johann-sebastian`. The two ontologies are separate inputs: the chapter 6 example includes genealogy that Table 2.5 does not assert. Table 2.5's A16 is an ellipsis, not additional data.
@@ -19,7 +21,7 @@ equivalence before writing the output.
 
 Section 5.1.5, p. 119, explicitly permits RDF exchange using the OWL abstract-syntax mapping. The examples therefore use OWL class expressions and property axioms in Turtle and RDF/XML, parsed with RDFLib and compiled to the reasoner's position-sensitive DLP profiles. The `rules` command exposes the resulting Horn program.
 
-The complete Table 2.5 example requires L3 (§5.1.4, p. 118): necessary existential restrictions occur in T3–T6, T12, T14, T15 and A1. Negation in T2 and T15 becomes an integrity constraint. Appendix A, pp. 233–235, describes its grammar as L3, but its literal productions omit existential forms allowed by §5.1.4. These RDF files implement the stated L3 constructors; this benchmark does not claim conformance to every literal production of that incomplete BNF or provide an abstract-syntax text parser.
+The complete Table 2.5 example requires L3 (§5.1.4, p. 118): necessary existential restrictions occur in T3–T6, T12, T14, T15 and A1. Negation in T2 and T15 becomes an integrity constraint. Appendix A, pp. 233–235, describes its grammar as L3, but its literal productions omit existential forms allowed by §5.1.4. The [concrete DLP parser](DLP_SYNTAX.md) accepts these Chapter 5 forms and lowers them to the same compiler as the RDF input. Tests check equivalent axioms and materializations for the `.dlp` and RDF examples. Historical benchmark cases continue reading their original RDF fixtures and retain their original parsing measurement boundaries.
 
 | Table 2.5 axioms | Encoding |
 | --- | --- |
@@ -43,13 +45,13 @@ The supplied ABox reaches a finite materialization. A fresh `Wife` or `Husband` 
 Run from the repository root:
 
 ```sh
-uv run dlp validate examples/bach.ttl --profile L3
+uv run dlp validate examples/bach.dlp --profile L3
 uv run dlp validate examples/bach.owl --format xml --profile L3
-uv run dlp rules examples/bach.ttl --profile L3
-uv run dlp instances examples/bach.ttl 'http://www.jsbach.org/bach#Father' --profile L3
-uv run dlp values examples/bach.ttl 'http://www.jsbach.org/bach#johann-sebastian' 'http://www.jsbach.org/bach#marriedTo' --profile L3
-uv run dlp subsumes examples/bach.ttl 'http://www.jsbach.org/bach#Person' 'http://www.jsbach.org/bach#Father' --profile L3
-uv run dlp values examples/bach-family.ttl 'http://www.jsbach.org/bach#johannes' 'http://www.jsbach.org/bach#ancestorOf' --profile L0
+uv run dlp rules examples/bach.dlp --profile L3
+uv run dlp instances examples/bach.dlp 'http://www.jsbach.org/bach#Father' --profile L3
+uv run dlp values examples/bach.dlp 'http://www.jsbach.org/bach#johann-sebastian' 'http://www.jsbach.org/bach#marriedTo' --profile L3
+uv run dlp subsumes examples/bach.dlp 'http://www.jsbach.org/bach#Person' 'http://www.jsbach.org/bach#Father' --profile L3
+uv run dlp values examples/bach-family.dlp 'http://www.jsbach.org/bach#johannes' 'http://www.jsbach.org/bach#ancestorOf' --profile L0
 ```
 
 The full ontology returns both `johann-ambrosius` and `johann-sebastian` as named Fathers, both `anna-magdalena` and `maria-barbara` as Johann Sebastian's spouses, and `true` for Person subsuming Father (Example 2.4.3, p. 39). Queries follow the class retrieval, type retrieval, property-filler and schema questions in §5.4, pp. 130–140. Named-answer expectations exclude generated witnesses; existential queries can still use those witnesses internally.

@@ -382,3 +382,109 @@ answers, full process pairing, phase sums, medians, failure diagnostics,
 protocol/source hashes and archives. New source and RDF/XML snapshots accompany
 the new results; all previous benchmark files and the fixed baseline remain
 unchanged by this extension.
+
+## Concrete DLP syntax and native feasibility experiment
+
+The [Appendix A parser](DLP_SYNTAX.md) adds **115 tests** across parser,
+example-equivalence, and CLI coverage. These include exact source locations,
+malformed syntax, literals/comments, local domain/range direction, repeated
+singleton definitions, profile boundaries, equality, witness generation,
+reserved-vocabulary rejection, and explicit object/datatype property-kind checks.
+All five `.dlp` examples preserve the existing RDF axioms and annotations up to
+optional declarations and blank-node renaming. Consistent examples also have
+isomorphic materializations including existential witnesses. The independent
+chapter 6 maintenance case retains its original fact and rule update behavior.
+
+The separate [native experiment](NATIVE_PERFORMANCE.md) checks the Python and
+C++ join kernels against **105 independent small oracle cases**, and checks
+every timed result against a complete expected pair set. It retains seven
+observations per case and exact measured source hashes. These are join-operation
+measurements, not a complete native reasoner or a language-port conformance test.
+The production evaluator and historical result files remain unchanged.
+
+On 10 September 2026, the complete suite passed **900 tests in 42.86 seconds**.
+Ruff and whitespace checks passed, and both source and wheel distributions
+built. The wheel's package files match the final source bytes. The retained
+native report's measured source hashes also match the implementation files.
+
+```sh
+.venv/bin/python -m pytest -q tests/test_dlp_parser.py tests/test_dlp_examples.py tests/test_dlp_cli.py
+.venv/bin/python -m pytest -q
+.venv/bin/python -m ruff check src tests benchmarks scripts
+uv build
+git diff --check
+```
+
+## Persistent native relation/index backend
+
+The optional [C++ backend](NATIVE_BACKEND.md) adds **40 tests** covering persistent
+storage, streamed positive joins, exact delta occurrences, repeated variables,
+constants and arbitrary arity. Independent exhaustive assignments and randomized
+fact/rule transactions check results. Semantic regressions include equality
+merge/split, literal identity, nested witnesses, constraints, rejected updates
+and completeness limits. Lifecycle checks exercise mutation and reset during
+suspended queries, early cursor closure and bounded Cartesian-product streaming.
+Build failures are explicit, and warm initialization avoids compiler subprocesses.
+
+On 10 September 2026, the complete suite passed **940 tests in 15.14 seconds**.
+A separate run of existing engine, reasoner, compiler, semantic, maintenance and
+DLP tests passed **442 tests with native execution selected by default**. These
+include shared checks that do not themselves instantiate an engine. Ruff,
+whitespace checks and source/wheel builds passed. All 14 packaged Python/C++
+source files match the final checkout, and an extracted wheel built its native
+library in a fresh cache and materialized a DLP ontology successfully.
+
+Development checks of the C ABI additionally compared 2,000 randomized joins
+against brute force, ran 200 lifecycle/mutation cycles under AddressSanitizer and
+UndefinedBehaviorSanitizer, and injected allocation failures at 80 boundaries.
+These were separate development checks, not additional collected pytest tests.
+
+The [matched backend experiment](NATIVE_BACKEND_PERFORMANCE.md) retained
+**25 construction/query pairs and 55 update pairs** across five workloads and
+11 transaction scenarios. Every pair passed complete-result checks; every update
+also matched a fresh Python rebuild. All 21 measured source hashes match the
+final implementation. Transitive construction improved from 459.913 to
+430.878 ms at the median (1.067×); taxonomy, equality and both Bach construction
+workloads were slower. The report preserves all regressions and timing variation.
+Python remains the default. The earlier parser/prototype record above describes
+the preceding stage; its historical timings and artifacts remain preserved.
+
+## Queries against rarely changing ontologies
+
+The [query optimization](QUERY_CACHING.md) adds **84 tests**: 55 query-semantic
+and indexed-lookup checks, 25 cache/storage checks, and four reentrant-update
+regressions. Coverage includes both backends, full expected answers, independent
+fresh reconstruction after mixed updates, equality splitting, nominal and
+anonymous-expression semantics, fresh names, witness/literal answers, profile
+and limit changes, rejected operations, consistency/completeness guards, and
+defensive copies of set-valued answers.
+
+Mutation checks cover same-size RDF edits, direct store changes, bulk/parsed/
+SPARQL writes, external graph replacement, partial failures and queries invoked
+during an update. Work-based tests forbid scanning the complete fact set during
+indexed instance/property retrieval and after a reverse type index is built.
+Allocation checks verify that disabled/oversized answers bypass caching without
+first copying a 100,000-element set. Valid positive schema proofs survive
+fact-only updates, while data-dependent answers are invalidated.
+
+On 10 September 2026, the final suite passed **1,024 tests in 12.00 seconds**.
+The separate existing-test run with native execution selected passed **442
+tests in 2.78 seconds**. Ruff, whitespace checks and source/wheel builds passed.
+All 15 packaged Python/C++ source files match the checkout. An extracted wheel
+passed query-cache hits, defensive result copies and update invalidation on
+both Python and freshly built native backends.
+
+The [retained query experiment](QUERY_PERFORMANCE.md) compares four workloads,
+two backends, five repetitions and three configurations: **120 fresh reasoner
+constructions**, each with a first query suite and ten repeated suites. The
+first and final repeated suites match full expected answers, and corresponding
+materializations are isomorphic including witnesses. The 23 recorded source
+hashes match the final files. Its separate pre-change source archive also
+matches all 14 package-source digests from the preceding native-backend run.
+
+With Python, the full 25-query Bach suite's repeated median decreased from
+23.314 ms to 0.0183 ms; the taxonomy query suite decreased from 22.127 ms to
+0.0454 ms. First-use costs and regressions are reported separately. These are
+warm repeated-query observations on one workstation, not faster initial
+materialization or a guarantee for unseen queries. All earlier benchmark
+results remain unchanged.

@@ -1,0 +1,117 @@
+// Raphael Volz, Web Ontology Reasoning with Logic Databases (2004),
+// Table 2.5, printed p. 35 (PDF p. 51): T1-T17 and A1-A15.
+// A16 is an ellipsis in the source and contributes no invented assertions.
+//
+// The notation follows Appendix A, pp. 233-236, with section 5.1.4's L3
+// existential heads: Appendix A omits someValuesFrom on the right and in
+// complete class definitions. The parser accepts the chapter 5 extension;
+// the compiler still enforces the chosen reasoning profile.
+// Hyphenated individual names use full IRIs, as Appendix A's localname
+// production allows only letters, numbers and underscores after a letter.
+//
+// The supplied ABox terminates. Instantiating Wife or Husband, including
+// in a trial query, can generate an unbounded witness chain through T3/T4.
+// A1 has an unnamed child, which is not identified with Johann Sebastian.
+// bach-family.dlp is the independent chapter 6 maintenance example.
+Namespace(bach = <http://www.jsbach.org/bach#>)
+Namespace(rdfs = <http://www.w3.org/2000/01/rdf-schema#>)
+
+Ontology(<http://www.jsbach.org/bach>
+    Annotation(rdfs:label "Bach Family Knowledge Base (Table 2.5)")
+    Annotation(rdfs:comment "Raphael Volz (2004), Table 2.5, printed page 35. T1-T17 and A1-A15; DLP L3. RDF/XML equivalent: bach.owl.")
+
+    // Vocabulary declarations introduce no additional class relationships.
+    Class(bach:Person partial)
+    Class(bach:Genius partial)
+    Class(bach:Composer partial)
+    Class(bach:LeipzigInhabitant partial)
+    Class(bach:Masterpiece partial)
+    Class(bach:Birthday partial)
+    Class(bach:Homage partial)
+    Class(bach:Composition partial)
+    Class(bach:Voice partial)
+    ObjectProperty(bach:livesIn)
+    ObjectProperty(bach:hasComposed)
+    ObjectProperty(bach:forEvent)
+    ObjectProperty(bach:forInstrument)
+
+    // T1: Woman is a Person.
+    Class(bach:Woman partial bach:Person)
+
+    // T2: Man is a Person and not a Woman (an integrity constraint).
+    Class(bach:Man partial intersectionOf(bach:Person complementOf(bach:Woman)))
+
+    // T3/T4: Wife and Husband imply gender and an existential spouse.
+    Class(bach:Wife partial intersectionOf(
+        bach:Woman restriction(bach:marriedTo someValuesFrom(bach:Husband))
+    ))
+    Class(bach:Husband partial intersectionOf(
+        bach:Man restriction(bach:marriedTo someValuesFrom(bach:Wife))
+    ))
+
+    // T5/T6: Father and Mother are complete definitions.
+    Class(bach:Father complete intersectionOf(
+        bach:Man restriction(bach:hasChild someValuesFrom(bach:Person))
+    ))
+    Class(bach:Mother complete intersectionOf(
+        bach:Woman restriction(bach:hasChild someValuesFrom(bach:Person))
+    ))
+
+    // T7: hasChild is included in ancestorOf.
+    ObjectProperty(bach:hasChild super(bach:ancestorOf))
+    // T8/T17: ancestorOf is transitive and included in inDynasty.
+    ObjectProperty(bach:ancestorOf super(bach:inDynasty) Transitive)
+    // T9: Marriage symmetry does not imply Wife/Husband classification.
+    ObjectProperty(bach:marriedTo Symmetric)
+
+    // T10: Living in the named individual Leipzig implies LeipzigInhabitant.
+    SubClassOf(restriction(bach:livesIn value(bach:leipzig)) bach:LeipzigInhabitant)
+    // T11: A Genius who is a Composer has composed only Masterpieces.
+    SubClassOf(intersectionOf(bach:Genius bach:Composer)
+        restriction(bach:hasComposed allValuesFrom(bach:Masterpiece)))
+
+    // T12: Parentheses resolve the displayed restriction's loose scope on p. 35.
+    Class(bach:BirthdayCantata partial intersectionOf(
+        restriction(bach:forEvent someValuesFrom(bach:Birthday))
+        bach:Cantata bach:Homage
+    ))
+    // T13: A Cantata is both a VocalComposition and InstrumentalComposition.
+    Class(bach:Cantata partial intersectionOf(
+        bach:VocalComposition bach:InstrumentalComposition
+    ))
+    // T14: VocalComposition is a Composition for some Voice.
+    Class(bach:VocalComposition partial intersectionOf(
+        bach:Composition restriction(bach:forInstrument someValuesFrom(bach:Voice))
+    ))
+    // T15: InstrumentalComposition is for something outside Voice.
+    Class(bach:InstrumentalComposition partial intersectionOf(
+        bach:Composition
+        restriction(bach:forInstrument someValuesFrom(complementOf(bach:Voice)))
+    ))
+    // T16: inDynasty is symmetric; it is not asserted transitive.
+    ObjectProperty(bach:inDynasty Symmetric)
+
+    // A1/A7: Johann Ambrosius is a Man and has some unnamed Man as a child.
+    Individual(<http://www.jsbach.org/bach#johann-ambrosius>
+        type(restriction(bach:hasChild someValuesFrom(bach:Man)))
+        type(bach:Man)
+    )
+    // A2/A4/A6/A8/A9/A10/A12: Johann Sebastian's assertions.
+    Individual(<http://www.jsbach.org/bach#johann-sebastian>
+        type(intersectionOf(bach:Composer bach:Man))
+        type(bach:Genius)
+        value(bach:hasChild <http://www.jsbach.org/bach#wilhelm-friedemann>)
+        value(bach:marriedTo <http://www.jsbach.org/bach#anna-magdalena>)
+        value(bach:livesIn bach:leipzig)
+        value(bach:hasComposed bach:BWV248)
+        value(bach:marriedTo <http://www.jsbach.org/bach#maria-barbara>)
+    )
+    // A3/A5/A11: The other named people.
+    Individual(<http://www.jsbach.org/bach#wilhelm-friedemann> type(bach:Person))
+    Individual(<http://www.jsbach.org/bach#anna-magdalena> type(bach:Woman))
+    Individual(<http://www.jsbach.org/bach#maria-barbara> type(bach:Woman))
+    // A13-A15: The three compositions.
+    Individual(bach:BWV248 type(bach:Cantata))
+    Individual(bach:BWV213 type(bach:BirthdayCantata))
+    Individual(bach:BWV214 type(bach:BirthdayCantata))
+)

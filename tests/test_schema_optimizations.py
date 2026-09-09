@@ -113,12 +113,13 @@ def test_fact_and_equality_changes_invalidate_without_contaminating_probes():
              ":o owl:sameAs :alias. :alias a :D.")
     assert r.subsumes(EX.B, EX.A)
     assert r.subsumes(EX.D, EX.C)
+    original_schema = r._schema_cache
     r.update(remove=[(EX.o, OWL.sameAs, EX.alias)])
-    assert r._schema_cache is None
+    assert r._schema_cache is original_schema
     assert not r.subsumes(EX.D, EX.C)
     assert r.subsumes(EX.B, EX.A)
     r.update(add=[(EX.o, RDF.type, EX.D)])
-    assert r._schema_cache is None
+    assert r._schema_cache is original_schema
     assert r.subsumes(EX.D, EX.C)
     assert not r.instances(EX.C)
 

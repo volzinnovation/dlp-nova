@@ -4,6 +4,7 @@ from .model import (
     IncompleteReasoningError, InconsistentOntologyError,
 )
 from .reasoner import Reasoner
+from .parser import DLPParseError, parse_dlp
 
 __all__ = ["Reasoner", "Atom", "Rule", "Program", "Var", "Skolem", "ProfileError",
-           "IncompleteReasoningError", "InconsistentOntologyError"]
+           "IncompleteReasoningError", "InconsistentOntologyError", "parse_dlp", "DLPParseError"]

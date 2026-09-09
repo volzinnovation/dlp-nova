@@ -52,10 +52,12 @@ def parser():
     for command in ("validate", "materialize", "instances", "values", "types", "entails",
                     "subsumes", "rules", *_SCHEMA_QUERIES):
         item = sub.add_parser(command)
-        item.add_argument("file", help="Local Turtle, RDF/XML, or N-Triples ontology")
+        item.add_argument("file", help="Local thesis DLP, Turtle, RDF/XML, or N-Triples ontology")
         item.add_argument("--profile", choices=["L0", "L1", "L2", "L3"], default="L2")
-        item.add_argument("--format", choices=["turtle", "nt", "xml", "n3"])
+        item.add_argument("--format", choices=["dlp", "turtle", "nt", "xml", "n3"])
         item.add_argument("--strategy", choices=["semi-naive", "naive"], default="semi-naive")
+        item.add_argument("--backend", choices=["python", "native"], default="python",
+                          help="Relation/index backend; native requires a C++17 compiler on first use")
         item.add_argument("--max-rounds", type=int, default=1000)
         item.add_argument("--max-facts", type=int, default=1000000)
         item.add_argument("--max-depth", type=int, default=32)
@@ -88,7 +90,8 @@ def main(argv=None):
     try:
         reasoner = Reasoner.from_file(
             args.file, format=args.format, profile=args.profile, strategy=args.strategy,
-            max_rounds=args.max_rounds, max_facts=args.max_facts, max_depth=args.max_depth)
+            max_rounds=args.max_rounds, max_facts=args.max_facts, max_depth=args.max_depth,
+            backend=args.backend)
         if args.command == "rules":
             print(program_text(reasoner.program), end="")
             return 0

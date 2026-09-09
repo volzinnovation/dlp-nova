@@ -1,0 +1,1778 @@
+{
+  "timestamp": "2026-09-09T22:17:05.253164+00:00",
+  "scope": "isolated-binary-join-prototype-not-full-native-engine",
+  "repeats": 7,
+  "join_discarded_warmups_per_implementation": 1,
+  "native_oracle_validation_cases": 105,
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "compiler_flags": [
+    "-O3",
+    "-std=c++17",
+    "-fPIC",
+    "-shared"
+  ],
+  "source_sha256": {
+    "benchmarks/native_performance.py": "bba16553c18e6a98e56ae121e3b926e38548ee2dc577e1663c23eca9a3f293a2",
+    "benchmarks/native_join.cpp": "fd59d5fdf9194ddeb01805f4d3b37e4a72354ec7e503dcb3fa5781c05f47eea7",
+    "benchmarks/workloads.py": "1a789b1b8f449f088a957ec3b74d0b9b443909fded0fa36be86f10896e8a316f",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "80bdfa06f4d0747094f696682689c2e021b5f3ee00e8a7b88550a14518aebc20",
+    "src/dlp_reasoner/joins.py": "9e7a1cca7db9a4e4f9071abd617fdbb8cbebee8863a85b7d70f346eeb73476b5",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+  },
+  "environment": {
+    "python": "3.12.9 (main, Feb 12 2025, 15:09:19) [Clang 19.1.6 ]",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 16,
+    "rdflib": "7.6.0",
+    "garbage_collection_enabled": true,
+    "garbage_collection_thresholds": [
+      700,
+      10,
+      10
+    ],
+    "python_hash_seed": "0",
+    "cpu": "Apple M4 Max",
+    "go_executable": null,
+    "git_head": "b3d036c0ab05780a5137b9eeaab17817ce2a675e",
+    "git_status": [
+      " M README.md",
+      " M benchmarks/README.md",
+      " M docs/BACH_BENCHMARK.md",
+      " M docs/THESIS_SPEC.md",
+      " M src/dlp_reasoner/__init__.py",
+      " M src/dlp_reasoner/cli.py",
+      " M src/dlp_reasoner/reasoner.py",
+      "?? benchmarks/native-performance-results.json",
+      "?? benchmarks/native_join.cpp",
+      "?? benchmarks/native_performance.py",
+      "?? docs/DLP_SYNTAX.md",
+      "?? docs/NATIVE_PERFORMANCE.md",
+      "?? examples/bach-family.dlp",
+      "?? examples/bach.dlp",
+      "?? examples/existential.dlp",
+      "?? examples/family.dlp",
+      "?? examples/inconsistent.dlp",
+      "?? src/dlp_reasoner/parser.py",
+      "?? tests/test_dlp_cli.py",
+      "?? tests/test_dlp_examples.py",
+      "?? tests/test_dlp_parser.py"
+    ]
+  },
+  "engine_profiles": [
+    {
+      "name": "taxonomy_d5_ipc9_p1",
+      "facts": 22393,
+      "rules": 363,
+      "unprofiled_materialize_seconds": {
+        "samples": [
+          0.17797391599742696,
+          0.19503866700688377,
+          0.2059482499898877,
+          0.21181795799930114,
+          0.1902774999907706,
+          0.2076864170085173,
+          0.1979322920087725
+        ],
+        "median": 0.1979322920087725,
+        "minimum": 0.17797391599742696,
+        "maximum": 0.21181795799930114
+      },
+      "profile_total_seconds": 0.662878702,
+      "top_cumulative_functions": [
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 812,
+          "function": "materialize",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.00021820700000000002,
+          "cumulative_seconds": 0.692159792
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.024782714,
+          "cumulative_seconds": 0.5510037090000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 8,
+          "total_calls": 8,
+          "self_seconds": 0.049357021,
+          "cumulative_seconds": 0.468383543
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 450,
+          "function": "_canonical",
+          "primitive_calls": 22393,
+          "total_calls": 22393,
+          "self_seconds": 0.041951997000000005,
+          "cumulative_seconds": 0.22404019500000003
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 451,
+          "function": "<genexpr>",
+          "primitive_calls": 45875,
+          "total_calls": 45875,
+          "self_seconds": 0.078557603,
+          "cumulative_seconds": 0.173270207
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 453,
+          "function": "_store",
+          "primitive_calls": 25661,
+          "total_calls": 25661,
+          "self_seconds": 0.027553586,
+          "cumulative_seconds": 0.13414484200000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 15306,
+          "total_calls": 15306,
+          "self_seconds": 0.017743362000000002,
+          "cumulative_seconds": 0.11534498300000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 354,
+          "function": "normalize",
+          "primitive_calls": 26750,
+          "total_calls": 26750,
+          "self_seconds": 0.011965873,
+          "cumulative_seconds": 0.10238137800000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 100,
+          "function": "add",
+          "primitive_calls": 44786,
+          "total_calls": 44786,
+          "self_seconds": 0.060055942,
+          "cumulative_seconds": 0.097742651
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 341,
+          "function": "_find",
+          "primitive_calls": 26750,
+          "total_calls": 26750,
+          "self_seconds": 0.044436822,
+          "cumulative_seconds": 0.084584132
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 154615,
+          "total_calls": 154615,
+          "self_seconds": 0.067733535,
+          "cumulative_seconds": 0.067733535
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 761,
+          "function": "<genexpr>",
+          "primitive_calls": 29538,
+          "total_calls": 29538,
+          "self_seconds": 0.0056097180000000005,
+          "cumulative_seconds": 0.067626617
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'add' of 'set' objects>",
+          "primitive_calls": 157841,
+          "total_calls": 157841,
+          "self_seconds": 0.036874352,
+          "cumulative_seconds": 0.06365854500000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 508,
+          "function": "_bound",
+          "primitive_calls": 14769,
+          "total_calls": 14769,
+          "self_seconds": 0.049918477,
+          "cumulative_seconds": 0.06201689900000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 94,
+          "function": "__init__",
+          "primitive_calls": 7,
+          "total_calls": 7,
+          "self_seconds": 0.003528399,
+          "cumulative_seconds": 0.045989832
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "primitive_calls": 22393,
+          "total_calls": 22393,
+          "self_seconds": 0.008830856,
+          "cumulative_seconds": 0.041090358
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 53500,
+          "total_calls": 53500,
+          "self_seconds": 0.011511275000000001,
+          "cumulative_seconds": 0.040147310000000005
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 475,
+          "function": "<genexpr>",
+          "primitive_calls": 45875,
+          "total_calls": 45875,
+          "self_seconds": 0.011459624,
+          "cumulative_seconds": 0.032259502
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 518,
+          "function": "_solutions",
+          "primitive_calls": 15306,
+          "total_calls": 15306,
+          "self_seconds": 0.0032453760000000003,
+          "cumulative_seconds": 0.024539849000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.hash>",
+          "primitive_calls": 130597,
+          "total_calls": 132745,
+          "self_seconds": 0.022580323000000003,
+          "cumulative_seconds": 0.023053760000000003
+        }
+      ],
+      "top_self_functions": [
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 451,
+          "function": "<genexpr>",
+          "primitive_calls": 45875,
+          "total_calls": 45875,
+          "self_seconds": 0.078557603,
+          "cumulative_seconds": 0.173270207
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 154615,
+          "total_calls": 154615,
+          "self_seconds": 0.067733535,
+          "cumulative_seconds": 0.067733535
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 100,
+          "function": "add",
+          "primitive_calls": 44786,
+          "total_calls": 44786,
+          "self_seconds": 0.060055942,
+          "cumulative_seconds": 0.097742651
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 508,
+          "function": "_bound",
+          "primitive_calls": 14769,
+          "total_calls": 14769,
+          "self_seconds": 0.049918477,
+          "cumulative_seconds": 0.06201689900000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 8,
+          "total_calls": 8,
+          "self_seconds": 0.049357021,
+          "cumulative_seconds": 0.468383543
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 341,
+          "function": "_find",
+          "primitive_calls": 26750,
+          "total_calls": 26750,
+          "self_seconds": 0.044436822,
+          "cumulative_seconds": 0.084584132
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 450,
+          "function": "_canonical",
+          "primitive_calls": 22393,
+          "total_calls": 22393,
+          "self_seconds": 0.041951997000000005,
+          "cumulative_seconds": 0.22404019500000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'add' of 'set' objects>",
+          "primitive_calls": 157841,
+          "total_calls": 157841,
+          "self_seconds": 0.036874352,
+          "cumulative_seconds": 0.06365854500000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 453,
+          "function": "_store",
+          "primitive_calls": 25661,
+          "total_calls": 25661,
+          "self_seconds": 0.027553586,
+          "cumulative_seconds": 0.13414484200000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.024782714,
+          "cumulative_seconds": 0.5510037090000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.hash>",
+          "primitive_calls": 130597,
+          "total_calls": 132745,
+          "self_seconds": 0.022580323000000003,
+          "cumulative_seconds": 0.023053760000000003
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 15306,
+          "total_calls": 15306,
+          "self_seconds": 0.017743362000000002,
+          "cumulative_seconds": 0.11534498300000001
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__init__",
+          "primitive_calls": 43698,
+          "total_calls": 43698,
+          "self_seconds": 0.01667633,
+          "cumulative_seconds": 0.01667633
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 408,
+          "function": "_register",
+          "primitive_calls": 23482,
+          "total_calls": 23482,
+          "self_seconds": 0.013283633000000001,
+          "cumulative_seconds": 0.020799878
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 354,
+          "function": "normalize",
+          "primitive_calls": 26750,
+          "total_calls": 26750,
+          "self_seconds": 0.011965873,
+          "cumulative_seconds": 0.10238137800000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "primitive_calls": 62939,
+          "total_calls": 62939,
+          "self_seconds": 0.011704427,
+          "cumulative_seconds": 0.013875471
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 53500,
+          "total_calls": 53500,
+          "self_seconds": 0.011511275000000001,
+          "cumulative_seconds": 0.040147310000000005
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 475,
+          "function": "<genexpr>",
+          "primitive_calls": 45875,
+          "total_calls": 45875,
+          "self_seconds": 0.011459624,
+          "cumulative_seconds": 0.032259502
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 706,
+          "function": "_unary_union_first",
+          "primitive_calls": 15306,
+          "total_calls": 15306,
+          "self_seconds": 0.009508512,
+          "cumulative_seconds": 0.016581604
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "primitive_calls": 22393,
+          "total_calls": 22393,
+          "self_seconds": 0.008830856,
+          "cumulative_seconds": 0.041090358
+        }
+      ],
+      "closure_sha256": "4a740b6a619778b7b86f567ca39649e3fe063631b67248cd2400cdbc80868919",
+      "validation": "all-repeated-and-profiled-closures-equal",
+      "independent_reachability_check": false
+    },
+    {
+      "name": "transitive_n100",
+      "facts": 5152,
+      "rules": 1,
+      "unprofiled_materialize_seconds": {
+        "samples": [
+          1.0203732499940088,
+          1.1367695829976583,
+          1.0021965420019114,
+          0.7425518329982879,
+          0.5713201250036946,
+          0.6881799580005463,
+          0.7278776659950381
+        ],
+        "median": 0.7425518329982879,
+        "minimum": 0.5713201250036946,
+        "maximum": 1.1367695829976583
+      },
+      "profile_total_seconds": 1.7542944509999998,
+      "top_cumulative_functions": [
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 812,
+          "function": "materialize",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 5.537300000000001e-05,
+          "cumulative_seconds": 1.9411052500000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.152683119,
+          "cumulative_seconds": 1.9363872500000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.20164409800000002,
+          "cumulative_seconds": 1.5094442700000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 518,
+          "function": "_solutions",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.035377858000000005,
+          "cumulative_seconds": 0.8492952970000001
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 127,
+          "function": "solutions",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.031008993000000002,
+          "cumulative_seconds": 0.813770357
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 142,
+          "function": "visit",
+          "primitive_calls": 194572,
+          "total_calls": 788340,
+          "self_seconds": 0.489295293,
+          "cumulative_seconds": 0.78262441
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 761,
+          "function": "<genexpr>",
+          "primitive_calls": 583668,
+          "total_calls": 583668,
+          "self_seconds": 0.100496706,
+          "cumulative_seconds": 0.400984983
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 508,
+          "function": "_bound",
+          "primitive_calls": 389112,
+          "total_calls": 389112,
+          "self_seconds": 0.110149653,
+          "cumulative_seconds": 0.300488277
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "primitive_calls": 419543,
+          "total_calls": 419543,
+          "self_seconds": 0.09125432300000001,
+          "cumulative_seconds": 0.183292436
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 215164,
+          "total_calls": 215164,
+          "self_seconds": 0.040374809000000005,
+          "cumulative_seconds": 0.114919112
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'add' of 'set' objects>",
+          "primitive_calls": 149738,
+          "total_calls": 149738,
+          "self_seconds": 0.055065248000000004,
+          "cumulative_seconds": 0.10486331
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 289617,
+          "total_calls": 289617,
+          "self_seconds": 0.101115879,
+          "cumulative_seconds": 0.101115879
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.hash>",
+          "primitive_calls": 1291512,
+          "total_calls": 1291944,
+          "self_seconds": 0.09557602200000001,
+          "cumulative_seconds": 0.09565612300000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 10,
+          "total_calls": 10,
+          "self_seconds": 0.006483167000000001,
+          "cumulative_seconds": 0.08185808400000001
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__init__",
+          "primitive_calls": 199912,
+          "total_calls": 199912,
+          "self_seconds": 0.059313095,
+          "cumulative_seconds": 0.059313095
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 450,
+          "function": "_canonical",
+          "primitive_calls": 5152,
+          "total_calls": 5152,
+          "self_seconds": 0.004607164,
+          "cumulative_seconds": 0.036692929
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 424751,
+          "total_calls": 424751,
+          "self_seconds": 0.036207484000000005,
+          "cumulative_seconds": 0.036207484000000005
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__eq__",
+          "primitive_calls": 189708,
+          "total_calls": 189708,
+          "self_seconds": 0.035457155000000004,
+          "cumulative_seconds": 0.035457155000000004
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 126,
+          "function": "lookup",
+          "primitive_calls": 10132,
+          "total_calls": 10132,
+          "self_seconds": 0.009530554,
+          "cumulative_seconds": 0.033460949000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "primitive_calls": 400128,
+          "total_calls": 400128,
+          "self_seconds": 0.030625663,
+          "cumulative_seconds": 0.030672164000000002
+        }
+      ],
+      "top_self_functions": [
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 142,
+          "function": "visit",
+          "primitive_calls": 194572,
+          "total_calls": 788340,
+          "self_seconds": 0.489295293,
+          "cumulative_seconds": 0.78262441
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.20164409800000002,
+          "cumulative_seconds": 1.5094442700000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.152683119,
+          "cumulative_seconds": 1.9363872500000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 508,
+          "function": "_bound",
+          "primitive_calls": 389112,
+          "total_calls": 389112,
+          "self_seconds": 0.110149653,
+          "cumulative_seconds": 0.300488277
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 289617,
+          "total_calls": 289617,
+          "self_seconds": 0.101115879,
+          "cumulative_seconds": 0.101115879
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 761,
+          "function": "<genexpr>",
+          "primitive_calls": 583668,
+          "total_calls": 583668,
+          "self_seconds": 0.100496706,
+          "cumulative_seconds": 0.400984983
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.hash>",
+          "primitive_calls": 1291512,
+          "total_calls": 1291944,
+          "self_seconds": 0.09557602200000001,
+          "cumulative_seconds": 0.09565612300000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "primitive_calls": 419543,
+          "total_calls": 419543,
+          "self_seconds": 0.09125432300000001,
+          "cumulative_seconds": 0.183292436
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__init__",
+          "primitive_calls": 199912,
+          "total_calls": 199912,
+          "self_seconds": 0.059313095,
+          "cumulative_seconds": 0.059313095
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'add' of 'set' objects>",
+          "primitive_calls": 149738,
+          "total_calls": 149738,
+          "self_seconds": 0.055065248000000004,
+          "cumulative_seconds": 0.10486331
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 215164,
+          "total_calls": 215164,
+          "self_seconds": 0.040374809000000005,
+          "cumulative_seconds": 0.114919112
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 424751,
+          "total_calls": 424751,
+          "self_seconds": 0.036207484000000005,
+          "cumulative_seconds": 0.036207484000000005
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__eq__",
+          "primitive_calls": 189708,
+          "total_calls": 189708,
+          "self_seconds": 0.035457155000000004,
+          "cumulative_seconds": 0.035457155000000004
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 518,
+          "function": "_solutions",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.035377858000000005,
+          "cumulative_seconds": 0.8492952970000001
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 127,
+          "function": "solutions",
+          "primitive_calls": 194572,
+          "total_calls": 194572,
+          "self_seconds": 0.031008993000000002,
+          "cumulative_seconds": 0.813770357
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "primitive_calls": 400128,
+          "total_calls": 400128,
+          "self_seconds": 0.030625663,
+          "cumulative_seconds": 0.030672164000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'copy' of 'list' objects>",
+          "primitive_calls": 204656,
+          "total_calls": 204656,
+          "self_seconds": 0.024577684000000002,
+          "cumulative_seconds": 0.024577684000000002
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 100,
+          "function": "add",
+          "primitive_calls": 10304,
+          "total_calls": 10304,
+          "self_seconds": 0.011009693000000001,
+          "cumulative_seconds": 0.020979885
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 126,
+          "function": "lookup",
+          "primitive_calls": 10132,
+          "total_calls": 10132,
+          "self_seconds": 0.009530554,
+          "cumulative_seconds": 0.033460949000000004
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 10,
+          "total_calls": 10,
+          "self_seconds": 0.006483167000000001,
+          "cumulative_seconds": 0.08185808400000001
+        }
+      ],
+      "closure_sha256": "4905990008f2665114b816aa82b10d983a7a700fdf77dbe299800b77470c392a",
+      "validation": "all-repeated-and-profiled-closures-equal",
+      "independent_reachability_check": true
+    },
+    {
+      "name": "equality_n300",
+      "facts": 1801,
+      "rules": 2,
+      "unprofiled_materialize_seconds": {
+        "samples": [
+          0.04151274998730514,
+          0.032651209010509774,
+          0.031932875004713424,
+          0.03314250000403263,
+          0.03381491600885056,
+          0.040199332986958325,
+          0.03205320899724029
+        ],
+        "median": 0.03314250000403263,
+        "minimum": 0.031932875004713424,
+        "maximum": 0.04151274998730514
+      },
+      "profile_total_seconds": 0.09236836399999997,
+      "top_cumulative_functions": [
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 812,
+          "function": "materialize",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.000133332,
+          "cumulative_seconds": 0.096684
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.002423132,
+          "cumulative_seconds": 0.0745655
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 4,
+          "total_calls": 4,
+          "self_seconds": 0.003567736,
+          "cumulative_seconds": 0.055225250000000004
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 3606,
+          "total_calls": 3606,
+          "self_seconds": 0.003042968,
+          "cumulative_seconds": 0.029504227
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 450,
+          "function": "_canonical",
+          "primitive_calls": 5793,
+          "total_calls": 5793,
+          "self_seconds": 0.0034666970000000004,
+          "cumulative_seconds": 0.024572551
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 451,
+          "function": "<genexpr>",
+          "primitive_calls": 14377,
+          "total_calls": 14377,
+          "self_seconds": 0.002013349,
+          "cumulative_seconds": 0.019750376
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 518,
+          "function": "_solutions",
+          "primitive_calls": 3606,
+          "total_calls": 3606,
+          "self_seconds": 0.0005277130000000001,
+          "cumulative_seconds": 0.019739119000000003
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 341,
+          "function": "_find",
+          "primitive_calls": 11885,
+          "total_calls": 11885,
+          "self_seconds": 0.005343309,
+          "cumulative_seconds": 0.019511535
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 354,
+          "function": "normalize",
+          "primitive_calls": 9485,
+          "total_calls": 9485,
+          "self_seconds": 0.003066727,
+          "cumulative_seconds": 0.019083382000000003
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 127,
+          "function": "solutions",
+          "primitive_calls": 3004,
+          "total_calls": 3004,
+          "self_seconds": 0.00042002600000000005,
+          "cumulative_seconds": 0.018770427000000003
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 142,
+          "function": "visit",
+          "primitive_calls": 3004,
+          "total_calls": 13804,
+          "self_seconds": 0.010308900000000001,
+          "cumulative_seconds": 0.018326984
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 63246,
+          "total_calls": 63246,
+          "self_seconds": 0.016785674,
+          "cumulative_seconds": 0.016785674
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 463,
+          "function": "_reindex",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.0009148720000000001,
+          "cumulative_seconds": 0.014214125000000001
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 31806,
+          "total_calls": 31806,
+          "self_seconds": 0.00406851,
+          "cumulative_seconds": 0.012649679
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 100,
+          "function": "add",
+          "primitive_calls": 7895,
+          "total_calls": 7895,
+          "self_seconds": 0.005992020000000001,
+          "cumulative_seconds": 0.009713605
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 453,
+          "function": "_store",
+          "primitive_calls": 4202,
+          "total_calls": 4202,
+          "self_seconds": 0.002392249,
+          "cumulative_seconds": 0.009009899
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 94,
+          "function": "__init__",
+          "primitive_calls": 4,
+          "total_calls": 4,
+          "self_seconds": 0.000523339,
+          "cumulative_seconds": 0.006968043
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 389,
+          "function": "_union",
+          "primitive_calls": 1200,
+          "total_calls": 1200,
+          "self_seconds": 0.000923332,
+          "cumulative_seconds": 0.006436071000000001
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 761,
+          "function": "<genexpr>",
+          "primitive_calls": 10200,
+          "total_calls": 10200,
+          "self_seconds": 0.0014747830000000001,
+          "cumulative_seconds": 0.005840185
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "primitive_calls": 3301,
+          "total_calls": 3301,
+          "self_seconds": 0.0009446420000000001,
+          "cumulative_seconds": 0.005385012000000001
+        }
+      ],
+      "top_self_functions": [
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 167,
+          "function": "__eq__",
+          "primitive_calls": 63246,
+          "total_calls": 63246,
+          "self_seconds": 0.016785674,
+          "cumulative_seconds": 0.016785674
+        },
+        {
+          "file": "src/dlp_reasoner/joins.py",
+          "line": 142,
+          "function": "visit",
+          "primitive_calls": 3004,
+          "total_calls": 13804,
+          "self_seconds": 0.010308900000000001,
+          "cumulative_seconds": 0.018326984
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 100,
+          "function": "add",
+          "primitive_calls": 7895,
+          "total_calls": 7895,
+          "self_seconds": 0.005992020000000001,
+          "cumulative_seconds": 0.009713605
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 341,
+          "function": "_find",
+          "primitive_calls": 11885,
+          "total_calls": 11885,
+          "self_seconds": 0.005343309,
+          "cumulative_seconds": 0.019511535
+        },
+        {
+          "file": ".venv/lib/python3.12/site-packages/rdflib/term.py",
+          "line": 164,
+          "function": "__ne__",
+          "primitive_calls": 31806,
+          "total_calls": 31806,
+          "self_seconds": 0.00406851,
+          "cumulative_seconds": 0.012649679
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 469,
+          "function": "_ingest",
+          "primitive_calls": 4,
+          "total_calls": 4,
+          "self_seconds": 0.003567736,
+          "cumulative_seconds": 0.055225250000000004
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 450,
+          "function": "_canonical",
+          "primitive_calls": 5793,
+          "total_calls": 5793,
+          "self_seconds": 0.0034666970000000004,
+          "cumulative_seconds": 0.024572551
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'add' of 'set' objects>",
+          "primitive_calls": 28067,
+          "total_calls": 28067,
+          "self_seconds": 0.0033270110000000004,
+          "cumulative_seconds": 0.005037161
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 354,
+          "function": "normalize",
+          "primitive_calls": 9485,
+          "total_calls": 9485,
+          "self_seconds": 0.003066727,
+          "cumulative_seconds": 0.019083382000000003
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 753,
+          "function": "_heads",
+          "primitive_calls": 3606,
+          "total_calls": 3606,
+          "self_seconds": 0.003042968,
+          "cumulative_seconds": 0.029504227
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__init__",
+          "primitive_calls": 11195,
+          "total_calls": 11195,
+          "self_seconds": 0.00265632,
+          "cumulative_seconds": 0.00265632
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 781,
+          "function": "_run",
+          "primitive_calls": 1,
+          "total_calls": 1,
+          "self_seconds": 0.002423132,
+          "cumulative_seconds": 0.0745655
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 453,
+          "function": "_store",
+          "primitive_calls": 4202,
+          "total_calls": 4202,
+          "self_seconds": 0.002392249,
+          "cumulative_seconds": 0.009009899
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "primitive_calls": 12344,
+          "total_calls": 12344,
+          "self_seconds": 0.00230858,
+          "cumulative_seconds": 0.004740674
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.hash>",
+          "primitive_calls": 34206,
+          "total_calls": 34322,
+          "self_seconds": 0.0022436730000000003,
+          "cumulative_seconds": 0.002258326
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 451,
+          "function": "<genexpr>",
+          "primitive_calls": 14377,
+          "total_calls": 14377,
+          "self_seconds": 0.002013349,
+          "cumulative_seconds": 0.019750376
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 408,
+          "function": "_register",
+          "primitive_calls": 5101,
+          "total_calls": 5101,
+          "self_seconds": 0.0018457670000000001,
+          "cumulative_seconds": 0.0032300700000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "primitive_calls": 22996,
+          "total_calls": 22996,
+          "self_seconds": 0.0017312590000000002,
+          "cumulative_seconds": 0.002129414
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 508,
+          "function": "_bound",
+          "primitive_calls": 6600,
+          "total_calls": 6600,
+          "self_seconds": 0.0016027790000000001,
+          "cumulative_seconds": 0.004365402
+        },
+        {
+          "file": "src/dlp_reasoner/engine.py",
+          "line": 761,
+          "function": "<genexpr>",
+          "primitive_calls": 10200,
+          "total_calls": 10200,
+          "self_seconds": 0.0014747830000000001,
+          "cumulative_seconds": 0.005840185
+        }
+      ],
+      "closure_sha256": "51f83261e8ad7cdd1d2548afdd480b22901893229e34b250601d37c9d8f8da99",
+      "validation": "all-repeated-and-profiled-closures-equal",
+      "independent_reachability_check": false
+    }
+  ],
+  "join_results": [
+    {
+      "name": "chain-frontier-128",
+      "chain_edges": 128,
+      "left_rows": 128,
+      "right_rows": 8256,
+      "output_rows": 8128,
+      "candidate_pairs": 8128,
+      "input_sha256": "2e37e6c93b8348d475b9fa0a864c01b65c6d8c50665c791abfea06edc3df2846",
+      "output_sha256": "87d08a24d62f7015b90512e160f3e01871ae55eb769a1f1dda93bf0fef9ab288",
+      "validation": "exact-independent-chain-answer-set",
+      "execution_orders": [
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ]
+      ],
+      "encode_seconds": {
+        "samples": [
+          0.010282125003868714,
+          0.0010654159996192902,
+          0.001081415990483947,
+          0.0011742909991880879,
+          0.0011692919943016022,
+          0.0048354169994127005,
+          0.001175290992250666
+        ],
+        "median": 0.0011742909991880879,
+        "minimum": 0.0010654159996192902,
+        "maximum": 0.010282125003868714
+      },
+      "native_transfer_seconds": {
+        "samples": [
+          0.0005663339979946613,
+          0.000542042005690746,
+          0.0005625839985441417,
+          0.0005699159955838695,
+          0.0005687920056516305,
+          0.0005947499885223806,
+          0.0005729999975301325
+        ],
+        "median": 0.0005687920056516305,
+        "minimum": 0.000542042005690746,
+        "maximum": 0.0005947499885223806
+      },
+      "python_kernel_seconds": {
+        "samples": [
+          0.002210750011727214,
+          0.0021212499996181577,
+          0.0021066659974167123,
+          0.002151583001250401,
+          0.002136875002179295,
+          0.00213741599873174,
+          0.002158082992536947
+        ],
+        "median": 0.00213741599873174,
+        "minimum": 0.0021066659974167123,
+        "maximum": 0.002210750011727214
+      },
+      "native_kernel_seconds": {
+        "samples": [
+          0.0005443340050987899,
+          0.0005399579968070611,
+          0.0005329160048859194,
+          0.000524500006577,
+          0.0005315000016707927,
+          0.0005699579924112186,
+          0.000530083998455666
+        ],
+        "median": 0.0005329160048859194,
+        "minimum": 0.000524500006577,
+        "maximum": 0.0005699579924112186
+      },
+      "native_copy_free_seconds": {
+        "samples": [
+          8.962501306086779e-05,
+          9.079198935069144e-05,
+          8.329199044965208e-05,
+          8.233300468418747e-05,
+          8.354199235327542e-05,
+          0.00010795799607876688,
+          8.354098827112466e-05
+        ],
+        "median": 8.354199235327542e-05,
+        "minimum": 8.233300468418747e-05,
+        "maximum": 0.00010795799607876688
+      },
+      "python_decode_seconds": {
+        "samples": [
+          0.0006672919989796355,
+          0.0007475419988622889,
+          0.0007190420001279563,
+          0.0005627079954138026,
+          0.0006994580035097897,
+          0.0005712919955840334,
+          0.0006858330016257241
+        ],
+        "median": 0.0006858330016257241,
+        "minimum": 0.0005627079954138026,
+        "maximum": 0.0007475419988622889
+      },
+      "native_decode_seconds": {
+        "samples": [
+          0.0007521660008933395,
+          0.0005665409989887848,
+          0.0005645829951390624,
+          0.0007375840068561956,
+          0.0005590840009972453,
+          0.0007167500007199124,
+          0.00055308299488388
+        ],
+        "median": 0.0005665409989887848,
+        "minimum": 0.00055308299488388,
+        "maximum": 0.0007521660008933395
+      },
+      "python_rdf_total_seconds": {
+        "samples": [
+          0.013160167014575563,
+          0.003934207998099737,
+          0.003907123988028616,
+          0.0038885819958522916,
+          0.004005624999990687,
+          0.007544124993728474,
+          0.004019206986413337
+        ],
+        "median": 0.004005624999990687,
+        "minimum": 0.0038885819958522916,
+        "maximum": 0.013160167014575563
+      },
+      "native_rdf_total_seconds": {
+        "samples": [
+          0.012234584020916373,
+          0.0028047489904565737,
+          0.0028247909795027226,
+          0.0030886240128893405,
+          0.002912209994974546,
+          0.006824832977144979,
+          0.0029149989713914692
+        ],
+        "median": 0.0029149989713914692,
+        "minimum": 0.0028047489904565737,
+        "maximum": 0.012234584020916373
+      },
+      "native_integer_total_seconds": {
+        "samples": [
+          0.001200293016154319,
+          0.0011727919918484986,
+          0.0011787919938797131,
+          0.001176749006845057,
+          0.0011838339996756986,
+          0.001272665977012366,
+          0.0011866249842569232
+        ],
+        "median": 0.0011838339996756986,
+        "minimum": 0.0011727919918484986,
+        "maximum": 0.001272665977012366
+      },
+      "kernel_speedup_python_over_cpp": 4.010793406719495,
+      "rdf_snapshot_speedup_python_over_cpp": 1.374142851953944
+    },
+    {
+      "name": "chain-frontier-768",
+      "chain_edges": 768,
+      "left_rows": 768,
+      "right_rows": 295296,
+      "output_rows": 294528,
+      "candidate_pairs": 294528,
+      "input_sha256": "5ec2f90cd32b69361a9e25eda55c20727a3cfed8b8c8a5e10a0bae3262ec0176",
+      "output_sha256": "1291a1846f95c3668a309fe3e2d9126ce0a0c450f6240195af729c4e50b87f4c",
+      "validation": "exact-independent-chain-answer-set",
+      "execution_orders": [
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ]
+      ],
+      "encode_seconds": {
+        "samples": [
+          0.02991279200068675,
+          0.029140083002857864,
+          0.029558457987150177,
+          0.029048083000816405,
+          0.028956042006029747,
+          0.028614333001314662,
+          0.028585708991158754
+        ],
+        "median": 0.029048083000816405,
+        "minimum": 0.028585708991158754,
+        "maximum": 0.02991279200068675
+      },
+      "native_transfer_seconds": {
+        "samples": [
+          0.019247874995926395,
+          0.019224625008064322,
+          0.019253207996371202,
+          0.019769291000557132,
+          0.01914395899802912,
+          0.019909667011233978,
+          0.01882362501055468
+        ],
+        "median": 0.019247874995926395,
+        "minimum": 0.01882362501055468,
+        "maximum": 0.019909667011233978
+      },
+      "python_kernel_seconds": {
+        "samples": [
+          0.08373745800054166,
+          0.08286783400399145,
+          0.08239391600363888,
+          0.08168604200182017,
+          0.08016258299176116,
+          0.0848010420013452,
+          0.08217962499475107
+        ],
+        "median": 0.08239391600363888,
+        "minimum": 0.08016258299176116,
+        "maximum": 0.0848010420013452
+      },
+      "native_kernel_seconds": {
+        "samples": [
+          0.01918937498703599,
+          0.01879104100225959,
+          0.01883870898745954,
+          0.0187278750090627,
+          0.018846667007892393,
+          0.018755790995783173,
+          0.01866520900512114
+        ],
+        "median": 0.01879104100225959,
+        "minimum": 0.01866520900512114,
+        "maximum": 0.01918937498703599
+      },
+      "native_copy_free_seconds": {
+        "samples": [
+          0.003606500002206303,
+          0.003542082995409146,
+          0.0034464589989511296,
+          0.0034383750025881454,
+          0.0031639579974580556,
+          0.0032374580041505396,
+          0.003110290999757126
+        ],
+        "median": 0.0034383750025881454,
+        "minimum": 0.003110290999757126,
+        "maximum": 0.003606500002206303
+      },
+      "python_decode_seconds": {
+        "samples": [
+          0.05294329200114589,
+          0.05995833300403319,
+          0.06130641599884257,
+          0.05968541699985508,
+          0.05836566699144896,
+          0.06081833298958372,
+          0.057998207994387485
+        ],
+        "median": 0.05968541699985508,
+        "minimum": 0.05294329200114589,
+        "maximum": 0.06130641599884257
+      },
+      "native_decode_seconds": {
+        "samples": [
+          0.09176016700803302,
+          0.060134707993711345,
+          0.060963750001974404,
+          0.06253408400516491,
+          0.058768000002601184,
+          0.06125308299669996,
+          0.05626512500748504
+        ],
+        "median": 0.060963750001974404,
+        "minimum": 0.05626512500748504,
+        "maximum": 0.09176016700803302
+      },
+      "python_rdf_total_seconds": {
+        "samples": [
+          0.1665935420023743,
+          0.1719662500108825,
+          0.17325878998963162,
+          0.17041954200249165,
+          0.16748429198923986,
+          0.17423370799224358,
+          0.1687635419802973
+        ],
+        "median": 0.17041954200249165,
+        "minimum": 0.1665935420023743,
+        "maximum": 0.17423370799224358
+      },
+      "native_rdf_total_seconds": {
+        "samples": [
+          0.16371670899388846,
+          0.13083254000230227,
+          0.13206058397190645,
+          0.1335177080181893,
+          0.1288786260120105,
+          0.1317703320091823,
+          0.12544995901407674
+        ],
+        "median": 0.1317703320091823,
+        "minimum": 0.12544995901407674,
+        "maximum": 0.16371670899388846
+      },
+      "native_integer_total_seconds": {
+        "samples": [
+          0.04204374998516869,
+          0.04155774900573306,
+          0.04153837598278187,
+          0.04193554101220798,
+          0.04115458400337957,
+          0.04190291601116769,
+          0.040599125015432946
+        ],
+        "median": 0.04155774900573306,
+        "minimum": 0.040599125015432946,
+        "maximum": 0.04204374998516869
+      },
+      "kernel_speedup_python_over_cpp": 4.38474462344748,
+      "rdf_snapshot_speedup_python_over_cpp": 1.293307373549124
+    },
+    {
+      "name": "dense-chain-128",
+      "chain_edges": 128,
+      "left_rows": 8256,
+      "right_rows": 8256,
+      "output_rows": 8128,
+      "candidate_pairs": 349504,
+      "input_sha256": "b7520e50712005f1d9b780a780f3b19b516d15602722c8e54fcb98759ea05e99",
+      "output_sha256": "87d08a24d62f7015b90512e160f3e01871ae55eb769a1f1dda93bf0fef9ab288",
+      "validation": "exact-independent-chain-answer-set",
+      "execution_orders": [
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ],
+        [
+          "native",
+          "python"
+        ],
+        [
+          "python",
+          "native"
+        ]
+      ],
+      "encode_seconds": {
+        "samples": [
+          0.0016580840019742027,
+          0.0017163329903269187,
+          0.0017254999984288588,
+          0.001727625000057742,
+          0.0017030830058502033,
+          0.0016979579959297553,
+          0.0016820409946376458
+        ],
+        "median": 0.0017030830058502033,
+        "minimum": 0.0016580840019742027,
+        "maximum": 0.001727625000057742
+      },
+      "native_transfer_seconds": {
+        "samples": [
+          0.001095458006602712,
+          0.0011029169982066378,
+          0.001087334007024765,
+          0.0010853330022655427,
+          0.0010705419990699738,
+          0.001051500003086403,
+          0.0010894170118262991
+        ],
+        "median": 0.001087334007024765,
+        "minimum": 0.001051500003086403,
+        "maximum": 0.0011029169982066378
+      },
+      "python_kernel_seconds": {
+        "samples": [
+          0.033436917001381516,
+          0.034481499998946674,
+          0.03401124999800231,
+          0.034134291010559537,
+          0.03322145898710005,
+          0.03408549999585375,
+          0.03317441600665916
+        ],
+        "median": 0.03401124999800231,
+        "minimum": 0.03317441600665916,
+        "maximum": 0.034481499998946674
+      },
+      "native_kernel_seconds": {
+        "samples": [
+          0.0014529579930240288,
+          0.0014114170044194907,
+          0.001424792004399933,
+          0.0014074589998926967,
+          0.0014130000054137781,
+          0.0013889589899918064,
+          0.0014372500008903444
+        ],
+        "median": 0.0014130000054137781,
+        "minimum": 0.0013889589899918064,
+        "maximum": 0.0014529579930240288
+      },
+      "native_copy_free_seconds": {
+        "samples": [
+          9.145800140686333e-05,
+          9.291700553148985e-05,
+          8.600000001024455e-05,
+          0.00010083300003316253,
+          9.058299474418163e-05,
+          8.854099723976105e-05,
+          8.350001007784158e-05
+        ],
+        "median": 9.058299474418163e-05,
+        "minimum": 8.350001007784158e-05,
+        "maximum": 0.00010083300003316253
+      },
+      "python_decode_seconds": {
+        "samples": [
+          0.0006968329980736598,
+          0.0007981660019140691,
+          0.0006457499985117465,
+          0.000790000005508773,
+          0.0006706670101266354,
+          0.0007925829995656386,
+          0.00425487500615418
+        ],
+        "median": 0.000790000005508773,
+        "minimum": 0.0006457499985117465,
+        "maximum": 0.00425487500615418
+      },
+      "native_decode_seconds": {
+        "samples": [
+          0.0007355419947998598,
+          0.000645708991214633,
+          0.004388249988551252,
+          0.0006592499994440004,
+          0.000780916991061531,
+          0.0006442500016419217,
+          0.0007850419933674857
+        ],
+        "median": 0.0007355419947998598,
+        "minimum": 0.0006442500016419217,
+        "maximum": 0.004388249988551252
+      },
+      "python_rdf_total_seconds": {
+        "samples": [
+          0.03579183400142938,
+          0.03699599899118766,
+          0.03638249999494292,
+          0.03665191601612605,
+          0.03559520900307689,
+          0.036576040991349146,
+          0.03911133200745098
+        ],
+        "median": 0.036576040991349146,
+        "minimum": 0.03559520900307689,
+        "maximum": 0.03911133200745098
+      },
+      "native_rdf_total_seconds": {
+        "samples": [
+          0.005033499997807667,
+          0.00496929298969917,
+          0.008711875998415053,
+          0.0049805000016931444,
+          0.005058124996139668,
+          0.0048712079878896475,
+          0.005077250010799617
+        ],
+        "median": 0.005033499997807667,
+        "minimum": 0.0048712079878896475,
+        "maximum": 0.008711875998415053
+      },
+      "native_integer_total_seconds": {
+        "samples": [
+          0.002639874001033604,
+          0.0026072510081576183,
+          0.0025981260114349425,
+          0.002593625002191402,
+          0.0025741249992279336,
+          0.0025289999903179705,
+          0.002610167022794485
+        ],
+        "median": 0.0025981260114349425,
+        "minimum": 0.0025289999903179705,
+        "maximum": 0.002639874001033604
+      },
+      "kernel_speedup_python_over_cpp": 24.070240529151715,
+      "rdf_snapshot_speedup_python_over_cpp": 7.266522500701258
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # DLP reasoner
 
-A runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It compiles an OWL ontology to Horn rules and materializes their consequences with indexed semi-naive evaluation. Python and RDFLib replace the historical Java/KAON/XSB components.
+A runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. Python and RDFLib replace the historical Java/KAON/XSB components.
 
 The package provides position-sensitive L0–L3 profiles, equality with congruence, consistency constraints, RDF queries, and materialization maintenance. It is a DLP reasoner, not a complete OWL DL or OWL Full reasoner. Unsupported logical constructs fail explicitly.
 
@@ -42,19 +42,50 @@ Requires Python 3.11 or later. With [uv](https://docs.astral.sh/uv/):
 
 ```sh
 uv sync --extra dev --locked
-uv run dlp validate examples/family.ttl
-uv run dlp instances examples/family.ttl 'https://example.org/family#Parent'
-uv run dlp values examples/family.ttl 'https://example.org/family#jsbach' 'https://example.org/family#ancestorOf'
-uv run dlp subsumes examples/family.ttl 'https://example.org/family#Person' 'https://example.org/family#Composer'
-uv run dlp is-transitive examples/family.ttl 'https://example.org/family#ancestorOf'
-uv run dlp rules examples/family.ttl
-uv run dlp materialize examples/family.ttl -o /tmp/family-closure.ttl
-uv run dlp validate examples/existential.ttl --profile L3
+uv run dlp validate examples/family.dlp
+uv run dlp instances examples/family.dlp 'https://example.org/family#Parent'
+uv run dlp values examples/family.dlp 'https://example.org/family#jsbach' 'https://example.org/family#ancestorOf'
+uv run dlp subsumes examples/family.dlp 'https://example.org/family#Person' 'https://example.org/family#Composer'
+uv run dlp is-transitive examples/family.dlp 'https://example.org/family#ancestorOf'
+uv run dlp rules examples/family.dlp
+uv run dlp materialize examples/family.dlp -o /tmp/family-closure.ttl
+uv run dlp validate examples/existential.dlp --profile L3
 ```
 
-Alternatively, create a virtual environment and run `python -m pip install -e '.[dev]'`. The CLI is also available as `python -m dlp_reasoner`. Turtle, RDF/XML (`.rdf`/`.owl`), N-Triples and N3 graph syntax are parsed with RDFLib; N3 implication rules are not an additional rule language. Files are local. Imports must be explicitly resolved into the input graph and their `owl:imports` triples removed; no imports are fetched automatically.
+Alternatively, create a virtual environment and run `python -m pip install -e '.[dev]'`. The CLI is also available as `python -m dlp_reasoner`. `.dlp` selects the thesis's Appendix A syntax; use `--format dlp` for another extension. Turtle, RDF/XML (`.rdf`/`.owl`), N-Triples and N3 graph syntax remain available through RDFLib; N3 implication rules are not an additional rule language. Files are local. Imports must be explicitly resolved into the input graph and their `owl:imports` triples removed; no imports are fetched automatically.
 
-`validate` prints JSON containing consistency, completeness, elapsed times, rule/fact counts, equality merges, evaluator work and any limit reason. Exit codes are 0 for success, 1 for an invalid input/operation, 2 for inconsistency and 3 for an incomplete materialization. `examples/inconsistent.ttl` intentionally returns 2.
+`validate` prints JSON containing consistency, completeness, elapsed times, rule/fact counts, equality merges, evaluator work and any limit reason. Exit codes are 0 for success, 1 for an invalid input/operation, 2 for inconsistency and 3 for an incomplete materialization. `examples/inconsistent.dlp` intentionally returns 2.
+
+For example, the thesis syntax expresses a subclass and an individual as:
+
+```text
+Namespace(f = <https://example.org/family#>)
+Ontology(
+  Class(f:Composer partial f:Musician)
+  Class(f:Musician partial f:Person)
+  Individual(f:johann type(f:Composer))
+)
+```
+
+The [DLP syntax guide](docs/DLP_SYNTAX.md) covers restrictions, properties,
+annotations, error locations, and the differences between the printed Appendix A
+grammar and Chapter 5's L3 definitions. Parsing feeds the same OWL compiler and
+does not change the selected profile's semantics.
+
+The optional [C++ relation/index backend](docs/NATIVE_BACKEND.md) keeps encoded
+relations and column indexes in native memory across rule firings. Select it
+explicitly; Python remains the default:
+
+```sh
+uv run python -m dlp_reasoner.native --build
+uv run dlp validate examples/bach.dlp --profile L3 --backend native
+```
+
+The first native use builds a cached library with a local C++17 compiler. No
+additional Python dependencies are needed. Both backends support the same input,
+query, equality, constraint, and update APIs; this stage keeps semantic
+orchestration in Python. The [matched backend measurements](docs/NATIVE_BACKEND_PERFORMANCE.md)
+report actual reasoning and update timings, including workloads that regress.
 
 ## Python API
 
@@ -63,7 +94,7 @@ from rdflib import Namespace, RDF, RDFS
 from dlp_reasoner import Reasoner
 
 F = Namespace("https://example.org/family#")
-r = Reasoner.from_file("examples/family.ttl", profile="L2")
+r = Reasoner.from_file("examples/family.dlp", profile="L2")
 assert r.entails(F.jsbach, RDF.type, F.Composer)
 assert r.subsumes(F.Person, F.Composer)  # Composer is a subclass of Person
 print(r.instances(F.Parent))
@@ -79,6 +110,22 @@ r.to_graph().serialize(destination="/tmp/family-closure.ttl", format="turtle")
 ```
 
 `Reasoner(graph, ...)` accepts an RDFLib graph. Construction eagerly compiles and materializes it. `instances`, `types`, `property_values`, `property_pairs`, `entails`, `subsumes`, `equivalent_classes`, `is_satisfiable`, `update` and `to_graph` are available. Anonymous expression queries use the expression's blank node in the input graph, and must be legal on the left of a DLP inclusion. Subsumption first checks a lazy index of positive schema consequences, then uses an isolated fresh-individual probe when that index supplies no proof. Satisfiability uses fresh probes. Accidental overlap of observed instances does not imply subsumption. Subsumption requires an assertable subclass expression and a queryable superclass expression, as in thesis §5.4. Class equivalence establishes its two subsumption directions independently, preventing equality or nominals from contaminating the other direction.
+
+`Reasoner.from_dlp(text, profile="L2")` accepts an in-memory DLP document.
+`parse_dlp(text)` returns its RDFLib graph without reasoning; use
+`Reasoner(graph, ...)` or `compile_graph(graph, ...)` to validate profile legality.
+Pass `backend="native"` to `Reasoner`, `Reasoner.from_file`,
+`Reasoner.from_dlp`, or the low-level `Engine` to select persistent native indexes.
+
+For a rarely changing ontology, keep one `Reasoner` alive and reuse it for queries.
+Completed boolean and set-valued answers use a bounded cache (256 entries by
+default); `query_cache_size=4096` increases the entry capacity, and `0` disables
+answer caching. Instance/property lookups use relation indexes, and type lookups
+reuse a lazy reverse index. Updates invalidate answers; unchanged compiled rules
+retain their schema proofs. Use `r.query_cache_info` for cache counters and
+`r.clear_query_cache()` to release answers and query views. See the
+[query caching guide](docs/QUERY_CACHING.md) and
+[first-use/warm measurements](docs/QUERY_PERFORMANCE.md).
 
 Property queries are `property_subsumes(superproperty, subproperty)`, `equivalent_properties(left, right)`, `inverse_properties(left, right)`, `is_symmetric(property)`, `is_transitive(property)`, `has_domain(property, class)` and `has_range(property, class)`. They use sound schema proofs with isolated semantic probes as a fallback; a property's observed finite edges alone do not establish a universal property characteristic. Domain/range queries include inferred superclasses, and exact inverses do not inherit to strict subproperties. The corresponding CLI commands replace underscores with hyphens; `equivalent-classes` exposes class equivalence.
 
@@ -118,7 +165,7 @@ The engine distinguishes asserted facts from its closure. Insertions propagate d
 
 `stats["update_method"]` distinguishes `dred`, `dred-rules`, `incremental-rules`, and rematerialization paths. An interrupted overdeletion rebuilds from the current program before exposing any partial results. The [corrected maintenance algorithm and correctness argument](docs/CORRECTED_MAINTENANCE.md) state the assumptions and explain the replacement for the thesis's faulty rule-deletion procedure.
 
-Execution uses exact hash membership for fully bound atoms and cached set-intersection plans for unary conjunctions over one variable. Eligible semi-naive delta variants are coalesced so each binding fires once per round. General joins and the naive reference evaluator remain available. The lazy schema cache stores positive proofs only and is invalidated by ontology updates. See the [research assessment and correctness arguments](docs/RESEARCH_IMPROVEMENTS.md) for the selected adaptations from 2004–2026 research.
+Execution uses exact hash membership for fully bound atoms and cached set-intersection plans for unary conjunctions over one variable. Eligible semi-naive delta variants are coalesced so each binding fires once per round. General joins and the naive reference evaluator remain available. The lazy schema cache stores positive proofs only and is retained across updates when the compiled rules are unchanged. Query answer caches are invalidated separately on ontology changes. See the [research assessment and correctness arguments](docs/RESEARCH_IMPROVEMENTS.md) for the selected adaptations from 2004–2026 research.
 
 Run validation and benchmarks:
 
@@ -131,8 +178,10 @@ uv run python -m benchmarks.run --suite bach --repeats 5 --output benchmarks/bac
 ```
 
 The [Bach benchmark](docs/BACH_BENCHMARK.md) adds the complete Table 2.5 knowledge base in
-[Turtle](examples/bach.ttl) and [RDF/XML](examples/bach.owl), requiring `--profile L3`, plus
-the separate [L0 family tree](examples/bach-family.ttl) from chapter 6. Its
+[DLP](examples/bach.dlp), [Turtle](examples/bach.ttl) and [RDF/XML](examples/bach.owl),
+requiring `--profile L3`, plus the separate [L0 family tree](examples/bach-family.dlp)
+from chapter 6. Historical benchmark runners retain their RDF input files so the
+saved parsing measurements stay comparable. The
 [32 query definitions](examples/bach-queries.json) check exact thesis-based answers, including
 anonymous children and open-world distinctions. Three maintenance scenarios check the thesis's
 fact transaction, rule deletion and symmetry insertion against independent reachability and
@@ -182,10 +231,18 @@ separately from the practical prevalence of fragment-only ontologies.
 
 ## Implementation map
 
+The [native performance experiment](docs/NATIVE_PERFORMANCE.md) profiles the
+current Python engine and compares an isolated binary join in Python and C++.
+It reports kernel and conversion-inclusive timings separately, and assesses
+C++, Go, and assembly without treating a kernel result as a whole-engine speedup.
+
+- `src/dlp_reasoner/parser.py`: thesis Appendix A concrete syntax to an OWL graph, with source locations.
 - `src/dlp_reasoner/compiler.py`: OWL graph validation, expression normalization and Horn compilation.
 - `src/dlp_reasoner/engine.py`: joins/indexes, delta evaluation, equality, constraints, bounds and updates.
+- `src/dlp_reasoner/native.py`, `native_store.cpp`, `native_store.h`: optional persistent C++ indexes, streamed joins, and the Python adapter/build cache.
 - `src/dlp_reasoner/joins.py`: positional positive joins and optional bounded ordering estimates.
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
+- `src/dlp_reasoner/query_cache.py`: bounded query-answer caching and source-graph mutation tracking.
 - `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
 - `src/dlp_reasoner/support.py`: experimental current-proof certificates for DRed.
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.

@@ -1,0 +1,6 @@
+Namespace(ex = <https://example.org/conflict#>)
+
+Ontology(
+    DisjointClasses(ex:Person ex:Composition)
+    Individual(ex:impossible type(ex:Person) type(ex:Composition))
+)

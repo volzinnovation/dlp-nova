@@ -5,6 +5,8 @@ import hashlib
 import itertools
 import time
 import uuid
+from collections import defaultdict
+from functools import wraps
 from pathlib import Path
 from xml.sax import SAXParseException
 
@@ -13,16 +15,18 @@ from rdflib.term import Identifier
 from rdflib.exceptions import ParserError
 
 from .compiler import compile_graph
-from .engine import Engine
+from .engine import Engine, _MISSING
 from .model import (
     EQ, NEQ, TOP, Atom, IncompleteReasoningError, InconsistentOntologyError,
     ProfileError, Program, Skolem,
 )
+from .parser import parse_dlp
+from .query_cache import AnswerCache, CACHE_MISS, RevisionMemory
 from .schema import SchemaIndex
 
 
 def copy_graph(graph: Graph) -> Graph:
-    result = Graph()
+    result = Graph(store=RevisionMemory())
     for prefix, namespace in graph.namespaces():
         result.bind(prefix, namespace)
     result += graph
@@ -30,13 +34,18 @@ def copy_graph(graph: Graph) -> Graph:
 
 
 def read_graph(path: str | Path, format: str | None = None) -> Graph:
-    """Read a local RDF document. Imports are not implicitly fetched."""
+    """Read a local RDF or thesis DLP document without fetching imports."""
     path = Path(path).expanduser().resolve(strict=True)
     if format is None:
         format = {".ttl": "turtle", ".nt": "nt", ".rdf": "xml", ".owl": "xml",
-                  ".xml": "xml", ".n3": "n3"}.get(path.suffix.lower())
+                  ".xml": "xml", ".n3": "n3", ".dlp": "dlp"}.get(path.suffix.lower())
+    if format == "dlp":
+        try:
+            return parse_dlp(path.read_text(encoding="utf-8"), source=str(path))
+        except UnicodeError as exc:
+            raise ProfileError(f"Invalid UTF-8 DLP document {path.name}: {exc}") from exc
     if format not in {"turtle", "ttl", "nt", "xml", "n3"}:
-        raise ProfileError("Choose RDF format turtle, nt, xml (RDF/XML), or n3.")
+        raise ProfileError("Choose format dlp, turtle, nt, xml (RDF/XML), or n3.")
     try:
         return Graph().parse(path, format=format)
     except (SyntaxError, ParserError, SAXParseException) as exc:
@@ -49,6 +58,32 @@ def rdf_term(term):
     return term
 
 
+def _cached_query(method):
+    """Memoize completed scalar/set answers without retaining trial reasoners."""
+    @wraps(method)
+    def query(self, *args, **kwargs):
+        self._guard(exhaustive=method.__name__ != "entails")
+        self._sync_query_cache()
+        if not self._query_cache_size:
+            return method(self, *args, **kwargs)
+        key = (method.__name__, args, tuple(sorted(kwargs.items())))
+        try:
+            hash(key)
+        except TypeError:
+            # Preserve the query's existing argument validation/error behavior.
+            return method(self, *args, **kwargs)
+        answer = self._answer_cache.get(key)
+        if answer is not CACHE_MISS:
+            return answer
+        epoch = self._query_cache_epoch
+        answer = method(self, *args, **kwargs)
+        if (self.complete and not self.engine.violations
+                and epoch == self._query_cache_token()):
+            self._answer_cache.put(key, answer)
+        return answer
+    return query
+
+
 class Reasoner:
     """Materialize the thesis DLP fragment, with explicit completeness status.
 
@@ -56,7 +91,13 @@ class Reasoner:
     Exhaustive queries require a completed, consistent materialization.
     """
 
-    def __init__(self, graph: Graph | None = None, profile: str = "L2", **engine_options):
+    def __init__(self, graph: Graph | None = None, profile: str = "L2", *,
+                 query_cache_size: int = 256, **engine_options):
+        if isinstance(query_cache_size, bool) or not isinstance(query_cache_size, int):
+            raise ValueError("query_cache_size must be a nonnegative integer")
+        if query_cache_size < 0:
+            raise ValueError("query_cache_size must be a nonnegative integer")
+        self._query_cache_size = query_cache_size
         self.graph = copy_graph(graph if graph is not None else Graph())
         self.profile = profile.upper()
         self.engine_options = engine_options
@@ -69,10 +110,64 @@ class Reasoner:
         self._witness_terms = None
         self._query_terms = set()
         self._schema_cache = None
+        self._init_query_cache()
+
+    def _init_query_cache(self):
+        self._answer_cache = AnswerCache(max_entries=self._query_cache_size)
+        self._types_index = None
+        self._graph_nodes = None
+        self._query_cache_epoch = self._query_cache_token()
+
+    def _query_cache_token(self):
+        graph = self.graph
+        # Owned graph copies track store mutations in O(1), including parse,
+        # set, addN and edits through graph.store. Replacing graph with an
+        # arbitrary external store retains correctness using an exact snapshot.
+        revision = (graph.store.revision if isinstance(graph.store, RevisionMemory)
+                    else frozenset(graph))
+        return (id(graph), graph, revision, id(self.engine), self.engine,
+                self.engine._revision, self.engine.complete, self.profile,
+                tuple(sorted(self.engine_options.items())))
+
+    def _sync_query_cache(self):
+        epoch = self._query_cache_token()
+        if epoch != self._query_cache_epoch:
+            self._answer_cache.clear()
+            self._types_index = self._graph_nodes = self._witness_terms = None
+            self._schema_cache = None
+            self._query_cache_epoch = epoch
+
+    def clear_query_cache(self):
+        """Release cached answers and query views; preserve reasoning/proofs."""
+        self._sync_query_cache()
+        self._answer_cache.clear()
+        self._types_index = self._graph_nodes = self._witness_terms = None
+        self._query_cache_epoch = self._query_cache_token()
+
+    @property
+    def query_cache_info(self):
+        """Query-cache counters and capacity, separate from reasoning timings."""
+        self._sync_query_cache()
+        return self._answer_cache.info()
+
+    def _new_query_reasoner(self, graph):
+        return Reasoner(graph, profile=self.profile, query_cache_size=self._query_cache_size,
+                        **self.engine_options)
+
+    def _query_rows(self, predicate, values):
+        index = self.engine._index
+        if index.arity(predicate) != len(values):
+            return ()
+        return index.lookup(predicate, values)
 
     @classmethod
     def from_file(cls, path, *, format=None, profile="L2", **options):
         return cls(read_graph(path, format), profile=profile, **options)
+
+    @classmethod
+    def from_dlp(cls, text: str, *, profile="L2", **options):
+        """Parse thesis concrete syntax and materialize it under the selected profile."""
+        return cls(parse_dlp(text), profile=profile, **options)
 
     @property
     def complete(self):
@@ -109,8 +204,13 @@ class Reasoner:
         aliases = self.engine.equivalents(term)
         return {rdf_term(t) for t in aliases
                 if isinstance(t, (URIRef, Literal)) or
-                (isinstance(t, BNode) and t in self.graph.all_nodes()) or
+                (isinstance(t, BNode) and self._is_graph_node(t)) or
                 (include_witnesses and isinstance(t, (Skolem, BNode)))}
+
+    def _is_graph_node(self, term):
+        if self._graph_nodes is None:
+            self._graph_nodes = self.graph.all_nodes()
+        return term in self._graph_nodes
 
     def _internal_term(self, term):
         """Map an exported witness identifier back to its existential term."""
@@ -147,6 +247,8 @@ class Reasoner:
         query._witness_terms = None
         query._query_terms = self._query_terms | missing
         query._schema_cache = None
+        query._query_cache_size = self._query_cache_size
+        query._init_query_cache()
         return query
 
     def _predicate(self, concept):
@@ -157,8 +259,9 @@ class Reasoner:
         graph = copy_graph(self.graph)
         marker = URIRef("urn:dlp:query:" + uuid.uuid4().hex)
         graph.add((concept, RDFS.subClassOf, marker))
-        return Reasoner(graph, profile=self.profile, **self.engine_options), marker
+        return self._new_query_reasoner(graph), marker
 
+    @_cached_query
     def instances(self, concept, *, include_witnesses=False):
         self._guard()
         if isinstance(concept, BNode):
@@ -166,11 +269,11 @@ class Reasoner:
             return query.instances(marker, include_witnesses=include_witnesses)
         predicate = self._predicate(concept)
         result = set()
-        for fact in self.engine.facts:
-            if fact.predicate == predicate and len(fact.args) == 1:
-                result.update(self._aliases(fact.args[0], include_witnesses))
+        for (term,) in self._query_rows(predicate, (_MISSING,)):
+            result.update(self._aliases(term, include_witnesses))
         return {term for term in result if not isinstance(term, Literal)}
 
+    @_cached_query
     def types(self, individual):
         self._guard()
         individual = self._internal_term(individual)
@@ -178,11 +281,16 @@ class Reasoner:
         if query is not self:
             return query.types(individual)
         individual = self.engine.normalize(individual)
-        return {OWL.Thing if f.predicate == TOP else f.predicate
-                for f in self.engine.facts if len(f.args) == 1 and
-                f.args[0] == individual and
-                (f.predicate == TOP or isinstance(f.predicate, URIRef))}
+        if self._types_index is None:
+            self._types_index = defaultdict(set)
+            for fact in self.engine.facts:
+                if (len(fact.args) == 1
+                        and (fact.predicate == TOP or isinstance(fact.predicate, URIRef))):
+                    self._types_index[fact.args[0]].add(
+                        OWL.Thing if fact.predicate == TOP else fact.predicate)
+        return set(self._types_index.get(individual, ()))
 
+    @_cached_query
     def property_values(self, subject, predicate, *, include_witnesses=False):
         self._guard()
         subject = self._internal_term(subject)
@@ -191,20 +299,19 @@ class Reasoner:
             return query.property_values(subject, predicate, include_witnesses=include_witnesses)
         subject = self.engine.normalize(subject)
         result = set()
-        for fact in self.engine.facts:
-            if fact.predicate == predicate and len(fact.args) == 2 and fact.args[0] == subject:
-                result.update(self._aliases(fact.args[1], include_witnesses))
+        for _, target in self._query_rows(predicate, (subject, _MISSING)):
+            result.update(self._aliases(target, include_witnesses))
         return result
 
+    @_cached_query
     def property_pairs(self, predicate, *, include_witnesses=False):
         self._guard()
         result = set()
-        for fact in self.engine.facts:
-            if fact.predicate == predicate and len(fact.args) == 2:
-                result.update(itertools.product(*(self._aliases(t, include_witnesses)
-                                                  for t in fact.args)))
+        for row in self._query_rows(predicate, (_MISSING, _MISSING)):
+            result.update(itertools.product(*(self._aliases(t, include_witnesses) for t in row)))
         return result
 
+    @_cached_query
     def entails(self, subject, predicate, obj):
         self._guard(exhaustive=False)
         subject = self._internal_term(subject)
@@ -240,6 +347,7 @@ class Reasoner:
             self._schema_cache = SchemaIndex(self.program.rules)
         return self._schema_cache
 
+    @_cached_query
     def subsumes(self, superclass, subclass):
         """Prove a schema consequence or use an isolated fresh-instance probe.
 
@@ -260,11 +368,12 @@ class Reasoner:
         graph.add((probe, RDF.type, subclass))
         marker = URIRef("urn:dlp:query:" + uuid.uuid4().hex)
         graph.add((superclass, RDFS.subClassOf, marker))
-        query = Reasoner(graph, profile=self.profile, **self.engine_options)
+        query = self._new_query_reasoner(graph)
         if query.consistency == "inconsistent":
             return True
         return query.entails(probe, RDF.type, marker)
 
+    @_cached_query
     def equivalent_classes(self, left, right):
         """Test class equivalence with two independent subsumption probes.
 
@@ -287,11 +396,12 @@ class Reasoner:
         graph = copy_graph(self.graph)
         for assertion in assertions:
             graph.add(assertion)
-        query = Reasoner(graph, profile=self.profile, **self.engine_options)
+        query = self._new_query_reasoner(graph)
         if query.consistency == "inconsistent":
             return True
         return query.entails(*conclusion)
 
+    @_cached_query
     def property_subsumes(self, superproperty, subproperty):
         """Return whether every subproperty edge is a superproperty edge."""
         self._guard()
@@ -300,10 +410,12 @@ class Reasoner:
         a, b = BNode(), BNode()
         return self._property_probe(((a, subproperty, b),), (a, superproperty, b))
 
+    @_cached_query
     def equivalent_properties(self, left, right):
         """Test exact property equivalence in independent trial ontologies."""
         return self.property_subsumes(left, right) and self.property_subsumes(right, left)
 
+    @_cached_query
     def inverse_properties(self, left, right):
         """Test exact inverse equality, not merely inverse inclusion."""
         self._guard()
@@ -315,6 +427,7 @@ class Reasoner:
         forward = self._property_probe(((a, left, b),), (b, right, a))
         return forward and self._property_probe(((a, right, b),), (b, left, a))
 
+    @_cached_query
     def is_symmetric(self, predicate):
         """Test symmetry by assuming one fresh edge and checking its reverse."""
         self._guard()
@@ -323,6 +436,7 @@ class Reasoner:
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (b, predicate, a))
 
+    @_cached_query
     def is_transitive(self, predicate):
         """Test transitivity on a fresh two-edge path, regardless of ABox shape."""
         self._guard()
@@ -332,6 +446,7 @@ class Reasoner:
         return self._property_probe(((a, predicate, b), (b, predicate, c)),
                                     (a, predicate, c))
 
+    @_cached_query
     def has_domain(self, predicate, concept):
         """Return whether every subject of predicate belongs to concept."""
         self._guard()
@@ -340,6 +455,7 @@ class Reasoner:
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (a, RDF.type, concept))
 
+    @_cached_query
     def has_range(self, predicate, concept):
         """Return whether every object of predicate belongs to concept."""
         self._guard()
@@ -349,11 +465,12 @@ class Reasoner:
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (b, RDF.type, concept))
 
+    @_cached_query
     def is_satisfiable(self, concept):
         self._guard()
         graph = copy_graph(self.graph)
         graph.add((BNode(), RDF.type, concept))
-        query = Reasoner(graph, profile=self.profile, **self.engine_options)
+        query = self._new_query_reasoner(graph)
         if query.consistency == "inconsistent":
             return False
         query._guard()
@@ -376,13 +493,22 @@ class Reasoner:
         compile_seconds = time.perf_counter() - started
         started = time.perf_counter()
         current_rules, candidate_rules = set(self.program.rules), set(program.rules)
-        self.engine.update(add=program.facts - self.program.facts,
-                           remove=self.program.facts - program.facts,
-                           add_rules=candidate_rules - current_rules,
-                           remove_rules=current_rules - candidate_rules)
+        self.clear_query_cache()
+        schema = self._schema_cache
+        try:
+            self.engine.update(add=program.facts - self.program.facts,
+                               remove=self.program.facts - program.facts,
+                               add_rules=candidate_rules - current_rules,
+                               remove_rules=current_rules - candidate_rules)
+        finally:
+            # Also discard reentrant answers if a partially applied operation
+            # raises; no old answer may be mistaken for the resulting state.
+            self.clear_query_cache()
+            self._schema_cache = None
         self.graph, self.program = candidate, program
-        self._witness_terms = None
-        self._schema_cache = None
+        # Do not retain answers/views computed reentrantly during the update.
+        self.clear_query_cache()
+        self._schema_cache = schema if current_rules == candidate_rules else None
         self.compile_seconds = compile_seconds
         self.materialize_seconds = time.perf_counter() - started
         return self
@@ -391,6 +517,7 @@ class Reasoner:
                  include_witnesses=False):
         """Export the completed materialization as RDF, optionally expanding aliases."""
         self._guard()
+        self._sync_query_cache()
         graph = copy_graph(self.graph) if include_schema else Graph()
         for fact in self.engine.facts:
             if fact.predicate == EQ:

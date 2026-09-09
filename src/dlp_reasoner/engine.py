@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from decimal import Decimal
+from functools import partial
 import math
 from time import perf_counter
 from typing import Iterable
@@ -123,6 +124,10 @@ class _Index:
             if not column:
                 del self.columns[key]
 
+    def arity(self, predicate):
+        rows = self.rows.get(predicate)
+        return len(next(iter(rows))) if rows else None
+
     def lookup(self, predicate, values):
         result = self.rows.get(predicate, ())
         # RDF compilation predominantly produces unary and binary predicates.
@@ -182,9 +187,11 @@ class Engine:
     _join_lookahead_enabled = False
 
     def __init__(self, program: Program, strategy="semi-naive", max_rounds=1000,
-                 max_facts=1_000_000, max_depth=32):
+                 max_facts=1_000_000, max_depth=32, *, backend="python"):
         if strategy not in {"semi-naive", "naive"}:
             raise ValueError("strategy must be 'semi-naive' or 'naive'")
+        if backend not in {"python", "native"}:
+            raise ValueError("backend must be 'python' or 'native'")
         if max_rounds < 1 or max_facts < 1 or max_depth < 0:
             raise ValueError("max_rounds/max_facts must be positive; max_depth must be nonnegative")
         self.program = Program(list(program.rules), set(program.facts),
@@ -192,6 +199,8 @@ class Engine:
         self.rules = list(dict.fromkeys(program.rules))
         self.asserted = set(program.facts)
         self.strategy = strategy
+        self.backend = backend
+        self._revision = 0
         self.max_rounds = max_rounds
         self.max_facts = max_facts
         self.max_depth = max_depth
@@ -204,6 +213,15 @@ class Engine:
         self._skolem_lookup = {}
         self._equivalence_cache = None
         arities = self._validate(self.rules, self.asserted)
+        self._native_context = None
+        self._index_factory = _Index
+        if backend == "native":
+            # Loading/building native code is explicit and never affects the
+            # default Python backend. Every index of an engine shares one term
+            # dictionary, so full and delta relations can join without recoding.
+            from .native import NativeContext, NativeIndex
+            self._native_context = NativeContext(_MISSING)
+            self._index_factory = partial(NativeIndex, self._native_context)
         self._validation_snapshot = (
             (tuple(self.rules), frozenset(self.asserted), arities)
             if self._incremental_validation_enabled else None)
@@ -308,7 +326,10 @@ class Engine:
         return dependents, global_rules
 
     def _start_stats(self, operation, method):
-        self.stats = {"strategy": self.strategy, "operation": operation,
+        # Query caches observe a new epoch before materialization/update mutates
+        # the store, including operations that subsequently fail or hit a bound.
+        self._revision += 1
+        self.stats = {"strategy": self.strategy, "backend": self.backend, "operation": operation,
                       "update_method": method, "rounds": 0, "rule_evaluations": 0,
                       "candidate_rows": 0, "body_matches": 0, "derived_facts": 0,
                       "unary_plan_evaluations": 0, "unary_intersections": 0,
@@ -317,9 +338,16 @@ class Engine:
                       "unary_intersection_input_rows": 0, "unary_bound_membership_tests": 0,
                       "unary_full_delta_shortcuts": 0, "unary_full_intersection_plans": 0,
                       "equality_merges": 0, "overdeleted_facts": 0, "rederived_facts": 0}
+        if self._native_context is not None:
+            self._native_context.reset_stats()
         self._started = perf_counter()
 
     def _finish_stats(self):
+        if self._native_context is not None:
+            # Include pending insertions even when no positive rule queried
+            # them (e.g. a fact-only program or an interrupted materialization).
+            self._index.flush()
+            self.stats.update(self._native_context.stats())
         self.stats["seconds"] = perf_counter() - self._started
         self.stats["materialized_facts"] = len(self.facts)
         self.stats["asserted_facts"] = len(self.asserted)
@@ -460,10 +488,17 @@ class Engine:
         self._index.add(fact)
         delta.add(fact)
 
+    def _replace_index(self, facts=()):
+        """Rebuild data while invalidating suspended native queries on old data."""
+        previous = getattr(self, "_index", None)
+        self._index = self._index_factory(facts)
+        if self._native_context is not None and previous is not None:
+            previous.close()
+
     def _reindex(self):
         self._congruence()
         self.facts = {self._canonical(fact) for fact in self.facts}
-        self._index = _Index(self.facts)
+        self._replace_index(self.facts)
         self._equality_dirty = False
 
     def _ingest(self, atoms):
@@ -532,6 +567,12 @@ class Engine:
                 lookahead = (self._join_lookahead_enabled and self.complete
                              and delta_index is None and delta_position is None
                              and rule.head is None and rule not in self.rules)
+                if (self._native_context is not None and not lookahead
+                        and (delta_index is None or
+                             isinstance(delta_index, type(self._index)))):
+                    yield from self._index.solutions(
+                        relational, self, _MISSING, delta_index, delta_position, initial)
+                    return
                 yield from relational.solutions(self, _MISSING, delta_index, delta_position, initial,
                                                 lookahead=lookahead)
                 return
@@ -791,7 +832,7 @@ class Engine:
                 delta_index = None
             else:
                 variants = self._variants(delta, include_globals=True)
-                delta_index = _Index(delta)
+                delta_index = self._index_factory(delta)
             for number, position in variants:
                 for head in self._heads(self.rules[number], delta_index, position):
                     if head not in self.facts:
@@ -822,7 +863,7 @@ class Engine:
         self._equivalence_cache = None
         self._class_literals = {}
         self._literal_representatives = {}
-        self._index = _Index()
+        self._replace_index()
         self._equality_dirty = False
         self._ever_merged = False
         delta = self._ingest(Atom(TOP, (term,)) for term in self._domain_constants())
@@ -931,7 +972,7 @@ class Engine:
                 self._stop(f"max_rounds={self.max_rounds} exceeded during DRed overdeletion")
                 return False
             self.stats["rounds"] += 1
-            delta_index = _Index(frontier)
+            delta_index = self._index_factory(frontier)
             following = set()
             variants = (variant for predicate in {atom.predicate for atom in frontier}
                         for variant in old_dependents.get(predicate, ()))
@@ -962,7 +1003,7 @@ class Engine:
                 self._index.discard(atom)
             self.stats["index_deleted_rows"] = len(deleted)
         else:
-            self._index = _Index(self.facts)
+            self._replace_index(self.facts)
             if self._incremental_index_enabled:
                 self.stats["index_rebuilt_rows"] = len(self.facts)
         self.terms.intersection_update(domain)
@@ -1047,6 +1088,7 @@ class Engine:
         retracting = bool(actual_removed or deleted)
         can_dred = (self._materialized and self._can_dred()
                     and self._can_dred(next_rules, next_asserted)) if retracting else False
+        self._revision += 1
         self.asserted = next_asserted
         self.rules = next_rules
         self._validation_snapshot = (
