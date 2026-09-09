@@ -1,0 +1,4 @@
+@prefix : <https://example.org/conflict#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+:Person owl:disjointWith :Composition .
+:impossible a :Person, :Composition .
