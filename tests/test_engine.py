@@ -1,6 +1,7 @@
 """Execution regressions independent of the RDF/OWL compiler."""
 
 import random
+from itertools import product
 
 import pytest
 from rdflib import BNode, Graph, Literal, URIRef
@@ -284,7 +285,7 @@ def test_equivalence_cache_invalidates_after_registration_and_merge():
     assert engine.equivalents(a) == {a, b}
 
 
-def test_rule_insertion_propagates_and_rule_deletion_rebuilds():
+def test_rule_insertion_propagates_and_rule_deletion_uses_dred():
     first = Rule(atom("q", x), (atom("p", x),))
     second = Rule(atom("r", x), (atom("q", x),))
     engine = run([second], [atom("p", a)])
@@ -292,8 +293,282 @@ def test_rule_insertion_propagates_and_rule_deletion_rebuilds():
     assert engine.stats["update_method"] == "incremental-rules"
     assert atom("r", a) in engine.facts
     engine.update_rules(remove=[first])
-    assert engine.stats["update_method"] == "rematerialize-rules"
+    assert engine.stats["update_method"] == "dred-rules"
     assert atom("r", a) not in engine.facts
+
+
+@pytest.mark.parametrize("strategy", ["semi-naive", "naive"])
+def test_rule_deletion_removes_stale_support_and_unsupported_recursive_cycle(strategy):
+    source = Rule(atom("p", x), (atom("seed", x),))
+    alternate = Rule(atom("p", x), (atom("alternative", x),))
+    cycle = [Rule(atom("q", x), (atom("p", x),)),
+             Rule(atom("p", x), (atom("q", x),))]
+    unrelated = Rule(atom("unrelated", x), (atom("other", x),))
+    facts = {atom("seed", a), atom("other", b)}
+    engine = run([source, alternate, *cycle, unrelated], facts, strategy=strategy)
+    engine.update_rules(remove=[source])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert engine.stats["overdeleted_facts"] == 2
+    assert atom("p", a) not in engine.facts
+    assert atom("q", a) not in engine.facts
+    assert atom("unrelated", b) in engine.facts
+    assert engine.facts == run([alternate, *cycle, unrelated], facts).facts
+    # The removed rule must also disappear from future insertion propagation.
+    engine.update(add=[atom("seed", c)])
+    assert atom("p", c) not in engine.facts
+    engine.update_rules(add=[source])
+    assert {atom("q", a), atom("q", c)} <= engine.facts
+
+
+def test_rule_deletion_preserves_assertions_and_alternative_rule_owners():
+    first = Rule(atom("p", x), (atom("seed", x),), "axiom-one")
+    second = Rule(atom("p", x), (atom("seed", x),), "axiom-two")
+    child = Rule(atom("q", x), (atom("p", x),))
+    facts = {atom("seed", a), atom("p", b)}
+    engine = run([first, first, second, child], facts)
+    engine.update_rules(remove=[first])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert engine.facts == run([second, child], facts).facts
+    assert {atom("q", a), atom("q", b)} <= engine.facts
+    engine.update_rules(remove=[second])
+    assert atom("q", a) not in engine.facts
+    assert atom("q", b) in engine.facts
+    assert engine.facts == run([child], facts).facts
+
+
+def test_deleted_rule_head_can_become_asserted_in_same_transaction():
+    source = Rule(atom("p", x), (atom("seed", x),))
+    child = Rule(atom("q", x), (atom("p", x),))
+    engine = run([source, child], [atom("seed", a)])
+    engine.update(remove_rules=[source], add=[atom("p", a)])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert atom("q", a) in engine.facts
+    assert engine.stats["overdeleted_facts"] == 0
+    assert engine.facts == run([child], [atom("seed", a), atom("p", a)]).facts
+
+
+def test_mixed_rule_fact_transaction_and_addition_wins_overlap():
+    old = Rule(atom("p", x), (atom("seed", x),))
+    new = Rule(atom("p", y), (atom("edge", x, y), atom("seed", x)))
+    cycle = Rule(atom("p", x), (atom("p", x),))
+    child = Rule(atom("q", x), (atom("p", x),))
+    engine = run([old, cycle, child], [atom("seed", a), atom("seed", b)])
+    engine.update(add=[atom("edge", b, c), atom("seed", b)],
+                  remove=[atom("seed", a), atom("seed", b)],
+                  add_rules=[new, child], remove_rules=[old, child])
+    expected_facts = {atom("seed", b), atom("edge", b, c)}
+    assert engine.stats["update_method"] == "dred-rules"
+    assert engine.facts == run([cycle, child, new], expected_facts).facts
+    assert atom("q", a) not in engine.facts
+    assert atom("q", c) in engine.facts
+    assert set(engine.program.rules) == {cycle, child, new}
+    assert engine.program.facts == expected_facts
+
+
+def test_rule_constants_enter_and_leave_domain_without_fact_changes():
+    universal = Rule(atom("all", x), (atom(TOP, x),))
+    old = Rule(atom("old", a), (atom("absent"),))
+    new = Rule(atom("new", b), (atom("absent"),))
+    unconditional = Rule(atom("unconditional", c))
+    engine = run([universal, old])
+    assert atom("all", a) in engine.facts
+    engine.update_rules(remove=[old], add=[new, unconditional])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert a not in engine.terms and {b, c} <= engine.terms
+    assert atom("all", a) not in engine.facts
+    assert {atom("all", b), atom("all", c), atom("unconditional", c)} <= engine.facts
+    fresh = run([universal, new, unconditional])
+    assert engine.facts == fresh.facts
+    assert engine.terms == fresh.terms
+    # The final defining rule can disappear entirely, including its constant.
+    engine.update_rules(remove=[unconditional])
+    assert c not in engine.terms
+    assert engine.facts == run([universal, new]).facts
+
+
+def test_mixed_constraints_are_rechecked_and_removed_violations_clear():
+    first = Rule(None, (atom("p", x),), "forbid-p")
+    second = Rule(None, (atom("q", x),), "forbid-q")
+    derive = Rule(atom("q", x), (atom("seed", x),))
+    engine = run([first], [atom("p", a)])
+    assert engine.violations
+    engine.update(add=[atom("seed", b)], remove_rules=[first], add_rules=[second, derive])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert engine.violations == run([second, derive], [atom("p", a), atom("seed", b)]).violations
+    assert all("forbid-p" not in violation for violation in engine.violations)
+    engine.update_rules(remove=[derive])
+    assert not engine.violations
+
+
+def test_rule_dred_tracks_symmetric_difference_facts_and_constraints():
+    derived = Rule(atom(NEQ, x, y), (atom("different", x, y),))
+    use = Rule(atom("distinct", x, y), (atom("pair", x, y), atom(NEQ, x, y)))
+    facts = {atom("different", a, b), atom("pair", a, b), atom("pair", b, a)}
+    engine = run([derived, use], facts)
+    assert {atom("distinct", a, b), atom("distinct", b, a)} <= engine.facts
+    engine.update_rules(remove=[derived])
+    assert engine.stats["update_method"] == "dred-rules"
+    assert engine.facts == run([use], facts).facts
+
+
+def test_mixed_update_validation_is_atomic():
+    original = Rule(atom("q", x), (atom("p", x),))
+    engine = run([original], [atom("p", a)])
+    before = set(engine.facts), set(engine.asserted), list(engine.rules), dict(engine.stats)
+    with pytest.raises(ProfileError, match="Unsafe"):
+        engine.update(remove=[atom("p", a)], remove_rules=[original],
+                      add_rules=[Rule(atom("unbound", x))])
+    assert (engine.facts, engine.asserted, engine.rules, engine.stats) == before
+
+
+def test_rule_deletion_rebuilds_for_equality_functions_and_incomplete_closure():
+    merge = Rule(atom(EQ, x, y), (atom("merge", x, y),))
+    engine = run([merge], [atom("merge", a, b), atom("p", a), atom("p", b)])
+    engine.update_rules(remove=[merge])
+    assert engine.stats["update_method"] == "rematerialize-rules"
+    assert engine.normalize(a) != engine.normalize(b)
+    witness = Rule(atom("q", Skolem("f", (x,))), (atom("p", x),))
+    engine = run([witness], [atom("p", a)])
+    engine.update_rules(remove=[witness])
+    assert engine.stats["update_method"] == "rematerialize-rules"
+    assert engine.facts == run(facts=[atom("p", a)]).facts
+    recursive = Rule(atom("p", Skolem("f", (x,))), (atom("p", x),))
+    engine = run([recursive], [atom("p", a)], max_depth=2)
+    assert not engine.complete
+    engine.update_rules(remove=[recursive])
+    assert engine.complete
+    assert engine.stats["update_method"] == "rematerialize-rules"
+
+
+def test_mixed_dred_cannot_merge_new_datatype_representatives():
+    old = Rule(atom("q", x), (atom("p", x),))
+    integer, decimal = Literal("1", datatype=XSD.integer), Literal("1.0", datatype=XSD.decimal)
+    engine = run([old], [atom("p", integer)])
+    engine.update(remove_rules=[old], add=[atom("p", decimal)])
+    assert engine.stats["update_method"] == "rematerialize-rules"
+    assert engine.facts == run(facts=[atom("p", integer), atom("p", decimal)]).facts
+
+
+@pytest.mark.parametrize("new_rule", [
+    Rule(atom(EQ, a, b)),
+    Rule(atom("witness", Skolem("f", (x,))), (atom("seed", x),)),
+])
+def test_mixed_transaction_checks_new_rules_before_choosing_dred(new_rule):
+    source = Rule(atom("p", x), (atom("seed", x),))
+    engine = run([source], [atom("seed", a)])
+    engine.update(remove=[atom("seed", a)], add=[atom("seed", b)], add_rules=[new_rule])
+    assert engine.stats["update_method"] == "rematerialize-rules"
+    fresh = run([source, new_rule], [atom("seed", b)])
+    assert engine.facts == fresh.facts
+    assert engine.terms == fresh.terms
+
+
+def test_dred_prunes_literal_identity_cache_with_departed_constants():
+    plain, typed = Literal("hello"), Literal("hello", datatype=XSD.string)
+    engine = run(facts=[atom("p", plain)])
+    engine.update(remove=[atom("p", plain)])
+    engine.update(add=[atom("p", typed)])
+    assert engine.facts == run(facts=[atom("p", typed)]).facts
+    assert plain not in engine.terms
+    assert engine.normalize(typed) == typed
+
+
+def test_rule_dred_limits_rebuild_before_returning_any_stale_facts():
+    first = Rule(atom("p", x), (atom("seed", x),))
+    rest = [Rule(atom("q", x), (atom("p", x),)),
+            Rule(atom("r", x), (atom("q", x),))]
+    engine = run([first, *rest], [atom("seed", a)])
+    engine.max_rounds = 1
+    engine.update_rules(remove=[first])
+    assert engine.stats["update_method"] == "rematerialize-rules-after-dred-limit"
+    assert engine.complete
+    assert engine.facts == run(rest, [atom("seed", a)]).facts
+
+
+def test_rule_dred_rederivation_and_candidate_limits_leave_sound_partial_results():
+    old = Rule(atom("p", x), (atom("seed", x),))
+    replacement = [Rule(atom("q", x), (atom("seed", x),)),
+                   Rule(atom("p", x), (atom("q", x),))]
+    engine = run([old], [atom("seed", a)])
+    engine.max_rounds = 1
+    engine.update_rules(remove=[old], add=replacement)
+    assert not engine.complete
+    assert engine.facts <= run(replacement, [atom("seed", a)]).facts
+    engine = run(facts=[atom("p", a)])
+    engine.max_facts = len(engine.facts) + 2
+    many = [Rule(atom(f"q{i}", x), (atom("p", x),)) for i in range(12)]
+    engine.update_rules(add=many)
+    assert not engine.complete
+    assert "max_facts" in engine.stats["limit_reason"]
+    assert len(engine.facts) <= engine.max_facts
+    assert engine.facts <= run(many, [atom("p", a)]).facts
+
+
+def _independent_ground_closure(rules, facts):
+    """Exhaustively ground ordinary positive Datalog, without engine helpers."""
+    atoms = [*facts, *(item for rule in rules for item in (*rule.body, rule.head))]
+    domain = {term for item in atoms for term in item.args if not isinstance(term, Var)}
+    grounded = []
+    for rule in rules:
+        variables = sorted({term for item in (*rule.body, rule.head) for term in item.args
+                            if isinstance(term, Var)}, key=lambda term: term.name)
+        for values in product(domain, repeat=len(variables)):
+            binding = dict(zip(variables, values))
+
+            def ground(item):
+                return Atom(item.predicate, tuple(binding.get(term, term) for term in item.args))
+
+            grounded.append((ground(rule.head), {ground(item) for item in rule.body}))
+    result = set(facts)
+    while True:
+        following = result | {head for head, body in grounded if body <= result}
+        if following == result:
+            return result
+        result = following
+
+
+@pytest.mark.parametrize("seed", [204163, 20260909, 41007])
+@pytest.mark.parametrize("strategy", ["semi-naive", "naive"])
+def test_seeded_mixed_updates_match_fresh_and_independent_closure(seed, strategy):
+    rng = random.Random(seed)
+    domain = [a, b, c]
+    candidates = [
+        Rule(atom("reach", x, y), (atom("edge", x, y),)),
+        Rule(atom("reach", x, z), (atom("reach", x, y), atom("edge", y, z))),
+        Rule(atom("reach", y, x), (atom("reach", x, y),)),
+        Rule(atom("p", x), (atom("seed", x),), "owner-one"),
+        Rule(atom("p", x), (atom("seed", x),), "owner-two"),
+        Rule(atom("p", y), (atom("p", x), atom("reach", x, y))),
+        Rule(atom("q", x), (atom("p", x),)),
+        Rule(atom("p", x), (atom("q", x),)),
+        Rule(atom("q", x), (atom("p", x), atom("seed", x))),
+        Rule(atom("loop", x), (atom("reach", x, x),)),
+        Rule(atom("p", a)),
+        Rule(atom("flag"), (atom("q", a),)),
+        Rule(atom("p", b), (atom("flag"),)),
+    ]
+    universe = ([atom("edge", s, o) for s in domain for o in domain]
+                + [atom(predicate, s) for predicate in ("seed", "p", "q") for s in domain])
+    rules, facts = set(rng.sample(candidates, 7)), set(rng.sample(universe, 7))
+    engine = run(rules, facts, strategy=strategy)
+    paths = set()
+    for _ in range(45):
+        additions = set(rng.sample(universe, rng.randrange(4)))
+        removals = set(rng.sample(universe, rng.randrange(4)))
+        add_rules = set(rng.sample(candidates, rng.randrange(4)))
+        remove_rules = set(rng.sample(candidates, rng.randrange(4)))
+        facts = (facts - removals) | additions
+        rules = (rules - remove_rules) | add_rules
+        engine.update(add=additions, remove=removals, add_rules=add_rules, remove_rules=remove_rules)
+        paths.add(engine.stats["update_method"])
+        fresh = run(rules, facts)
+        assert engine.complete
+        assert engine.facts == fresh.facts
+        assert engine.terms == fresh.terms
+        ordinary = {fact for fact in engine.facts if fact.predicate != TOP}
+        assert ordinary == _independent_ground_closure(rules, facts)
+    assert "dred-rules" in paths
+    assert not any(path.startswith("rematerialize") for path in paths)
 
 
 def test_differential_naive_seminaive_and_dred_random_updates():

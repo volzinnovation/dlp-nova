@@ -245,6 +245,69 @@ class Reasoner:
             return True
         return query.entails(probe, RDF.type, marker)
 
+    def equivalent_classes(self, left, right):
+        """Test class equivalence with two independent subsumption probes.
+
+        Combining both assumptions in one trial is unsound with nominals:
+        fresh names can become equal and contaminate the other direction.
+        """
+        return self.subsumes(left, right) and self.subsumes(right, left)
+
+    def _property_probe(self, assertions, conclusion):
+        """Check a universal property implication using isolated fresh names.
+
+        An inconsistent trial means the antecedent is impossible, so the
+        implication holds vacuously. Exhausted probes never return a negative
+        answer. Property arguments are named RDF properties.
+        """
+        self._guard()
+        for _, predicate, _ in (*assertions, conclusion):
+            if not isinstance(predicate, URIRef):
+                raise ProfileError("Property probes require named RDF property IRIs")
+        graph = copy_graph(self.graph)
+        for assertion in assertions:
+            graph.add(assertion)
+        query = Reasoner(graph, profile=self.profile, **self.engine_options)
+        if query.consistency == "inconsistent":
+            return True
+        return query.entails(*conclusion)
+
+    def property_subsumes(self, superproperty, subproperty):
+        """Return whether every subproperty edge is a superproperty edge."""
+        a, b = BNode(), BNode()
+        return self._property_probe(((a, subproperty, b),), (a, superproperty, b))
+
+    def equivalent_properties(self, left, right):
+        """Test exact property equivalence in independent trial ontologies."""
+        return self.property_subsumes(left, right) and self.property_subsumes(right, left)
+
+    def inverse_properties(self, left, right):
+        """Test exact inverse equality, not merely inverse inclusion."""
+        a, b = BNode(), BNode()
+        forward = self._property_probe(((a, left, b),), (b, right, a))
+        return forward and self._property_probe(((a, right, b),), (b, left, a))
+
+    def is_symmetric(self, predicate):
+        """Test symmetry by assuming one fresh edge and checking its reverse."""
+        a, b = BNode(), BNode()
+        return self._property_probe(((a, predicate, b),), (b, predicate, a))
+
+    def is_transitive(self, predicate):
+        """Test transitivity on a fresh two-edge path, regardless of ABox shape."""
+        a, b, c = BNode(), BNode(), BNode()
+        return self._property_probe(((a, predicate, b), (b, predicate, c)),
+                                    (a, predicate, c))
+
+    def has_domain(self, predicate, concept):
+        """Return whether every subject of predicate belongs to concept."""
+        a, b = BNode(), BNode()
+        return self._property_probe(((a, predicate, b),), (a, RDF.type, concept))
+
+    def has_range(self, predicate, concept):
+        """Return whether every object of predicate belongs to concept."""
+        a, b = BNode(), BNode()
+        return self._property_probe(((a, predicate, b),), (b, RDF.type, concept))
+
     def is_satisfiable(self, concept):
         self._guard()
         graph = copy_graph(self.graph)
@@ -258,8 +321,9 @@ class Reasoner:
     def update(self, *, add=(), remove=()):
         """Apply an RDF delta after validating its entire candidate ontology.
 
-        ABox deltas use the engine's incremental maintenance. Schema changes are
-        atomically recompiled and rematerialized, including equality splitting.
+        Recompile the complete candidate before applying fact and rule deltas
+        together. The engine selects incremental maintenance or a guarded
+        rebuild when equality, functions, or incomplete reasoning require it.
         """
         candidate = copy_graph(self.graph)
         for triple in remove:
@@ -270,13 +334,11 @@ class Reasoner:
         program = compile_graph(candidate, profile=self.profile)
         compile_seconds = time.perf_counter() - started
         started = time.perf_counter()
-        if set(program.rules) == set(self.program.rules):
-            self.engine.update(add=program.facts - self.program.facts,
-                               remove=self.program.facts - program.facts)
-        else:
-            engine = Engine(program, **self.engine_options).materialize()
-            engine.stats["update_method"] = "schema-rematerialization"
-            self.engine = engine
+        current_rules, candidate_rules = set(self.program.rules), set(program.rules)
+        self.engine.update(add=program.facts - self.program.facts,
+                           remove=self.program.facts - program.facts,
+                           add_rules=candidate_rules - current_rules,
+                           remove_rules=current_rules - candidate_rules)
         self.graph, self.program = candidate, program
         self._witness_terms = None
         self.compile_seconds = compile_seconds

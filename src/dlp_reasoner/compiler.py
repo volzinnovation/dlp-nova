@@ -240,6 +240,17 @@ class _Compiler:
             return _Expr("oneof", tuple(dict.fromkeys(a))) if a else _Expr("bottom")
         return expr
 
+    def body_reference(self, expr, x):
+        """Name an antecedent expression using a one-way Horn definition."""
+        digest = sha256(repr(expr).encode()).hexdigest()[:24]
+        predicate = f"urn:dlp:internal:body:{digest}"
+        if expr not in self.body_definitions:
+            self.body_definitions.add(expr)
+            y = self.fresh()
+            for conjunct in self.body(expr, y, factor=False):
+                self.emit(Atom(predicate, (y,)), conjunct, "Structural body definition")
+        return [(Atom(predicate, (x,)),)]
+
     def body(self, expr, x, factor=True):
         """Return Horn bodies, factoring subexpressions before distribution.
 
@@ -248,14 +259,7 @@ class _Compiler:
         """
         k, a = expr.kind, expr.args
         if factor and k in {"and", "or", "some"}:
-            digest = sha256(repr(expr).encode()).hexdigest()[:24]
-            predicate = f"urn:dlp:internal:body:{digest}"
-            if expr not in self.body_definitions:
-                self.body_definitions.add(expr)
-                y = self.fresh()
-                for conjunct in self.body(expr, y, factor=False):
-                    self.emit(Atom(predicate, (y,)), conjunct, "Structural body definition")
-            return [(Atom(predicate, (x,)),)]
+            return self.body_reference(expr, x)
         if k == "atom":
             return [(Atom(a[0], (x,)),)]
         if k == "top":
@@ -267,8 +271,11 @@ class _Compiler:
         if k == "and":
             if not a:
                 return self.body(_Expr("top"), x)
-            parts = [self.body(child, x) for child in a]
-            return [sum(terms, ()) for terms in product(*parts)]
+            # Enumerations are disjunctions too: distributing several oneOf
+            # lists here would recreate the exponential DNF of thesis p. 133.
+            parts = [self.body_reference(child, x) if child.kind == "oneof" else
+                     self.body(child, x) for child in a]
+            return [tuple(atom for term in terms for atom in term) for terms in product(*parts)]
         if k == "or":
             if not a:
                 self.require(2, "empty union / owl:Nothing")
@@ -303,7 +310,24 @@ class _Compiler:
         if len(self.program.rules) >= MAX_COMPILED_RULES:
             self.fail(f"Compilation exceeds the {MAX_COMPILED_RULES:,}-rule budget; "
                       "reduce the ontology or cardinality restrictions")
-        self.program.rules.append(Rule(head, body, label))
+        # Variables are local to each rule. Canonical names keep unchanged
+        # axioms stable when unrelated axioms shift the compiler's fresh IDs.
+        variables = {}
+
+        def canonical(term):
+            if isinstance(term, Var):
+                if term not in variables:
+                    variables[term] = Var(f"v{len(variables) + 1}")
+                return variables[term]
+            if isinstance(term, Skolem):
+                return Skolem(term.symbol, tuple(canonical(arg) for arg in term.args))
+            return term
+
+        def canonical_atom(atom):
+            return Atom(atom.predicate, tuple(canonical(term) for term in atom.args))
+
+        self.program.rules.append(Rule(canonical_atom(head) if head else None,
+                                       tuple(canonical_atom(atom) for atom in body), label))
 
     def witness(self, expr, x, index=0):
         digest = sha256(repr(expr).encode()).hexdigest()[:24]

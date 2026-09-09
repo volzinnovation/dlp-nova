@@ -14,6 +14,7 @@ uv run dlp validate examples/family.ttl
 uv run dlp instances examples/family.ttl 'https://example.org/family#Parent'
 uv run dlp values examples/family.ttl 'https://example.org/family#jsbach' 'https://example.org/family#ancestorOf'
 uv run dlp subsumes examples/family.ttl 'https://example.org/family#Person' 'https://example.org/family#Composer'
+uv run dlp is-transitive examples/family.ttl 'https://example.org/family#ancestorOf'
 uv run dlp rules examples/family.ttl
 uv run dlp materialize examples/family.ttl -o /tmp/family-closure.ttl
 uv run dlp validate examples/existential.ttl --profile L3
@@ -45,9 +46,11 @@ assert not r.entails(F.jsbach, RDF.type, F.Artist)
 r.to_graph().serialize(destination="/tmp/family-closure.ttl", format="turtle")
 ```
 
-`Reasoner(graph, ...)` accepts an RDFLib graph. Construction eagerly compiles and materializes it. `instances`, `types`, `property_values`, `property_pairs`, `entails`, `subsumes`, `is_satisfiable`, `update` and `to_graph` are available. Anonymous expression queries use the expression's blank node in the input graph, and must be legal on the left of a DLP inclusion. Subsumption and satisfiability use isolated fresh-individual probes, so accidental overlap of observed instances does not imply subsumption. Subsumption requires an assertable subclass expression and a queryable superclass expression, as in thesis §5.4.
+`Reasoner(graph, ...)` accepts an RDFLib graph. Construction eagerly compiles and materializes it. `instances`, `types`, `property_values`, `property_pairs`, `entails`, `subsumes`, `equivalent_classes`, `is_satisfiable`, `update` and `to_graph` are available. Anonymous expression queries use the expression's blank node in the input graph, and must be legal on the left of a DLP inclusion. Subsumption and satisfiability use isolated fresh-individual probes, so accidental overlap of observed instances does not imply subsumption. Subsumption requires an assertable subclass expression and a queryable superclass expression, as in thesis §5.4. Class equivalence runs the two subsumption probes independently, preventing equality or nominals from contaminating the other direction.
 
-`compiler.compile_graph` exposes the Horn program. Compilation has a fixed 100,000-rule budget and rejects excessive nesting before evaluation. `engine.Engine` executes programs built with the immutable `Atom`, `Var`, `Skolem` and `Rule` dataclasses. A rule whose head is `None` is an integrity constraint. `Engine.update` maintains asserted facts; `Engine.update_rules` adds or removes rules.
+Property queries are `property_subsumes(superproperty, subproperty)`, `equivalent_properties(left, right)`, `inverse_properties(left, right)`, `is_symmetric(property)`, `is_transitive(property)`, `has_domain(property, class)` and `has_range(property, class)`. They use isolated semantic probes; a property's observed finite edges alone do not establish a universal property characteristic. Domain/range queries include inferred superclasses, and exact inverses do not inherit to strict subproperties. The corresponding CLI commands replace underscores with hyphens; `equivalent-classes` exposes class equivalence.
+
+`compiler.compile_graph` exposes the Horn program. Compilation has a fixed 100,000-rule budget and rejects excessive nesting before evaluation. Auxiliary predicates factor conjunctions of unions and enumerations, avoiding explicit exponential DNF expansion. Rule-local variable names are canonical, so unrelated axiom changes preserve unchanged compiled rules. `engine.Engine` executes programs built with the immutable `Atom`, `Var`, `Skolem` and `Rule` dataclasses. A rule whose head is `None` is an integrity constraint. `Engine.update(add=..., remove=..., add_rules=..., remove_rules=...)` applies one validated fact/rule transaction; `Engine.update_rules` is the rule-only wrapper. Additions win when the same item is also removed.
 
 ## Supported semantics
 
@@ -68,18 +71,20 @@ Datatype literals can be stored as values. Automatic value identity is limited t
 
 ## Updates and performance
 
-The engine distinguishes asserted facts from its closure. Insertions propagate deltas. Equality-free, function-free fact deletions use delete-and-rederive (DRed), including removal of unsupported recursive cycles and preservation of alternative supports. Equality and existential retractions rebuild the materialization so that old equivalence classes can split. Rule insertions can propagate incrementally; rule deletion rebuilds. The RDF API recompiles candidate changes before applying them, uses fact maintenance when compiled rules are unchanged, and rebuilds for schema changes. `stats["update_method"]` reports the path taken. Schema rebuilding is a correctness fallback, not the thesis's optimized incremental rule-removal algorithm.
+The engine distinguishes asserted facts from its closure. Insertions propagate deltas. Eligible fact and rule deletions use delete-and-rederive (DRed), including removal of unsupported recursive cycles and preservation of alternative supports. Old rules identify affected facts; only current rules may restore them. The RDF API recompiles the complete candidate ontology and applies its fact and rule deltas together. Equality and existential retractions retain a rebuilding fallback so old equivalence classes and witnesses can be reconstructed safely. Both old and candidate programs must satisfy the DRed eligibility checks.
+
+`stats["update_method"]` distinguishes `dred`, `dred-rules`, `incremental-rules`, and rematerialization paths. An interrupted overdeletion rebuilds from the current program before exposing any partial results. The [corrected maintenance algorithm and correctness argument](docs/CORRECTED_MAINTENANCE.md) state the assumptions and explain the replacement for the thesis's faulty rule-deletion procedure.
 
 Run validation and benchmarks:
 
 ```sh
 uv run pytest -q
-uv run ruff check src tests benchmarks
+uv run ruff check src tests benchmarks scripts
 uv run python -m benchmarks.run --suite quick --repeats 5 --output /tmp/dlp-quick.json
 uv run python -m benchmarks.run --suite thesis --repeats 5 --output /tmp/dlp-thesis.json
 ```
 
-[Recorded benchmark results](benchmarks/results.md) and [raw observations](benchmarks/results.json) include separate parsing, compilation, materialization, instance query, property query and subsumption timings, repeats, memory and correctness checks. The thesis suite uses all 27 combinations of its ternary taxonomy depths (3/5/7), individuals per non-root class (3/9/15), and property variants (P0/P1/PF). Additional cases exercise equality, acyclic existentials, transitivity, DRed and rule updates. Small inputs compare semi-naive execution with a naive baseline and RDFLib's OWL RL engine. These synthetic modern measurements are not a reproduction of the 2004 system timings.
+[Recorded benchmark results](benchmarks/results.md) and [raw observations](benchmarks/results.json) include separate parsing, compilation, materialization, instance query, property query and subsumption timings, repeats, memory and correctness checks. The thesis suite uses all 27 combinations of its ternary taxonomy depths (3/5/7), individuals per non-root class (3/9/15), and property variants (P0/P1/PF). Additional cases exercise the corrected maximum-one/minimum-zero distribution, factored expressions, equality, acyclic existentials, transitivity, and maintenance across all three five-way taxonomy depths and both change ratios. Rule deletion and mixed updates are checked against fresh recomputation. Small inputs compare semi-naive execution with a naive baseline and RDFLib's OWL RL engine. These synthetic modern measurements are not a reproduction of the 2004 system timings. The original raw observations are retained in [baseline-results.json](benchmarks/baseline-results.json); comparisons require unchanged input hashes and compatible measurement boundaries.
 
 See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](docs/THESIS_SPEC.md), and [benchmark methodology](benchmarks/README.md) for details and limitations. The test suite combines explicit semantic regressions, independent OWL RL comparison within the shared fragment, exhaustive small models, and randomized update comparisons against fresh closure.
 
@@ -91,4 +96,4 @@ See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](do
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.
 - `tests/`, `examples/`, `benchmarks/`: executable evidence and reproducible workloads.
 
-The thesis's FOL semantics takes precedence over apparent formula slips in its tables; the mapping document records these corrections. Technical references for the modern parser and RDF syntax are the [RDFLib graph documentation](https://rdflib.readthedocs.io/en/latest/apidocs/rdflib.graph/) and [W3C OWL reference](https://www.w3.org/TR/owl-ref/).
+The implementation follows the stated description-logic semantics where the thesis contains inconsistent formulas. The [detailed thesis review](docs/THESIS_ERRATA.md) distinguishes confirmed formula errors, counterexamples to some stated procedures, benchmark inconsistencies, and ambiguous notation, with page references and executable checks. Technical references for the modern parser and RDF syntax are the [RDFLib graph documentation](https://rdflib.readthedocs.io/en/latest/apidocs/rdflib.graph/) and [W3C OWL reference](https://www.w3.org/TR/owl-ref/).

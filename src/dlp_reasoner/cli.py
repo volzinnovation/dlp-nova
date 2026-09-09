@@ -11,6 +11,18 @@ from .model import Atom, ProfileError, Skolem, Var
 from .reasoner import Reasoner
 
 
+_SCHEMA_QUERIES = {
+    "equivalent-classes": ("equivalent_classes", ("left_class", "right_class")),
+    "property-subsumes": ("property_subsumes", ("superproperty", "subproperty")),
+    "equivalent-properties": ("equivalent_properties", ("left_property", "right_property")),
+    "inverse-properties": ("inverse_properties", ("left_property", "right_property")),
+    "is-symmetric": ("is_symmetric", ("property",)),
+    "is-transitive": ("is_transitive", ("property",)),
+    "has-domain": ("has_domain", ("property", "class_iri")),
+    "has-range": ("has_range", ("property", "class_iri")),
+}
+
+
 def term_text(term):
     if isinstance(term, Var):
         return "?" + term.name
@@ -38,7 +50,7 @@ def parser():
     p = argparse.ArgumentParser(description="Volz thesis Description Logic Programs reasoner")
     sub = p.add_subparsers(dest="command", required=True)
     for command in ("validate", "materialize", "instances", "values", "types", "entails",
-                    "subsumes", "rules"):
+                    "subsumes", "rules", *_SCHEMA_QUERIES):
         item = sub.add_parser(command)
         item.add_argument("file", help="Local Turtle, RDF/XML, or N-Triples ontology")
         item.add_argument("--profile", choices=["L0", "L1", "L2", "L3"], default="L2")
@@ -65,6 +77,9 @@ def parser():
         elif command == "subsumes":
             item.add_argument("superclass")
             item.add_argument("subclass")
+        elif command in _SCHEMA_QUERIES:
+            for argument in _SCHEMA_QUERIES[command][1]:
+                item.add_argument(argument)
     return p
 
 
@@ -94,6 +109,10 @@ def main(argv=None):
                 result = reasoner.property_values(URIRef(args.subject), URIRef(args.property))
             elif args.command == "entails":
                 result = reasoner.entails(*map(URIRef, (args.subject, args.property, args.object)))
+            elif args.command in _SCHEMA_QUERIES:
+                method, arguments = _SCHEMA_QUERIES[args.command]
+                result = getattr(reasoner, method)(
+                    *(URIRef(getattr(args, argument)) for argument in arguments))
             else:
                 result = reasoner.subsumes(URIRef(args.superclass), URIRef(args.subclass))
             print(json.dumps(result if isinstance(result, bool) else sorted(map(str, result))))

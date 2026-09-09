@@ -45,7 +45,7 @@ The historical implementation uses Java, an OWL API, KAON, XSB and Racer (chapte
 | Bottom `⊥` | L2 | R: denial of its antecedent |
 | Maximum cardinality zero | L2 | R: normalizes to `∀R.⊥`, disallowing any filler for a restricted individual |
 | Individual inequality | L2 | Symmetric, incompatible with equality, and irreflexive |
-| Existential `∃R.C` | L3 | R as well as L: introduce a fresh Skolem witness for the subject and existential occurrence |
+| Existential `∃R.C` | L3 | R as well as L: introduce a Skolem witness for the subject and normalized restriction; identical restrictions share witnesses |
 | Minimum cardinality one | L3 | R as well as L: existential witness |
 | Minimum cardinality `n>1` | L3 | R: `n` witnesses with pairwise explicit inequalities |
 
@@ -94,7 +94,7 @@ The interpretation domain is nonempty even for an otherwise empty ABox. `⊤ ⊑
 
 ### Existential witnesses and termination
 
-RHS existentials use fresh Skolem functions (Table 5.2, p. 120). A witness is identified by its existential occurrence and subject, must be reused across rounds, and must not be confused with a named individual. A newly created RDF blank node is an internal witness, not a globally known name. Minimum cardinality `n` also requires pairwise inequality, so maximum cardinality one together with minimum cardinality two produces inconsistency.
+RHS existentials use Skolem functions (Table 5.2, p. 120). This implementation identifies witnesses by the normalized restriction expression, subject, and witness index, sharing them across identical restrictions and reusing them across rounds. Witnesses must not be confused with named individuals. A newly created RDF blank node is an internal witness, not a globally known name. Minimum cardinality `n` also requires pairwise inequality, so maximum cardinality one together with minimum cardinality two produces inconsistency.
 
 Unrestricted L3 evaluation may not terminate. `A ⊑ ∃R.A` plus `A(a)` can produce an unbounded Skolem chain. The thesis explicitly acknowledges nontermination and exponential paths even with blocking (Section 5.5.2, p. 143), and uses acyclic existential benchmarks (p. 218). Bounded execution must return an explicit incomplete/resource-limit result; it cannot advertise a finite prefix as a completed closure or use that prefix to prove non-entailment. Simply connecting a witness back to an ancestor is not a generally sound substitute for a blocking algorithm.
 
@@ -165,12 +165,12 @@ For each implemented benchmark family, save machine-readable raw observations an
 
 ## Source ambiguities and errata handled deliberately
 
-The FOL semantics (p. 123) and explanatory text take precedence over evident formula slips:
+The intended DL/FOL semantics and correct formulations elsewhere in the thesis resolve several inconsistent formulas. Each correction needs specific evidence; p. 123 alone is not a blanket rule for changing the specification. The [detailed review](THESIS_ERRATA.md) records page references, counterexamples, procedural issues, and benchmark inconsistencies.
 
 - Table 5.3 (p. 122, visually verified) prints the direction of property inclusion backwards and writes transitivity as decomposing an edge. Correct rules are `Q(x,y) ← P(x,y)` for `P ⊑ Q`, and `P(x,z) ← P(x,y), P(y,z)` for transitivity. Table 6.1 (p. 151) independently shows the correct directions.
 - Table 7.1 (p. 184) repeats the left conjunct `C` where the second conjunct must be `D`. An implementation must require both conjuncts.
 - Example 5.2.1's intermediate formula (p. 121) misplaces the atomic conclusion inside an implication, while the final two rules correctly distinguish its scope.
-- The printed distributivity identity on p. 133 is malformed. The valid identity is `F ∧ (G ∨ H) ≡ (F ∧ G) ∨ (F ∧ H)`. Its nearby example also changes the variable of outer conjuncts; the expression syntax determines their scope.
+- The printed distributivity identity on p. 133 is malformed. The valid DNF identity is `F ∧ (G ∨ H) ≡ (F ∧ G) ∨ (F ∧ H)`. Example 5.4.2's nearby restriction scope is ambiguous because of missing parentheses; similar notation on p. 86 prevents treating its variable placement as a separately confirmed semantic error.
 - Table 8.9 (p. 216) labels absolute max-one/min-zero counts inconsistently with the surrounding text and relative counts. The preceding construction says first and third subclasses receive max-one, so max-one appears twice as often as min-zero. A generator should follow that construction and record it explicitly.
 
-These corrections are necessary to implement the intended reasoner, and are not changes to the normative OWL/DLP semantics.
+The subsequent review also finds counterexamples to the combined equivalence probe (p. 136), inverse inheritance (Eq. 5.13, p. 140), and the printed rule-deletion maintenance algorithm (p. 163). The corrected implementation provides independent class-equivalence probes and semantic property-characteristic queries. It replaces the faulty rule-deletion procedure with old-rule overdeletion followed by current-rule rederivation; [CORRECTED_MAINTENANCE.md](CORRECTED_MAINTENANCE.md) gives the algorithm, eligibility conditions, and correctness argument. The report distinguishes these procedural defects from local formula slips and from errors in complexity parameters; it does not claim to refute the thesis's central fixed-TBox data-complexity result.

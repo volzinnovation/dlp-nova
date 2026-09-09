@@ -208,16 +208,21 @@ class Engine:
                 raise ProfileError(f"Unsafe rule has unbound variables: {names}")
 
     def _prepare_rules(self):
-        self._dependents = defaultdict(list)
-        self._global_rules = []
-        for number, rule in enumerate(self.rules):
+        self._dependents, self._global_rules = self._rule_dependencies(self.rules)
+
+    @staticmethod
+    def _rule_dependencies(rules):
+        dependents = defaultdict(list)
+        global_rules = []
+        for number, rule in enumerate(rules):
             relational = False
             for position, atom in enumerate(rule.body):
                 if atom.predicate != EQ:
-                    self._dependents[atom.predicate].append((number, position))
+                    dependents[atom.predicate].append((number, position))
                     relational = True
             if not relational:
-                self._global_rules.append(number)
+                global_rules.append(number)
+        return dependents, global_rules
 
     def _start_stats(self, operation, method):
         self.stats = {"strategy": self.strategy, "operation": operation,
@@ -566,20 +571,65 @@ class Engine:
         self._finish_stats()
         return self
 
-    def _can_dred(self):
+    def _can_dred(self, rules=None, facts=None):
         if not self.complete or self._ever_merged:
             return False
-        for atom in self.asserted:
-            if atom.predicate == EQ or any(isinstance(t, Skolem) for t in atom.args):
+        rules = self.rules if rules is None else rules
+        facts = self.asserted if facts is None else facts
+        literals = {}
+
+        def eligible(atom):
+            if atom.predicate == EQ:
                 return False
-        for rule in self.rules:
-            for atom in (*rule.body, *((rule.head,) if rule.head is not None else ())):
-                if atom.predicate == EQ or any(isinstance(t, Skolem) for t in atom.args):
+            for term in atom.args:
+                if isinstance(term, Skolem):
                     return False
+                key = _literal_key(term)
+                if key is not None and literals.setdefault(key, term) != term:
+                    # Even without an EQ atom, datatype value identity can merge
+                    # representatives. Deletion would then require splitting them.
+                    return False
+            return True
+
+        if not all(eligible(atom) for atom in facts):
+            return False
+        for rule in rules:
+            if not all(eligible(atom) for atom in
+                       (*rule.body, *((rule.head,) if rule.head is not None else ()))):
+                return False
         return True
 
-    def _dred(self, removed, additions):
-        """Overdelete in the old model, rederive from surviving independent proofs."""
+    def _derive_once(self, rules):
+        """Seed changed rules, bounding candidate storage as in regular evaluation."""
+        pending = set()
+        for rule in rules:
+            for head in self._heads(rule):
+                if head not in self.facts:
+                    pending.add(head)
+                if len(pending) + len(self.facts) > self.max_facts:
+                    break
+            if len(pending) + len(self.facts) > self.max_facts:
+                break
+        previous = len(self.facts)
+        delta = self._ingest(pending)
+        self.stats["derived_facts"] += max(0, len(self.facts) - previous)
+        return delta
+
+    def _dred(self, removed, additions, previous_rules):
+        """Overdelete under old rules, then rederive exclusively under new rules.
+
+        A lost proof contains either a removed assertion, a removed rule, or a
+        constant that has left the active domain. Seed these losses in the old
+        closure and follow the OLD dependency graph to remove their consequences.
+        Assertions in the new database remain independent support. Every surviving
+        fact is therefore valid under the new program. Starting with these facts,
+        new assertions, and new domain facts, NEW rules recover alternative proofs
+        and propagate insertions. An unsupported recursive cycle has no seed.
+        """
+        previous_set, next_set = set(previous_rules), set(self.rules)
+        removed_rules = previous_set - next_set
+        inserted_rules = next_set - previous_set
+        old_dependents, _ = self._rule_dependencies(previous_rules)
         protected = {self._canonical(atom) for atom in self.asserted}
         protected.update(Atom(NEQ, tuple(reversed(atom.args))) for atom in list(protected)
                          if atom.predicate == NEQ)
@@ -589,8 +639,16 @@ class Engine:
         deleted.update(Atom(NEQ, tuple(reversed(atom.args))) for atom in removed
                        if atom.predicate == NEQ and
                        Atom(NEQ, tuple(reversed(atom.args))) not in protected)
+        for rule in removed_rules:
+            if rule.head is not None:
+                deleted.update(self._heads(rule))
+        deleted.update(Atom(NEQ, tuple(reversed(atom.args))) for atom in list(deleted)
+                       if atom.predicate == NEQ)
         deleted.update(atom for atom in self.facts if atom.predicate == TOP and atom not in protected)
         deleted.intersection_update(self.facts)
+        # A rule may be deleted while its head remains explicitly asserted.
+        # Such an assertion still supports its descendants independently.
+        deleted.difference_update(protected)
         frontier = set(deleted)
         while frontier and self.complete:
             if self.stats["rounds"] >= self.max_rounds:
@@ -599,8 +657,10 @@ class Engine:
             self.stats["rounds"] += 1
             delta_index = _Index(frontier)
             following = set()
-            for number, position in self._variants(frontier, include_globals=False):
-                rule = self.rules[number]
+            variants = (variant for predicate in {atom.predicate for atom in frontier}
+                        for variant in old_dependents.get(predicate, ()))
+            for number, position in variants:
+                rule = previous_rules[number]
                 if rule.head is None:
                     continue
                 for head in self._heads(rule, delta_index, position):
@@ -616,77 +676,97 @@ class Engine:
         self.facts.difference_update(deleted)
         self._index = _Index(self.facts)
         self.terms.intersection_update(domain)
+        # DRed eligibility guarantees identity representatives. Purge departed
+        # terms from all identity caches so a later literal cannot merge with a
+        # removed lexical form that is no longer in the active domain.
+        self._parent = {term: term for term in self.terms}
+        self._class_literals = {term: {term} for term in self.terms if isinstance(term, Literal)}
+        self._literal_representatives = {
+            _literal_key(term): term for term in self.terms if _literal_key(term) is not None
+        }
         self._equivalence_cache = None
         self.violations = []
         self._violation_keys = set()
-        # Evaluate affected heads against the surviving model once. Subsequent
-        # rederivations use deltas, so unsupported positive cycles remain deleted.
+        # New constants can occur only in a rule, without any inserted assertion.
+        delta = self._ingest(Atom(TOP, (term,)) for term in domain - self.terms)
+        delta.update(self._ingest(additions))
+        # Evaluate all remaining definitions of overdeleted predicates and each
+        # inserted rule once. Further derivations are propagated by deltas.
+        # No deleted rule participates in this phase, including its rederivations.
         predicates = {atom.predicate for atom in deleted}
-        rederived = set()
-        for rule in self.rules:
-            if rule.head is not None and rule.head.predicate in predicates:
-                rederived.update(head for head in self._heads(rule) if head in deleted)
-        delta = self._ingest(rederived)
+        boundary_rules = [rule for rule in self.rules if rule in inserted_rules
+                          or (rule.head is not None and rule.head.predicate in predicates)]
+        if self.complete:
+            delta.update(self._derive_once(boundary_rules))
         self._run(delta)
         self.stats["rederived_facts"] = len(deleted & self.facts)
-        delta = self._ingest(additions)
-        self._run(delta)
         self._check_differences()
-        for rule in self.rules:
-            if rule.head is None:
-                list(self._heads(rule))
+        if self.complete:
+            for rule in self.rules:
+                if rule.head is None:
+                    list(self._heads(rule))
         return True
 
-    def update(self, add: Iterable[Atom] = (), remove: Iterable[Atom] = ()):
+    def update(self, add: Iterable[Atom] = (), remove: Iterable[Atom] = (), *,
+               add_rules: Iterable[Rule] = (), remove_rules: Iterable[Rule] = ()):
+        """Validate and apply one fact/rule transaction; additions win overlap.
+
+        Retractions use DRed only when both programs are equality-free and
+        function-free and the previous closure is complete. Otherwise rebuilding
+        safely handles equality splitting, witnesses, and incomplete old results.
+        """
         additions, removals = set(add), set(remove)
         next_asserted = (self.asserted - removals) | additions
-        self._validate(self.rules, next_asserted)
+        rule_additions, rule_removals = list(add_rules), set(remove_rules)
+        next_rules = list(dict.fromkeys(
+            [rule for rule in self.rules if rule not in rule_removals] + rule_additions))
+        self._validate(next_rules, next_asserted)
         actual_removed = self.asserted - next_asserted
         actual_added = next_asserted - self.asserted
-        can_dred = self._materialized and self._can_dred()
+        previous_rules = self.rules
+        previous_set = set(previous_rules)
+        deleted = previous_set - set(next_rules)
+        inserted = [rule for rule in next_rules if rule not in previous_set]
+        rules_changed = bool(deleted or inserted)
+        retracting = bool(actual_removed or deleted)
+        can_dred = (self._materialized and self._can_dred()
+                    and self._can_dred(next_rules, next_asserted)) if retracting else False
         self.asserted = next_asserted
-        if not self._materialized or not self.complete or (actual_removed and not can_dred):
+        self.rules = next_rules
+        self._prepare_rules()
+        if not self._materialized or not self.complete or (retracting and not can_dred):
             self.materialize()
             self.stats["operation"] = "update"
-            self.stats["update_method"] = "rematerialize"
+            self.stats["update_method"] = "rematerialize-rules" if rules_changed else "rematerialize"
             return self
-        self._start_stats("update", "dred" if actual_removed else "incremental-insert")
-        if actual_removed:
-            if not self._dred(actual_removed, actual_added):
+        method = ("dred-rules" if rules_changed else "dred") if retracting else (
+            "incremental-rules" if rules_changed else "incremental-insert")
+        self._start_stats("update", method)
+        if retracting:
+            if not self._dred(actual_removed, actual_added, previous_rules):
                 # An interrupted overdelete may still contain unsupported old
                 # facts. Rebuild so even a bounded partial result remains sound.
                 self.materialize()
                 self.stats["operation"] = "update"
-                self.stats["update_method"] = "rematerialize-after-dred-limit"
+                self.stats["update_method"] = ("rematerialize-rules-after-dred-limit"
+                                               if rules_changed else "rematerialize-after-dred-limit")
                 return self
         else:
-            delta = self._ingest(actual_added)
-            self._run(delta)
+            delta = (self._ingest(Atom(TOP, (term,)) for term in self._domain_constants())
+                     if inserted else set())
+            delta.update(self._ingest(actual_added))
+            if self.complete:
+                delta.update(self._derive_once(inserted))
+            self._run({self._canonical(atom) for atom in delta})
         self._finish_stats()
         return self
 
     def update_rules(self, add: Iterable[Rule] = (), remove: Iterable[Rule] = ()):
-        additions, removals = list(add), set(remove)
-        next_rules = list(dict.fromkeys([r for r in self.rules if r not in removals] + additions))
-        self._validate(next_rules, self.asserted)
-        deleted = set(self.rules) - set(next_rules)
-        inserted = [rule for rule in next_rules if rule not in self.rules]
-        self.rules = next_rules
-        self._prepare_rules()
-        if deleted or not self._materialized or not self.complete:
-            self.materialize()
-            self.stats["operation"] = "update_rules"
+        """Apply a rule-only transaction through the shared maintenance path."""
+        self.update(add_rules=add, remove_rules=remove)
+        self.stats["operation"] = "update_rules"
+        if self.stats["update_method"] == "incremental-insert":
+            self.stats["update_method"] = "incremental-rules"
+        elif self.stats["update_method"] == "rematerialize":
             self.stats["update_method"] = "rematerialize-rules"
-            return self
-        self._start_stats("update_rules", "incremental-rules")
-        delta = self._ingest(Atom(TOP, (term,)) for term in self._domain_constants())
-        pending = set()
-        for rule in inserted:
-            pending.update(self._heads(rule))
-        delta.update(self._ingest(pending))
-        if self._equality_dirty:
-            self._reindex()
-            delta = set(self.facts)
-        self._run({self._canonical(atom) for atom in delta})
-        self._finish_stats()
         return self
