@@ -100,12 +100,25 @@ See the [Bach results](benchmarks/bach-results.md) for measured parsing, reasoni
 
 See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](docs/THESIS_SPEC.md), and [benchmark methodology](benchmarks/README.md) for details and limitations. The test suite combines explicit semantic regressions, independent OWL RL comparison within the shared fragment, exhaustive small models, and randomized update comparisons against fresh closure.
 
+The [subsequent research study](docs/RESEARCH_EXPERIMENTS.md) develops adaptive
+unary evaluation and bounded proof certificates for mixed fact/rule maintenance.
+It includes preservation arguments, a falsified planning heuristic, and an
+18-case factorial experiment with four execution configurations. The
+[raw experiments](benchmarks/research-results.json) preserve all observations;
+the study distinguishes local improvements from unestablished claims of global
+novelty or state-of-the-art performance.
+Certificates reached 7.45× speedup on a supported-cycle workload but added about
+19% on unsupported cycles; adaptive planning was neutral overall. Both remain
+experimental after failing the predeclared default-adoption screen. Production
+keeps fixed unary planning and ordinary DRed, with faster unary/binary lookups.
+
 ## Implementation map
 
 - `src/dlp_reasoner/compiler.py`: OWL graph validation, expression normalization and Horn compilation.
 - `src/dlp_reasoner/engine.py`: joins/indexes, delta evaluation, equality, constraints, bounds and updates.
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
 - `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
+- `src/dlp_reasoner/support.py`: experimental current-proof certificates for DRed.
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.
 - `tests/`, `examples/`, `benchmarks/`: executable evidence and reproducible workloads.
 

@@ -1,0 +1,19 @@
+{
+  "description": "Exact source and protocol bytes used by research-factorial-v3, preserved before any adoption changes. Overlay on an isolated 8ce254f checkout, never on a working tree with unsaved edits.",
+  "base_commit": "8ce254fb011c2a2fa72345e66a25373c0885273a",
+  "archive": "research-source.tar.gz",
+  "archive_sha256": "885daae3375373b53fdbb7b186b8ff2fecf4dac9fb0c34c240a82bbd7b73cb7b",
+  "files_sha256": {
+    "benchmarks/research.py": "df6198c747409abdb93f1667fa216ced7d471fb18fcdf34eef8aa07d3c69e8a8",
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "4405416628336d88028e9c828faa835ad32d30129b664c9cb09725c9c8a8129f",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851",
+    "benchmarks/research-protocol-v3.json": "6f3e996ca615bacde0cd12896d8f04ab94fea8b4f0523a39ac00bc81806c8f69"
+  }
+}

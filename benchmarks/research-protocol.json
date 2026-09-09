@@ -1,0 +1,149 @@
+{
+  "protocol": "research-factorial-v1",
+  "historical_baseline": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "pre_research_commit": "8ce254fb011c2a2fa72345e66a25373c0885273a",
+  "blocks": 9,
+  "case_matrix": [
+    {
+      "family": "unary",
+      "mode": "sparse-single",
+      "size": 512,
+      "width": 8
+    },
+    {
+      "family": "unary",
+      "mode": "sparse-single",
+      "size": 512,
+      "width": 64
+    },
+    {
+      "family": "unary",
+      "mode": "sparse-disjoint",
+      "size": 512,
+      "width": 8
+    },
+    {
+      "family": "unary",
+      "mode": "sparse-disjoint",
+      "size": 512,
+      "width": 64
+    },
+    {
+      "family": "unary",
+      "mode": "dense-overlap",
+      "size": 512,
+      "width": 8
+    },
+    {
+      "family": "unary",
+      "mode": "dense-overlap",
+      "size": 512,
+      "width": 64
+    },
+    {
+      "family": "unary",
+      "mode": "dense-selective",
+      "size": 512,
+      "width": 8
+    },
+    {
+      "family": "unary",
+      "mode": "dense-selective",
+      "size": 512,
+      "width": 64
+    },
+    {
+      "family": "support",
+      "mode": "alternate-support",
+      "size": 256,
+      "depth": 4
+    },
+    {
+      "family": "support",
+      "mode": "alternate-support",
+      "size": 256,
+      "depth": 32
+    },
+    {
+      "family": "support",
+      "mode": "unsupported-cycle",
+      "size": 256,
+      "depth": 4
+    },
+    {
+      "family": "support",
+      "mode": "unsupported-cycle",
+      "size": 256,
+      "depth": 32
+    },
+    {
+      "family": "support",
+      "mode": "mixed-new-support",
+      "size": 256,
+      "depth": 4
+    },
+    {
+      "family": "support",
+      "mode": "mixed-new-support",
+      "size": 256,
+      "depth": 32
+    },
+    {
+      "family": "support",
+      "mode": "unique-signatures",
+      "size": 256,
+      "depth": 4
+    },
+    {
+      "family": "support",
+      "mode": "unique-signatures",
+      "size": 256,
+      "depth": 32
+    }
+  ],
+  "configurations": {
+    "fixed-dred": [
+      false,
+      false
+    ],
+    "adaptive-dred": [
+      true,
+      false
+    ],
+    "fixed-support": [
+      false,
+      true
+    ],
+    "adaptive-support": [
+      true,
+      true
+    ]
+  },
+  "primary_endpoint": "wall seconds for one complete atomic Engine.update transaction",
+  "secondary_endpoints": [
+    "initial materialization seconds",
+    "all engine counters",
+    "whole-process peak RSS, including validation"
+  ],
+  "hypotheses": [
+    "H1: adaptive unary planning reduces delta processing when full joins are selective; sparse updates retain their benefit without dense-delta union allocation.",
+    "H2: assertion-seeded support certificates reduce unnecessary overdeletion in supported cycles, including mixed transactions with newly added support.",
+    "H3: unsupported cycles lose all unsupported results; unique signatures expose certificate preparation and cache overhead rather than hiding it.",
+    "H4: the two mechanisms can interact; all four combinations must be measured."
+  ],
+  "failure_criteria": [
+    "Any full fact-set disagreement or incomplete run invalidates that configuration.",
+    "Report every case, including overhead and regressions; no post-hoc case removal.",
+    "A speedup against local ablations or historical b1254c4 is not state-of-art evidence."
+  ],
+  "design": "Each block uses four independently launched workers with the same explicit hash seed. A seeded Latin-square rotation balances execution position over groups of four blocks; block and case orders are saved. One cold invocation per worker; no discarded warm-up or concurrent experiments.",
+  "uncertainty": "Report raw per-block ratios and paired bootstrap intervals (descriptive); nine blocks remain limited evidence on one host. Do not pool cases.",
+  "correctness": "Every update equals a fresh fixed-plan closure as a full set. Across ablations, exact input, final rules/assertions, and entire initial/final closure SHA-256 digests must match. Small cases also use an independent exhaustively grounded positive Datalog oracle.",
+  "memory": "Optional separate tracemalloc workers; their instrumented times are never mixed with ordinary timing samples. tracemalloc omits native allocations; RSS is whole-process peak and includes the correctness reference.",
+  "external_baselines": {
+    "souffle": null,
+    "RDFox": null,
+    "rdfox": null
+  },
+  "external_scope": "No native external reasoner currently required. Existing owlrl has different schema closure and no equivalent arbitrary rule transaction interface. External competitive performance remains unestablished."
+}

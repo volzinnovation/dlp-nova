@@ -1,5 +1,10 @@
 # Validation methodology
 
+Historical result tables retain their original measurements; their earlier
+“current” columns refer to the `8ce254f` modernization. The subsequent research
+and final production run are documented at the end of this file and in
+[RESEARCH_EXPERIMENTS.md](RESEARCH_EXPERIMENTS.md).
+
 The checks implement the semantic obligations in [THESIS_SPEC.md](THESIS_SPEC.md) and deliberately use several different reference methods. Passing these tests is evidence for the exercised fragment and cases, not a proof of conformance to all OWL or all possible DLP ontologies.
 
 Run the independent suite with:
@@ -267,3 +272,44 @@ intervals. This provides stronger attribution evidence than the separate full
 runs, while leaving machine variability and limited sample size unresolved.
 **The pinned historical `b1254c4` report remains the default baseline.** None of
 its timings are replaced by these newly measured baseline observations.
+
+## Subsequent original research and final production validation
+
+The final source passes **593 tests**, Ruff, both thesis errata/logic scripts,
+and package build. Added checks include 1,458 exhaustive relation/delta cases,
+1,000 randomized mixed fact/rule transaction states with independent grounding,
+current-domain and replacement-proof regressions, bounded proof search,
+lookup patterns at arities zero through four, and corrupted-artifact rejection.
+
+The [factorial study](RESEARCH_EXPERIMENTS.md) retains **648 timing workers**,
+**72 separate memory workers**, and **36 small independent-oracle controls**.
+Its offline validator checks initial/final completeness, all full outcome
+digests, execution order, source/archive integrity, and recomputed summaries:
+
+```sh
+.venv/bin/python scripts/validate_research_artifacts.py
+```
+
+Both experimental features missed their predeclared default-adoption screens:
+adaptive unary planning had a 1.001446 geometric-mean update ratio, and support
+certificates added up to 18.96% overhead on unsupported cycles despite gains
+up to 7.45× with surviving support. Production therefore keeps fixed unary
+planning and ordinary DRed, with the unary/binary lookup specialization enabled.
+The exact experimental source remains recoverable from its archive.
+
+The final production [thesis-suite results](../benchmarks/research-thesis-results.md)
+started at **2026-09-09T17:09:20Z**. All **54 cases × five repetitions** passed;
+all **51 historical comparisons** verified unchanged inputs and correctness
+controls, and the 14 saved source hashes match the final source. The three
+Bach cases passed and remain outside the older baseline's coverage. The pinned
+`b1254c4` report retains SHA-256
+`6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2`.
+The full report includes regressions as well as gains; historical timing ratios
+are not controlled evidence of external state-of-the-art performance.
+
+A separate [support replication](../benchmarks/research-support-replay.md)
+passed **144 further independent workers** across all eight support cases with
+new paired hash seeds. All full outcomes matched the original experiment and
+fresh reconstruction. It reproduced the roughly 7.6× supported-case gain and
+18–19% unsupported-case overhead. It is a post-hoc robustness check prompted by
+possible concurrent host activity, not a replacement for the original evidence.

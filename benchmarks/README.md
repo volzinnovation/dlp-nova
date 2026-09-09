@@ -87,3 +87,47 @@ together, unlike the unpaired retrospective full-run comparison. Five pairs
 remain limited evidence and do not control every source of machine noise. The
 driver protects both the pinned reference and the recorded full-run outputs;
 the supplemental measurements never become the default baseline automatically.
+
+## Original factorial experiment
+
+```sh
+.venv/bin/python scripts/validate_research_artifacts.py
+.venv/bin/python -m benchmarks.research --blocks 9 --memory --timeout 120 \
+  --output /tmp/dlp-research-reproduction.json
+```
+
+The [v3 protocol](research-protocol-v3.json) fixes 18 workloads, nine independent
+process blocks, four execution configurations, hypotheses and adoption criteria.
+Earlier protocol proposals remain available. The runner isolates adaptive unary
+planning and current-support protection while holding other source changes
+constant; it does not replay the whole `8ce254f` implementation. It checks full
+closure equality and hashes, and small counterparts use independent exhaustive
+grounding. Separate instrumented workers measure additional Python allocation
+during updates; their timings do not enter the primary comparison.
+
+The [research report](../docs/RESEARCH_EXPERIMENTS.md) explains proofs, adverse
+cases, the work-counter limitations and interpretation. All samples and source
+hashes are in [research-results.json](research-results.json). Exact measured
+sources and the protocol are recoverable from [research-source.tar.gz](research-source.tar.gz)
+with its [manifest](research-source.json), overlaid on a separate checkout of
+`8ce254f`. This preserves the experiment if the production default later changes.
+The offline validator checks the preserved original report and its original
+archive; a new run records the source hashes of the checkout used for that run.
+Both experimental mechanisms failed the predeclared default-adoption screen
+and remain opt-in through the research configurations.
+The final production thesis-suite run uses `research-thesis-results.json`,
+preserving the earlier main-suite/replay outputs and pinned `b1254c4` reference.
+
+The [separate support replication](research-support-replay.md) adds 144 paired
+workers after the production suite. It was prompted by a separately rewritten
+Bach artifact during the initial experiment, so it is explicitly post-hoc and
+does not change the original adoption rules. The supported-cycle benefit and
+unsupported-cycle overhead recur. Run it only after other timing work finishes:
+
+```sh
+.venv/bin/python scripts/replay_support_research.py \
+  --output /tmp/dlp-support-reproduction.json
+```
+
+The replication refuses existing output paths and preserves the original
+factorial data; all pairs and source/protocol hashes are saved separately.

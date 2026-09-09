@@ -1,5 +1,10 @@
 # Research-informed improvements, 2004–2026
 
+This report records the modernization committed as `8ce254f`. The subsequent
+[original experimental study](RESEARCH_EXPERIMENTS.md) revisits these observations,
+adds falsifiable hypotheses and controlled ablations, and retains `b1254c4` as
+the historical baseline.
+
 This assessment uses the implementation and recorded evaluation at commit
 `b1254c441731ca4fdf32ea83570ff99aaa84ac2a` as its fixed starting point. It is a
 targeted review of primary research relevant to this reasoner's measured costs,

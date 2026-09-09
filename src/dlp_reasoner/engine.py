@@ -17,6 +17,7 @@ from rdflib import BNode, Literal, URIRef
 from rdflib.namespace import RDF, XSD
 
 from .model import Atom, EQ, NEQ, TOP, ProfileError, Program, Rule, Skolem, Var
+from .support import UnarySupport
 
 
 class _DomainSeed(BNode):
@@ -105,6 +106,24 @@ class _Index:
 
     def lookup(self, predicate, values):
         result = self.rows.get(predicate, ())
+        # RDF compilation predominantly produces unary and binary predicates.
+        # Avoid constructing a generator and scanning argument positions on
+        # these hot paths; the generic path retains arbitrary-arity support.
+        if len(values) == 1:
+            if values[0] is _MISSING:
+                return result
+            return (values,) if values in result else ()
+        if len(values) == 2:
+            left, right = values
+            if left is not _MISSING and right is not _MISSING:
+                return (values,) if values in result else ()
+            if left is _MISSING:
+                if right is _MISSING:
+                    return result
+                column = self.columns.get((predicate, 1))
+                return column.get(right, ()) if column is not None else ()
+            column = self.columns.get((predicate, 0))
+            return column.get(left, ()) if column is not None else ()
         if all(value is not _MISSING for value in values):
             # A bound atom is a membership probe, not a scan of the smallest
             # single-column bucket. This also covers zero-arity predicates.
@@ -127,6 +146,14 @@ class Engine:
     useful correctness oracle.  Resource exhaustion leaves ``complete=False``
     and the partial materialization available for diagnosis.
     """
+
+    # Private research switches. The registered factorial study did not meet
+    # either default-adoption threshold; preserve the fixed production plan.
+    _unary_strategy = "union-first"
+    # Certificates help multiply supported closures but add work without support.
+    _support_certificates_enabled = False
+    _support_max_contexts = 128
+    _support_max_rule_visits = 100_000
 
     def __init__(self, program: Program, strategy="semi-naive", max_rounds=1000,
                  max_facts=1_000_000, max_depth=32):
@@ -246,6 +273,9 @@ class Engine:
                       "candidate_rows": 0, "body_matches": 0, "derived_facts": 0,
                       "unary_plan_evaluations": 0, "unary_intersections": 0,
                       "coalesced_delta_variants": 0,
+                      "unary_delta_union_input_rows": 0, "unary_delta_filter_input_rows": 0,
+                      "unary_intersection_input_rows": 0, "unary_bound_membership_tests": 0,
+                      "unary_full_delta_shortcuts": 0, "unary_full_intersection_plans": 0,
                       "equality_merges": 0, "overdeleted_facts": 0, "rederived_facts": 0}
         self._started = perf_counter()
 
@@ -520,6 +550,101 @@ class Engine:
         yield from visit(tuple(range(len(rule.body))), {} if initial is None else initial)
 
     def _unary_solutions(self, rule, plan, delta_index, delta_position, initial):
+        """Choose between delta union and full intersection using current sizes.
+
+        Coalesced evaluation computes (intersection I_i) intersect (union D_i).
+        Each D_i is a subset of I_i: _run has already ingested its frontier,
+        including any equality reindexing. Thus a full-relation delta makes the
+        union filter redundant. Otherwise compare delta input volume with the
+        full intersection's width-times-smallest-relation work bound. This
+        conservative threshold preserves cheap, highly overlapping deltas.
+        All relation references are obtained anew, so plans survive updates.
+        """
+        if self._unary_strategy == "union-first":
+            yield from self._unary_union_first(rule, plan, delta_index, delta_position, initial)
+            return
+        self.stats["unary_plan_evaluations"] += 1
+        variable, predicates = plan
+        delta_predicate = (rule.body[delta_position].predicate
+                           if delta_position is not None else None)
+        rows = [(delta_index if delta_position is not None and predicate == delta_predicate
+                 else self._index).rows.get(predicate, ()) for predicate in predicates]
+        if any(not relation for relation in rows):
+            return
+        binding = {} if initial is None else initial
+        coalesced = delta_index is not None and delta_position is None
+        if variable in binding:
+            row = (binding[variable],)
+            for relation in rows:
+                self.stats["unary_bound_membership_tests"] += 1
+                if row not in relation:
+                    return
+            if coalesced:
+                for predicate in predicates:
+                    self.stats["unary_bound_membership_tests"] += 1
+                    if row in delta_index.rows.get(predicate, ()):
+                        break
+                else:
+                    return
+            self.stats["candidate_rows"] += 1
+            self.stats["body_matches"] += 1
+            yield dict(binding)
+            return
+
+        delta_filter = None
+        if coalesced:
+            deltas, volume, full_delta = [], 0, False
+            for predicate, relation in zip(predicates, rows):
+                delta = delta_index.rows.get(predicate)
+                if delta:
+                    if len(delta) == len(relation):
+                        full_delta = True
+                        break
+                    deltas.append(delta)
+                    volume += len(delta)
+            if full_delta:
+                self.stats["unary_full_delta_shortcuts"] += 1
+            else:
+                if not deltas:
+                    return
+                if len(deltas) == 1:
+                    rows.append(deltas[0])
+                elif volume <= len(rows) * min(map(len, rows)):
+                    changed = set()
+                    for delta in deltas:
+                        self.stats["unary_delta_union_input_rows"] += len(delta)
+                        changed.update(delta)
+                    rows.append(changed)
+                else:
+                    self.stats["unary_full_intersection_plans"] += 1
+                    delta_filter = deltas
+        rows.sort(key=len)
+        if len(rows) == 1:
+            matches = rows[0]
+        else:
+            matches = set(rows[0])
+            for relation in rows[1:]:
+                self.stats["unary_intersections"] += 1
+                self.stats["unary_intersection_input_rows"] += min(len(matches), len(relation))
+                matches.intersection_update(relation)
+                if not matches:
+                    return
+        if delta_filter is not None:
+            changed_matches = set()
+            for delta in delta_filter:
+                # This estimates set-kernel input, not internal hash probes or
+                # total CPU operations. It excludes duplicate output updates.
+                self.stats["unary_delta_filter_input_rows"] += min(len(matches), len(delta))
+                changed_matches.update(matches.intersection(delta))
+                if len(changed_matches) == len(matches):
+                    break
+            matches = changed_matches
+        for (value,) in matches:
+            self.stats["candidate_rows"] += 1
+            self.stats["body_matches"] += 1
+            yield {**binding, variable: value}
+
+    def _unary_union_first(self, rule, plan, delta_index, delta_position, initial):
         """Intersect unary relations sharing one variable, without nested joins.
 
         For an individual delta variant, its relation replaces the full relation.
@@ -541,7 +666,9 @@ class Engine:
         if delta_index is not None and delta_position is None:
             changed = set()
             for predicate in predicates:
-                changed.update(delta_index.rows.get(predicate, ()))
+                delta = delta_index.rows.get(predicate, ())
+                self.stats["unary_delta_union_input_rows"] += len(delta)
+                changed.update(delta)
             if not changed:
                 return
             rows.append(changed)
@@ -555,6 +682,7 @@ class Engine:
             matches = set(rows[0])
             for relation in rows[1:]:
                 self.stats["unary_intersections"] += 1
+                self.stats["unary_intersection_input_rows"] += min(len(matches), len(relation))
                 matches.intersection_update(relation)
                 if not matches:
                     return
@@ -711,6 +839,10 @@ class Engine:
                          if atom.predicate == NEQ)
         domain = self._domain_constants()
         protected.update(Atom(TOP, (self.normalize(term),)) for term in domain)
+        support = (UnarySupport(self.rules, self.asserted, domain,
+                                max_contexts=self._support_max_contexts,
+                                max_rule_visits=self._support_max_rule_visits)
+                   if self._support_certificates_enabled else None)
         deleted = {self._canonical(atom) for atom in removed} - protected
         deleted.update(Atom(NEQ, tuple(reversed(atom.args))) for atom in removed
                        if atom.predicate == NEQ and
@@ -725,6 +857,15 @@ class Engine:
         # A rule may be deleted while its head remains explicitly asserted.
         # Such an assertion still supports its descendants independently.
         deleted.difference_update(protected)
+        # Only current assertions/rules may certify an old fact. A positive
+        # proof is safe to protect; unknown (including budget exhaustion) uses
+        # ordinary DRed. Never insert other oracle conclusions here: new facts
+        # still need the normal delta propagation below.
+        if support is not None:
+            for atom in tuple(deleted):
+                if support.proves(atom):
+                    protected.add(atom)
+                    deleted.remove(atom)
         frontier = set(deleted)
         while frontier and self.complete:
             if self.stats["rounds"] >= self.max_rounds:
@@ -741,6 +882,9 @@ class Engine:
                     continue
                 for head in self._heads(rule, delta_index, position):
                     if head in self.facts and head not in protected and head not in deleted:
+                        if support is not None and support.proves(head):
+                            protected.add(head)
+                            continue
                         following.add(head)
                         if head.predicate == NEQ:
                             reverse = Atom(NEQ, tuple(reversed(head.args)))
@@ -748,6 +892,8 @@ class Engine:
                                 following.add(reverse)
             deleted.update(following)
             frontier = following
+        if support is not None:
+            self.stats.update((f"support_{key}", value) for key, value in support.stats.items())
         self.stats["overdeleted_facts"] = len(deleted)
         self.facts.difference_update(deleted)
         self._index = _Index(self.facts)
