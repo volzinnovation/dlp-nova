@@ -6,9 +6,11 @@ separate parse/compile/materialize phases, and preserve every repetition.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import importlib.metadata
 import json
+import math
 import os
 import platform
 import random
@@ -25,12 +27,107 @@ from rdflib import Graph, OWL, RDF
 from dlp_reasoner import Reasoner
 from dlp_reasoner.engine import Engine
 from dlp_reasoner.model import Atom, Program, Rule, Skolem, Var
+from . import bach
 from .workloads import (
     EX, cardinality_taxonomy, equality, existential, factored_enumerations, factored_unions,
     maintenance, taxonomy, transitive,
 )
 
 MEASUREMENT_PROTOCOL = "phase-timings-v1"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+BASELINE_COMMIT = "b1254c441731ca4fdf32ea83570ff99aaa84ac2a"
+BASELINE_RESULTS_SHA256 = "6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2"
+DEFAULT_BASELINE = REPOSITORY_ROOT / "benchmarks/baselines/b1254c4/results.json"
+IMMUTABLE_BASELINES = REPOSITORY_ROOT / "benchmarks/baselines"
+BOOTSTRAP_RESAMPLES = 2000
+BOOTSTRAP_SEED = 2004
+WORK_COUNTERS = (
+    "rounds", "rule_evaluations", "candidate_rows", "body_matches", "derived_facts",
+    "equality_merges", "overdeleted_facts", "rederived_facts",
+    "unary_plan_evaluations", "unary_intersections", "coalesced_delta_variants",
+)
+
+
+def source_hashes():
+    paths = sorted([*(REPOSITORY_ROOT / "src/dlp_reasoner").glob("*.py"),
+                    *(REPOSITORY_ROOT / "benchmarks").glob("*.py")])
+    return {str(path.relative_to(REPOSITORY_ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in paths}
+
+
+def git_provenance():
+    """Record checkout identity separately from the bytes actually measured."""
+    def git(*arguments):
+        return subprocess.check_output(["git", *arguments], cwd=REPOSITORY_ROOT,
+                                       stderr=subprocess.DEVNULL, text=True).strip()
+    try:
+        head = git("rev-parse", "HEAD")
+        status = git("status", "--porcelain=v1", "--untracked-files=all")
+        return {"head": head, "dirty": bool(status), "status_porcelain": status.splitlines()}
+    except (OSError, subprocess.CalledProcessError):
+        return {"head": None, "dirty": None, "status_porcelain": [], "available": False}
+
+
+def load_baseline(path=DEFAULT_BASELINE):
+    """Validate the pinned reference before accepting its historical measurements."""
+    path = Path(path).resolve()
+    raw = path.read_bytes()
+    digest = hashlib.sha256(raw).hexdigest()
+    report = json.loads(raw)
+    manifest_path = path.with_name("manifest.json")
+    pinned = path == DEFAULT_BASELINE.resolve()
+    provenance = {"path": str(path), "results_sha256": digest, "verified": False}
+    if pinned or path.is_relative_to(IMMUTABLE_BASELINES.resolve()):
+        if not manifest_path.is_file():
+            raise ValueError(f"Immutable baseline requires {manifest_path}")
+        manifest = json.loads(manifest_path.read_text())
+        commit = manifest["baseline_commit"]
+        if len(commit) != 40 or any(char not in "0123456789abcdef" for char in commit):
+            raise ValueError("Baseline manifest requires a full lowercase Git commit SHA")
+        if manifest["results_sha256"] != digest:
+            raise ValueError("Baseline results do not match their manifest SHA-256")
+        if pinned and (commit != BASELINE_COMMIT or digest != BASELINE_RESULTS_SHA256):
+            raise ValueError("Default baseline differs from pinned commit b1254c4")
+        recorded = report["environment"]["source_sha256"]
+        if manifest["source_sha256"] != recorded:
+            raise ValueError("Baseline manifest and report record different source hashes")
+        if (manifest["case_count"] != len(report["results"])
+                or manifest["measurement_protocol"] != report["measurement_protocol"]
+                or any(result["case"]["repeats"] != manifest["repeats"]
+                       or result.get("validation") != "passed" for result in report["results"])):
+            raise ValueError("Baseline report does not match validated manifest controls")
+        # This comparison ties the saved report and its measured sources to the
+        # named commit, rather than treating the mutable checkout as provenance.
+        git_verified = False
+        try:
+            subprocess.check_output(["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+                                    cwd=REPOSITORY_ROOT, stderr=subprocess.DEVNULL)
+        except (OSError, subprocess.CalledProcessError):
+            if not pinned:
+                raise ValueError("Cannot verify custom immutable baseline commit") from None
+        else:
+            for source, expected in {**recorded, "benchmarks/results.json": digest}.items():
+                content = subprocess.check_output(["git", "show", f"{commit}:{source}"],
+                                                  cwd=REPOSITORY_ROOT, stderr=subprocess.DEVNULL)
+                if hashlib.sha256(content).hexdigest() != expected:
+                    raise ValueError(f"Baseline source/hash mismatch for {source} at {commit}")
+            git_verified = True
+        provenance.update(verified=True, baseline_commit=commit, manifest=str(manifest_path),
+                          git_objects_verified=git_verified,
+                          verification="pinned-digest-and-manifest" if pinned else "git-and-manifest")
+    return report, provenance
+
+
+def protect_output(output, baseline_path):
+    """Never let a report overwrite an immutable reference, even through aliases."""
+    baseline_path = Path(baseline_path).resolve() if baseline_path is not None else None
+    for target in (Path(output), Path(output).with_suffix(".md")):
+        resolved = target.resolve()
+        if resolved.is_relative_to(IMMUTABLE_BASELINES.resolve()):
+            raise ValueError("Benchmark outputs cannot be written inside immutable baselines")
+        if baseline_path is not None and (resolved == baseline_path or (
+                target.exists() and baseline_path.exists() and target.samefile(baseline_path))):
+            raise ValueError("Benchmark output must not overwrite its baseline")
 
 
 def summary(values):
@@ -48,7 +145,70 @@ def timed(fn):
     return value, time.perf_counter() - started
 
 
+@functools.lru_cache(maxsize=8192)
+def bootstrap_ratio(before, after):
+    """Descriptive resampling of recorded medians, not an independent-run CI.
+
+    The historical five samples share a worker process. Resampling cannot
+    recover process/run variability or correct drift between historical runs.
+    """
+    if len(before) < 2 or len(after) < 2 or any(
+            not math.isfinite(value) or value <= 0 for value in (*before, *after)):
+        return None
+    rng = random.Random(BOOTSTRAP_SEED)
+    ratios = sorted(
+        statistics.median(rng.choices(after, k=len(after)))
+        / statistics.median(rng.choices(before, k=len(before)))
+        for _ in range(BOOTSTRAP_RESAMPLES)
+    )
+    return (ratios[round(0.025 * (len(ratios) - 1))],
+            ratios[round(0.975 * (len(ratios) - 1))])
+
+
+def compare_timing(before, after):
+    previous, current = before["median"], after["median"]
+    old_samples, new_samples = tuple(before.get("samples", [])), tuple(after.get("samples", []))
+    interval = bootstrap_ratio(old_samples, new_samples)
+    result = {"before": previous, "after": current,
+              "after_over_before": current / previous if previous else None,
+              "samples_before": len(old_samples), "samples_after": len(new_samples),
+              "bootstrap_95_percent_interval": list(interval) if interval else None}
+    if old_samples and new_samples:
+        result["observed_range_before"] = [min(old_samples), max(old_samples)]
+        result["observed_range_after"] = [min(new_samples), max(new_samples)]
+    return result
+
+
+def compare_counters(before, after):
+    counters = {}
+    if not before or not after:
+        return counters
+    for field in WORK_COUNTERS:
+        previous = [row[field] for row in before] if all(field in row for row in before) else None
+        current = [row[field] for row in after] if all(field in row for row in after) else None
+        if previous is None and current is None:
+            continue
+        old_median = statistics.median(previous) if previous else None
+        new_median = statistics.median(current) if current else None
+        counters[field] = {"before": old_median, "after": new_median,
+                           "after_over_before": new_median / old_median
+                           if old_median and new_median is not None else None,
+                           "samples_before": previous, "samples_after": current,
+                           "baseline_available": previous is not None,
+                           "current_available": current is not None}
+    return counters
+
+
+def operation_controls(operation):
+    fields = ("added_facts", "removed_facts", "added_rules", "removed_rules")
+    return {("rdf", sample["added_triples"], sample["removed_triples"])
+            if "added_triples" in sample else tuple(sample.get(field) for field in fields)
+            for sample in operation.get("samples", [])}
+
+
 def build_cases(suite):
+    if suite == "bach":
+        return bach.build_bach_cases()
     cases = [
         {"kind": "taxonomy", "depth": depth, "ipc": ipc, "variant": variant}
         for depth in [3, 5, 7]
@@ -69,11 +229,13 @@ def build_cases(suite):
     cases += [{"kind": "maintenance", "depth": depth, "change_percent": ratio}
               for depth in ([3, 4, 5] if suite == "thesis" else [3])
               for ratio in ([10, 15] if suite == "thesis" else [10])]
-    return cases
+    return cases + bach.build_bach_cases()
 
 
 def case_name(case):
     kind = case["kind"]
+    if kind == "bach":
+        return bach.case_name(case)
     if kind == "taxonomy":
         return f"taxonomy d{case['depth']}/i{case['ipc']}/{case['variant']}"
     if kind == "cardinality":
@@ -166,6 +328,8 @@ def worker(case):
     if sys.flags.optimize:
         raise RuntimeError("Benchmark validation requires Python assertions; omit -O")
     kind = case["kind"]
+    if kind == "bach":
+        return bach.worker(case)
     if kind == "taxonomy":
         graph, meta = taxonomy(case["depth"], case["ipc"], case["variant"])
     elif kind == "equality":
@@ -190,7 +354,7 @@ def worker(case):
         raise ValueError(f"Unknown workload {kind}")
     serialized = graph.serialize(format="nt")
     parse_times, compile_times, materialize_times, query_times = [], [], [], []
-    counts, shapes, engine_stats, updates = [], [], [], []
+    counts, answer_counts, shapes, engine_stats, updates = [], [], [], [], []
     property_query_times, subsumption_times = [], []
     profile = "L3" if kind == "existential" else "L2"
     for _ in range(case["repeats"]):
@@ -205,6 +369,7 @@ def worker(case):
             answers, elapsed = timed(lambda: set(parsed.subjects(RDF.type, EX.C0)))
             query_times.append(elapsed)
             assert len(answers) == meta["individuals"]
+            answer_counts.append(len(answers))
             counts.append(len(parsed))
             continue
         r = Reasoner(parsed, profile=profile, strategy=case.get("strategy", "semi-naive"))
@@ -245,6 +410,7 @@ def worker(case):
             answers, elapsed = timed(lambda: r.property_pairs(EX.p))
             assert len(answers) == case["size"] * (case["size"] + 1) // 2
         query_times.append(elapsed)
+        answer_counts.append(len(answers))
         counts.append(len(r.engine.facts))
         if kind == "taxonomy":
             property_answers, property_time = timed(lambda: r.property_pairs(EX.p1))
@@ -262,6 +428,7 @@ def worker(case):
               "input_sha256": hashlib.sha256("\n".join(sorted(serialized.splitlines())).encode()).hexdigest(),
               "parse_seconds": summary(parse_times), "compile_seconds": summary(compile_times),
               "materialize_seconds": summary(materialize_times), "query_seconds": summary(query_times),
+              "query_answer_counts": answer_counts,
               "materialized_fact_counts": counts, "process_peak_rss_bytes": rss,
               "validation": "passed"}
     if shapes:
@@ -279,24 +446,92 @@ def worker(case):
     return result
 
 
-def compare_baseline(report, baseline, baseline_path):
+def expected_answer_count(case, workload):
+    kind = case["kind"]
+    if kind in {"taxonomy", "maintenance"}:
+        return workload.get("individuals")
+    if kind == "cardinality":
+        return workload.get("expected_root_answers")
+    if kind in {"factored-unions", "factored-enumerations"}:
+        return workload.get("expected_answers")
+    if kind == "equality":
+        return 2 * case["size"]
+    if kind == "existential":
+        return case["size"]
+    if kind == "transitive":
+        return case["size"] * (case["size"] + 1) // 2
+    return None
+
+
+def correctness_comparison(before, after):
+    if after["case"]["kind"] == "bach":
+        return bach.correctness_comparison(before, after)
+    def same_counts(left, right):
+        return bool(left and right) and set(left) == set(right)
+    expected_before = expected_answer_count(before["case"], before.get("workload", {}))
+    expected_after = expected_answer_count(after["case"], after.get("workload", {}))
+    initial_counts_match = same_counts(before.get("materialized_fact_counts"),
+                                      after.get("materialized_fact_counts"))
+    expected_match = expected_before is not None and expected_before == expected_after
+    # Older reports preserve assertions plus expectations, but not answer counts.
+    recorded_answers_match = all(
+        "query_answer_counts" not in row or set(row["query_answer_counts"]) == {expected}
+        for row, expected in ((before, expected_before), (after, expected_after))
+    )
+    maintenance_counts, maintenance_controls = {}, {}
+    for name in set(before.get("maintenance_operations", {})) | set(after.get("maintenance_operations", {})):
+        old = before.get("maintenance_operations", {}).get(name, {})
+        new = after.get("maintenance_operations", {}).get(name, {})
+        maintenance_counts[name] = same_counts(
+            [sample["closure_facts"] for sample in old.get("samples", [])],
+            [sample["closure_facts"] for sample in new.get("samples", [])])
+        maintenance_controls[name] = bool(operation_controls(old)) and (
+            operation_controls(old) == operation_controls(new))
+    both_validated = before.get("validation") == after.get("validation") == "passed"
+    return {
+        "verified": both_validated and initial_counts_match and expected_match
+                    and recorded_answers_match and all(maintenance_counts.values())
+                    and all(maintenance_controls.values()),
+        "maintenance_controls_match": maintenance_controls,
+        "both_runs_validated": both_validated,
+        "initial_fact_counts_match": initial_counts_match,
+        "expected_query_answer_count_before": expected_before,
+        "expected_query_answer_count_after": expected_after,
+        "expected_query_answers_match": expected_match and recorded_answers_match,
+        "maintenance_closure_counts_match": maintenance_counts,
+        "query_evidence": "Workload-specific expected-answer checks passed in both runs; "
+                          "the historical report does not contain full answer-set digests.",
+    }
+
+
+def compare_baseline(report, baseline, baseline_path, provenance=None):
     def key(case):
         return json.dumps({**{k: v for k, v in case.items() if k != "repeats"},
                            "strategy": case.get("strategy", "semi-naive")}, sort_keys=True)
     prior = {key(r["case"]): r for r in baseline["results"] if "error" not in r}
     comparisons, skipped = [], []
     for result in report["results"]:
-        if "error" in result:
+        if "error" in result or result.get("validation") != "passed":
+            skipped.append({"case": result["case"], "reason": "current case did not validate"})
             continue
         old = prior.get(key(result["case"]))
         reason = None
         if old is None:
             reason = "no matching case controls"
+        elif old.get("validation") != "passed":
+            reason = "baseline case did not validate"
         elif old["input_sha256"] != result["input_sha256"]:
             reason = "input hash changed"
-        elif baseline.get("measurement_protocol", MEASUREMENT_PROTOCOL) != MEASUREMENT_PROTOCOL:
+        elif result["case"]["kind"] == "bach" and (
+                old.get("input_file_sha256") != result.get("input_file_sha256")
+                or old.get("measurement_protocol") != result.get("measurement_protocol")
+                or old["workload"].get("query_manifest_sha256") !=
+                result["workload"].get("query_manifest_sha256")):
+            reason = "Bach source bytes, query manifest or measurement boundaries changed"
+        elif (baseline.get("measurement_protocol", MEASUREMENT_PROTOCOL) != MEASUREMENT_PROTOCOL
+              or report.get("measurement_protocol") != MEASUREMENT_PROTOCOL):
             reason = "measurement boundaries differ"
-        elif result["case"]["kind"] == "maintenance" and old["workload"].get(
+        elif result["case"]["kind"] in {"maintenance", "bach"} and old["workload"].get(
                 "operation_protocol") != result["workload"].get("operation_protocol"):
             reason = "maintenance operation protocol changed"
         if reason:
@@ -307,26 +542,67 @@ def compare_baseline(report, baseline, baseline_path):
                       "property_query_seconds", "subsumption_seconds"):
             if phase not in old or phase not in result:
                 continue
-            previous, current = old[phase]["median"], result[phase]["median"]
-            phases[phase] = {"before": previous, "after": current,
-                             "after_over_before": current / previous if previous else None}
+            phases[phase] = compare_timing(old[phase], result[phase])
+        maintenance_comparisons, maintenance_skipped = {}, {}
+        for operation, current in result.get("maintenance_operations", {}).items():
+            previous = old.get("maintenance_operations", {}).get(operation)
+            if previous is None:
+                maintenance_skipped[operation] = "no matching baseline operation"
+                continue
+            if not operation_controls(current) or operation_controls(previous) != operation_controls(current):
+                maintenance_skipped[operation] = "operation fact/rule counts changed"
+                continue
+            expected_validation = ("matches-reachability-and-fresh-closure"
+                                   if result["case"]["kind"] == "bach" else "matches-fresh-closure")
+            if not all(sample.get("validation") == expected_validation
+                       for sample in (*previous["samples"], *current["samples"])):
+                maintenance_skipped[operation] = "operation did not validate"
+                continue
+            before_stats = [sample["stats"] for sample in previous["samples"]]
+            after_stats = [sample["stats"] for sample in current["samples"]]
+            maintenance_comparisons[operation] = {
+                "update_seconds": compare_timing(previous["seconds"], current["seconds"]),
+                "rebuild_seconds": compare_timing(previous["rebuild_seconds"], current["rebuild_seconds"]),
+                "work_counters": compare_counters(before_stats, after_stats),
+                "methods_before": sorted({row["update_method"] for row in before_stats}),
+                "methods_after": sorted({row["update_method"] for row in after_stats}),
+                "controls": list(next(iter(operation_controls(current)))),
+            }
         comparisons.append({"case": result["case"], "input_sha256": result["input_sha256"],
-                            "phases": phases})
+                            "phases": phases,
+                            "correctness": correctness_comparison(old, result),
+                            "materialization_counters": compare_counters(
+                                old.get("engine_stats", []), result.get("engine_stats", [])),
+                            "maintenance_operations": maintenance_comparisons,
+                            "maintenance_skipped": maintenance_skipped})
     return {"baseline_path": str(baseline_path), "baseline_timestamp": baseline["timestamp"],
+            "baseline_provenance": provenance or {"verified": False},
             "baseline_source_sha256": baseline["environment"]["source_sha256"],
             "current_source_sha256": report["environment"]["source_sha256"],
             "baseline_environment": baseline["environment"],
             "matched": comparisons, "skipped": skipped,
+            "uncertainty": {"method": "independent percentile resampling of each recorded sample list",
+                            "statistic": "ratio of medians (after/before)",
+                            "resamples": BOOTSTRAP_RESAMPLES, "seed": BOOTSTRAP_SEED,
+                            "coverage_label": "95% descriptive bootstrap interval",
+                            "caveat": "Small within-worker samples; not a guarantee of repeated-run coverage. "
+                                      "Does not model run-to-run drift or machine-load differences."},
             "caveat": "Matched inputs and timing boundaries; runs are not interleaved or noise controlled."}
 
 
 def markdown(report):
+    if report.get("suite") == "bach":
+        return bach.markdown_report(report)
     raw_name = Path(report.get("output_file", "results.json")).name
     passed = sum(r.get("validation") == "passed" for r in report["results"])
     errors = sum("error" in r for r in report["results"])
+    checkout = report["environment"].get("git", {})
     lines = ["# Measured benchmark results", "",
              f"Run: {report['timestamp']}. Python {report['environment']['python']}; "
              f"{report['environment']['platform']}.", "",
+             f"Measured checkout: `{checkout.get('head', 'not recorded')}`; "
+             f"dirty: {checkout.get('dirty', 'not recorded')}. "
+             "Exact measured source hashes and checkout status are in the raw report.", "",
              f"Recorded: {passed} validated cases, {errors} errors, "
              f"{report.get('planned_cases', len(report['results']))} planned cases. "
              f"Repetitions per case: {report.get('repeats', 'see raw case controls')}.", "",
@@ -359,7 +635,8 @@ def markdown(report):
         lines.append("| " + name + " | " + " | ".join(cells) + " |")
     lines += ["", "## Incremental maintenance", "",
               "Every operation is checked against a fresh closure from separately tracked facts and rules. "
-              "Fresh-rebuild timing excludes recompilation, matching the update API's precompiled inputs.", "",
+              "Synthetic maintenance uses precompiled Engine inputs, excluding recompilation from "
+              "both timings. Bach uses RDF updates and includes compilation in both timings.", "",
               "| Workload | Operation | Update ms | Fresh rebuild ms | Observed method |",
               "|---|---|---:|---:|---|"]
     for r in report["results"]:
@@ -398,25 +675,79 @@ def markdown(report):
                          f"{r['compile_seconds']['median'] * 1000:.3f} |")
     if "comparison" in report:
         comparison = report["comparison"]
+        provenance = comparison.get("baseline_provenance", {})
+        reference = provenance.get("baseline_commit", "custom report, commit not verified")
+        verified = sum(row.get("correctness", {}).get("verified", False)
+                       for row in comparison["matched"])
+
+        def ratio_text(values):
+            ratio = values["after_over_before"]
+            text = f"{ratio:.4g}" if ratio is not None else "—"
+            interval = values.get("bootstrap_95_percent_interval")
+            if interval:
+                text += f" [{interval[0]:.4g}, {interval[1]:.4g}]"
+            return text
+
+        def counter_change(counters, field):
+            value = counters.get(field)
+            return f"{value['before']:g} → {value['after']:g}" if value else "—"
+
         lines += ["", "## Before/after comparison on unchanged inputs", "",
                   f"Baseline: `{comparison['baseline_path']}`, run {comparison['baseline_timestamp']}. "
+                  f"Reference commit: `{reference}`. "
                   "Rows require identical case controls, input hashes and timing boundaries. "
                   "Different source hashes are retained in JSON for attribution. Ratios below 1 mean "
-                  "a shorter current median; separate runs do not control machine load or timing noise.", "",
-                  "| Workload | Engine | Previous materialize ms | Current materialize ms | After / before |",
-                  "|---|---|---:|---:|---:|"]
+                  "a shorter current median. Brackets show deterministic 95% percentile bootstrap "
+                  "intervals for the ratio of medians, resampling the recorded observations. "
+                  "With five repetitions in one worker per case, these are descriptive sensitivity "
+                  "intervals, not guarantees of independent-run coverage or causal speedup. "
+                  "They omit between-run machine-load/drift effects.", "",
+                  f"Cross-version correctness checks passed for {verified}/{len(comparison['matched'])} "
+                  "matched cases: initial fact counts, expected query-answer checks, and maintenance "
+                  "closure counts. The historical report does not store full answer-set digests.", "",
+                  "| Workload | Engine | Previous materialize ms | Current materialize ms | Ratio [interval] | Candidate rows before → after |",
+                  "|---|---|---:|---:|---:|---:|"]
         for matched in comparison["matched"]:
             values = matched["phases"]["materialize_seconds"]
-            ratio = values["after_over_before"]
-            ratio_text = f"{ratio:.3f}" if ratio is not None else "—"
             lines.append(f"| {case_name(matched['case'])} | "
                          f"{matched['case'].get('strategy', 'semi-naive')} | "
-                         f"{values['before'] * 1000:.3f} | {values['after'] * 1000:.3f} | {ratio_text} |")
+                         f"{values['before'] * 1000:.3f} | {values['after'] * 1000:.3f} | "
+                         f"{ratio_text(values)} | "
+                         f"{counter_change(matched['materialization_counters'], 'candidate_rows')} |")
+        lines += ["", "### Parsing, compilation and public query calls", "",
+                  "Subsumption still times the complete first public call on each fresh reasoner. "
+                  "A lazy schema index or fast path built inside that call remains inside the timing. "
+                  "It is not silently excluded as setup. All phase samples remain available in JSON.", "",
+                  "| Workload / engine | Phase | Previous ms | Current ms | Ratio [interval] |",
+                  "|---|---|---:|---:|---:|"]
+        for matched in comparison["matched"]:
+            for phase, values in matched["phases"].items():
+                if phase == "materialize_seconds":
+                    continue
+                lines.append(f"| {case_name(matched['case'])} / "
+                             f"{matched['case'].get('strategy', 'semi-naive')} | "
+                             f"{phase.removesuffix('_seconds')} | {values['before'] * 1000:.3f} | "
+                             f"{values['after'] * 1000:.3f} | {ratio_text(values)} |")
+        lines += ["", "### Maintenance compared with the pinned implementation", "",
+                  "These rows compare the same operation across versions. The separate fresh-rebuild "
+                  "ratio compares each version's recomputation cost. Input mutation counts and "
+                  "fresh-closure validation must agree before an operation is compared. "
+                  "All common evaluation counters and raw operation samples are retained in JSON.", "",
+                  "| Workload | Operation | Previous ms | Current ms | Update ratio [interval] | Rebuild ratio [interval] | Overdeleted before → after |",
+                  "|---|---|---:|---:|---:|---:|---:|"]
+        for matched in comparison["matched"]:
+            for name, operation in matched["maintenance_operations"].items():
+                values = operation["update_seconds"]
+                lines.append(f"| {case_name(matched['case'])} | {name} | "
+                             f"{values['before'] * 1000:.3f} | {values['after'] * 1000:.3f} | "
+                             f"{ratio_text(values)} | {ratio_text(operation['rebuild_seconds'])} | "
+                             f"{counter_change(operation['work_counters'], 'overdeleted_facts')} |")
         lines += ["", f"Matched {len(comparison['matched'])} cases; "
                   f"excluded {len(comparison['skipped'])} new or changed cases. "
-                  "The raw report records each exclusion reason. Changed PF targets and the revised "
-                  "maintenance populations/operations are excluded from before/after claims."]
-    lines += ["", "These are synthetic workloads inspired by thesis chapter 8, not a reproduction of "
+                  "The raw report records each exclusion reason. No workload or reference timing "
+                  "is rewritten to obtain a match."]
+    lines += ["", "These workloads use the Bach worked examples and synthetic inputs inspired by "
+              "thesis chapter 8, not a reproduction of "
               "the 2004 KAON/XSB/Racer measurements. Modern hardware, execution strategies and "
               "measurement boundaries differ. OWL RL includes additional axiomatic/schema triples, "
               "so its total closure count is not directly comparable; the named instance answers are verified.",
@@ -424,38 +755,48 @@ def markdown(report):
               "baseline, not an independent semantic oracle. Unit validation also uses OWL RL and "
               "exhaustive finite models. There is no performance acceptance threshold or claim of "
               "production-scale throughput."]
+    lines += bach.markdown_queries(report["results"])
     return "\n".join(lines) + "\n"
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--suite", choices=["quick", "thesis"], default="quick")
+    p.add_argument("--suite", choices=["quick", "thesis", "bach"], default="quick")
     p.add_argument("--repeats", type=int, default=5)
-    p.add_argument("--output", default="benchmarks/results.json")
+    p.add_argument("--output", help="JSON report (default: benchmarks/<suite results>.json)")
     p.add_argument("--timeout", type=int, default=180)
-    p.add_argument("--baseline", help="Prior JSON report for comparisons on unchanged inputs")
+    references = p.add_mutually_exclusive_group()
+    references.add_argument("--baseline", default=str(DEFAULT_BASELINE),
+                            help="Prior JSON report (default: immutable b1254c4 reference)")
+    references.add_argument("--no-baseline", action="store_true", help="Explicitly omit comparisons")
     p.add_argument("--worker", help=argparse.SUPPRESS)
     args = p.parse_args()
+    if args.output is None:
+        args.output = "benchmarks/bach-results.json" if args.suite == "bach" else "benchmarks/results.json"
     if args.worker:
         print(json.dumps(worker(json.loads(args.worker))))
         return
     if args.repeats < 1:
         p.error("--repeats must be positive")
     cases = build_cases(args.suite)
-    baseline = json.loads(Path(args.baseline).read_text()) if args.baseline else None
-    if args.baseline and Path(args.baseline).resolve() == Path(args.output).resolve():
-        p.error("--baseline and --output must be different files")
+    baseline_path = None if args.no_baseline else args.baseline
+    try:
+        protect_output(args.output, baseline_path)
+        baseline, provenance = load_baseline(baseline_path) if baseline_path else (None, None)
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as exc:
+        p.error(f"Baseline/output validation failed: {exc}")
+    measured_sources = source_hashes()
     report = {"timestamp": datetime.now(timezone.utc).isoformat(),
               "suite": args.suite, "repeats": args.repeats, "planned_cases": len(cases),
               "output_file": args.output, "measurement_protocol": MEASUREMENT_PROTOCOL,
+              "source_integrity": {"verified": True},
               "environment": {
                   "python": platform.python_version(), "platform": platform.platform(),
                   "machine": platform.machine(), "cpu_count": os.cpu_count(),
+                  "git": git_provenance(), "python_hash_seed": os.environ.get("PYTHONHASHSEED", "random"),
                   "cpu": (subprocess.check_output(["sysctl", "-n", "machdep.cpu.brand_string"], text=True).strip()
                           if sys.platform == "darwin" else platform.processor()),
-                  "source_sha256": {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
-                                    for path in sorted([*Path("src/dlp_reasoner").glob("*.py"),
-                                                        *Path("benchmarks").glob("*.py")])},
+                  "source_sha256": measured_sources,
                   "packages": {name: importlib.metadata.version(name) for name in
                                ["rdflib", "owlrl", "dlp-reasoner"]}}, "results": []}
     output = Path(args.output)
@@ -472,11 +813,17 @@ def main():
             report["results"].append(json.loads(completed.stdout))
         except (subprocess.TimeoutExpired, RuntimeError, json.JSONDecodeError) as exc:
             report["results"].append({"case": case, "error": str(exc)})
+        if source_hashes() != measured_sources:
+            report["source_integrity"] = {"verified": False, "reason": "Source files changed during run"}
+            report["results"][-1] = {"case": case, "error": "Source files changed during run"}
         if baseline is not None:
-            report["comparison"] = compare_baseline(report, baseline, args.baseline)
+            report["comparison"] = compare_baseline(report, baseline, baseline_path, provenance)
         output.write_text(json.dumps(report, indent=2) + "\n")
         output.with_suffix(".md").write_text(markdown(report))
-    if any("error" in r for r in report["results"]):
+        if not report["source_integrity"]["verified"]:
+            break
+    if any("error" in r for r in report["results"]) or any(
+            not row["correctness"]["verified"] for row in report.get("comparison", {}).get("matched", [])):
         raise SystemExit(1)
 
 

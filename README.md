@@ -46,9 +46,9 @@ assert not r.entails(F.jsbach, RDF.type, F.Artist)
 r.to_graph().serialize(destination="/tmp/family-closure.ttl", format="turtle")
 ```
 
-`Reasoner(graph, ...)` accepts an RDFLib graph. Construction eagerly compiles and materializes it. `instances`, `types`, `property_values`, `property_pairs`, `entails`, `subsumes`, `equivalent_classes`, `is_satisfiable`, `update` and `to_graph` are available. Anonymous expression queries use the expression's blank node in the input graph, and must be legal on the left of a DLP inclusion. Subsumption and satisfiability use isolated fresh-individual probes, so accidental overlap of observed instances does not imply subsumption. Subsumption requires an assertable subclass expression and a queryable superclass expression, as in thesis §5.4. Class equivalence runs the two subsumption probes independently, preventing equality or nominals from contaminating the other direction.
+`Reasoner(graph, ...)` accepts an RDFLib graph. Construction eagerly compiles and materializes it. `instances`, `types`, `property_values`, `property_pairs`, `entails`, `subsumes`, `equivalent_classes`, `is_satisfiable`, `update` and `to_graph` are available. Anonymous expression queries use the expression's blank node in the input graph, and must be legal on the left of a DLP inclusion. Subsumption first checks a lazy index of positive schema consequences, then uses an isolated fresh-individual probe when that index supplies no proof. Satisfiability uses fresh probes. Accidental overlap of observed instances does not imply subsumption. Subsumption requires an assertable subclass expression and a queryable superclass expression, as in thesis §5.4. Class equivalence establishes its two subsumption directions independently, preventing equality or nominals from contaminating the other direction.
 
-Property queries are `property_subsumes(superproperty, subproperty)`, `equivalent_properties(left, right)`, `inverse_properties(left, right)`, `is_symmetric(property)`, `is_transitive(property)`, `has_domain(property, class)` and `has_range(property, class)`. They use isolated semantic probes; a property's observed finite edges alone do not establish a universal property characteristic. Domain/range queries include inferred superclasses, and exact inverses do not inherit to strict subproperties. The corresponding CLI commands replace underscores with hyphens; `equivalent-classes` exposes class equivalence.
+Property queries are `property_subsumes(superproperty, subproperty)`, `equivalent_properties(left, right)`, `inverse_properties(left, right)`, `is_symmetric(property)`, `is_transitive(property)`, `has_domain(property, class)` and `has_range(property, class)`. They use sound schema proofs with isolated semantic probes as a fallback; a property's observed finite edges alone do not establish a universal property characteristic. Domain/range queries include inferred superclasses, and exact inverses do not inherit to strict subproperties. The corresponding CLI commands replace underscores with hyphens; `equivalent-classes` exposes class equivalence.
 
 `compiler.compile_graph` exposes the Horn program. Compilation has a fixed 100,000-rule budget and rejects excessive nesting before evaluation. Auxiliary predicates factor conjunctions of unions and enumerations, avoiding explicit exponential DNF expansion. Rule-local variable names are canonical, so unrelated axiom changes preserve unchanged compiled rules. `engine.Engine` executes programs built with the immutable `Atom`, `Var`, `Skolem` and `Rule` dataclasses. A rule whose head is `None` is an integrity constraint. `Engine.update(add=..., remove=..., add_rules=..., remove_rules=...)` applies one validated fact/rule transaction; `Engine.update_rules` is the rule-only wrapper. Additions win when the same item is also removed.
 
@@ -75,6 +75,8 @@ The engine distinguishes asserted facts from its closure. Insertions propagate d
 
 `stats["update_method"]` distinguishes `dred`, `dred-rules`, `incremental-rules`, and rematerialization paths. An interrupted overdeletion rebuilds from the current program before exposing any partial results. The [corrected maintenance algorithm and correctness argument](docs/CORRECTED_MAINTENANCE.md) state the assumptions and explain the replacement for the thesis's faulty rule-deletion procedure.
 
+Execution uses exact hash membership for fully bound atoms and cached set-intersection plans for unary conjunctions over one variable. Eligible semi-naive delta variants are coalesced so each binding fires once per round. General joins and the naive reference evaluator remain available. The lazy schema cache stores positive proofs only and is invalidated by ontology updates. See the [research assessment and correctness arguments](docs/RESEARCH_IMPROVEMENTS.md) for the selected adaptations from 2004–2026 research.
+
 Run validation and benchmarks:
 
 ```sh
@@ -82,9 +84,19 @@ uv run pytest -q
 uv run ruff check src tests benchmarks scripts
 uv run python -m benchmarks.run --suite quick --repeats 5 --output /tmp/dlp-quick.json
 uv run python -m benchmarks.run --suite thesis --repeats 5 --output /tmp/dlp-thesis.json
+uv run python -m benchmarks.run --suite bach --repeats 5 --output benchmarks/bach-results.json
 ```
 
-[Recorded benchmark results](benchmarks/results.md) and [raw observations](benchmarks/results.json) include separate parsing, compilation, materialization, instance query, property query and subsumption timings, repeats, memory and correctness checks. The thesis suite uses all 27 combinations of its ternary taxonomy depths (3/5/7), individuals per non-root class (3/9/15), and property variants (P0/P1/PF). Additional cases exercise the corrected maximum-one/minimum-zero distribution, factored expressions, equality, acyclic existentials, transitivity, and maintenance across all three five-way taxonomy depths and both change ratios. Rule deletion and mixed updates are checked against fresh recomputation. Small inputs compare semi-naive execution with a naive baseline and RDFLib's OWL RL engine. These synthetic modern measurements are not a reproduction of the 2004 system timings. The original raw observations are retained in [baseline-results.json](benchmarks/baseline-results.json); comparisons require unchanged input hashes and compatible measurement boundaries.
+The [Bach benchmark](docs/BACH_BENCHMARK.md) adds the complete Table 2.5 knowledge base in
+[Turtle](examples/bach.ttl) and [RDF/XML](examples/bach.owl), requiring `--profile L3`, plus
+the separate [L0 family tree](examples/bach-family.ttl) from chapter 6. Its
+[32 query definitions](examples/bach-queries.json) check exact thesis-based answers, including
+anonymous children and open-world distinctions. Three maintenance scenarios check the thesis's
+fact transaction, rule deletion and symmetry insertion against independent reachability and
+fresh reconstruction. The three cases also run in the quick and thesis suites.
+See the [Bach results](benchmarks/bach-results.md) for measured parsing, reasoning and query timings.
+
+[Recorded benchmark results](benchmarks/results.md) and [raw observations](benchmarks/results.json) include separate parsing, compilation, materialization, instance query, property query and subsumption timings, repeats, memory and correctness checks. The thesis suite uses all 27 combinations of its ternary taxonomy depths (3/5/7), individuals per non-root class (3/9/15), and property variants (P0/P1/PF). Additional cases exercise the corrected maximum-one/minimum-zero distribution, factored expressions, equality, acyclic existentials, transitivity, and maintenance across all three five-way taxonomy depths and both change ratios. Rule deletion and mixed updates are checked against fresh recomputation. Small inputs compare semi-naive execution with a naive baseline and RDFLib's OWL RL engine. These synthetic modern measurements are not a reproduction of the 2004 system timings. Commit **b1254c4** is the fixed default baseline for future comparisons; its [exact results and manifest](benchmarks/baselines/b1254c4/README.md) are preserved and verified by the runner. The older [baseline-results.json](benchmarks/baseline-results.json) remains historical evidence. Comparisons require unchanged input hashes and compatible measurement boundaries.
 
 See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](docs/THESIS_SPEC.md), and [benchmark methodology](benchmarks/README.md) for details and limitations. The test suite combines explicit semantic regressions, independent OWL RL comparison within the shared fragment, exhaustive small models, and randomized update comparisons against fresh closure.
 
@@ -93,6 +105,7 @@ See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](do
 - `src/dlp_reasoner/compiler.py`: OWL graph validation, expression normalization and Horn compilation.
 - `src/dlp_reasoner/engine.py`: joins/indexes, delta evaluation, equality, constraints, bounds and updates.
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
+- `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.
 - `tests/`, `examples/`, `benchmarks/`: executable evidence and reproducible workloads.
 

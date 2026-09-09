@@ -18,6 +18,7 @@ from .model import (
     EQ, NEQ, TOP, Atom, IncompleteReasoningError, InconsistentOntologyError,
     ProfileError, Program, Skolem,
 )
+from .schema import SchemaIndex
 
 
 def copy_graph(graph: Graph) -> Graph:
@@ -67,6 +68,7 @@ class Reasoner:
         self.materialize_seconds = time.perf_counter() - started
         self._witness_terms = None
         self._query_terms = set()
+        self._schema_cache = None
 
     @classmethod
     def from_file(cls, path, *, format=None, profile="L2", **options):
@@ -144,6 +146,7 @@ class Reasoner:
         query.materialize_seconds = time.perf_counter() - started
         query._witness_terms = None
         query._query_terms = self._query_terms | missing
+        query._schema_cache = None
         return query
 
     def _predicate(self, concept):
@@ -232,8 +235,25 @@ class Reasoner:
             self._guard()
         return answer
 
+    def _schema(self):
+        if self._schema_cache is None:
+            self._schema_cache = SchemaIndex(self.program.rules)
+        return self._schema_cache
+
     def subsumes(self, superclass, subclass):
-        """Test C ⊑ D by a fresh C instance (not by comparing existing extensions)."""
+        """Prove a schema consequence or use an isolated fresh-instance probe.
+
+        The index supplies only positive proofs over a supported rule subset.
+        A missing proof never stands in for a negative semantic answer.
+        """
+        self._guard()
+        if (isinstance(superclass, URIRef) and isinstance(subclass, URIRef)
+                and self._schema().proves_subsumption(superclass, subclass)):
+            return True
+        return self._subsumption_probe(superclass, subclass)
+
+    def _subsumption_probe(self, superclass, subclass):
+        """General semantic fallback, independent of the schema index."""
         self._guard()
         graph = copy_graph(self.graph)
         probe = BNode("probe" + uuid.uuid4().hex)
@@ -274,6 +294,9 @@ class Reasoner:
 
     def property_subsumes(self, superproperty, subproperty):
         """Return whether every subproperty edge is a superproperty edge."""
+        self._guard()
+        if self._schema().proves_property_inclusion(superproperty, subproperty):
+            return True
         a, b = BNode(), BNode()
         return self._property_probe(((a, subproperty, b),), (a, superproperty, b))
 
@@ -283,28 +306,46 @@ class Reasoner:
 
     def inverse_properties(self, left, right):
         """Test exact inverse equality, not merely inverse inclusion."""
+        self._guard()
+        schema = self._schema()
+        if (schema.proves_property_inclusion(right, left, inverse=True)
+                and schema.proves_property_inclusion(left, right, inverse=True)):
+            return True
         a, b = BNode(), BNode()
         forward = self._property_probe(((a, left, b),), (b, right, a))
         return forward and self._property_probe(((a, right, b),), (b, left, a))
 
     def is_symmetric(self, predicate):
         """Test symmetry by assuming one fresh edge and checking its reverse."""
+        self._guard()
+        if self._schema().proves_symmetry(predicate):
+            return True
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (b, predicate, a))
 
     def is_transitive(self, predicate):
         """Test transitivity on a fresh two-edge path, regardless of ABox shape."""
+        self._guard()
+        if self._schema().proves_transitivity(predicate):
+            return True
         a, b, c = BNode(), BNode(), BNode()
         return self._property_probe(((a, predicate, b), (b, predicate, c)),
                                     (a, predicate, c))
 
     def has_domain(self, predicate, concept):
         """Return whether every subject of predicate belongs to concept."""
+        self._guard()
+        if isinstance(concept, URIRef) and self._schema().proves_domain(predicate, concept):
+            return True
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (a, RDF.type, concept))
 
     def has_range(self, predicate, concept):
         """Return whether every object of predicate belongs to concept."""
+        self._guard()
+        if (isinstance(concept, URIRef)
+                and self._schema().proves_domain(predicate, concept, position=1)):
+            return True
         a, b = BNode(), BNode()
         return self._property_probe(((a, predicate, b),), (b, RDF.type, concept))
 
@@ -341,6 +382,7 @@ class Reasoner:
                            remove_rules=current_rules - candidate_rules)
         self.graph, self.program = candidate, program
         self._witness_terms = None
+        self._schema_cache = None
         self.compile_seconds = compile_seconds
         self.materialize_seconds = time.perf_counter() - started
         return self

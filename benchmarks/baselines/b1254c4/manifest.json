@@ -1,0 +1,23 @@
+{
+  "baseline_commit": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "case_count": 51,
+  "measurement_protocol": "phase-timings-v1",
+  "origin": "Exact bytes of benchmarks/results.json in commit b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "repeats": 5,
+  "report_sha256": "f105baab6ab7e9d39399650f6ff995473bba943fcba36ad9709575771d42fea6",
+  "results_path": "results.json",
+  "results_sha256": "6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2",
+  "role": "Default immutable baseline selected by the user; preserve recorded samples and timings.",
+  "source_sha256": {
+    "benchmarks/__init__.py": "cb636f8696e5c0ab3fb2c9cf533d45deac5da740e794180005d2d01f83a580a4",
+    "benchmarks/run.py": "d44e84cf61b78a5d97fd12265309a3e7fe89e63f5e79ce77aa25c000d424af73",
+    "benchmarks/workloads.py": "1a789b1b8f449f088a957ec3b74d0b9b443909fded0fa36be86f10896e8a316f",
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "673c8e50f33cdf7c9294914760fa3ead17a7ed5ca2be4f408a5031f4f29bcafe",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "2a9ea96ed518a3faae0b7c341087c327656c304f9942ce75651d8271141bfeff"
+  }
+}

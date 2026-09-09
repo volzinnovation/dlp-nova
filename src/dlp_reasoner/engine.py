@@ -87,7 +87,7 @@ def _distinct_literals(left, right):
 
 
 class _Index:
-    """Predicate and single-column indexes; joins select the smallest bucket."""
+    """Hash membership for bound tuples; column indexes for partial searches."""
 
     def __init__(self, facts=()):
         self.rows = defaultdict(set)
@@ -105,6 +105,10 @@ class _Index:
 
     def lookup(self, predicate, values):
         result = self.rows.get(predicate, ())
+        if all(value is not _MISSING for value in values):
+            # A bound atom is a membership probe, not a scan of the smallest
+            # single-column bucket. This also covers zero-arity predicates.
+            return (values,) if values in result else ()
         for position, value in enumerate(values):
             if value is _MISSING:
                 continue
@@ -209,6 +213,18 @@ class Engine:
 
     def _prepare_rules(self):
         self._dependents, self._global_rules = self._rule_dependencies(self.rules)
+        self._unary_plans = {}
+        for rule in self.rules:
+            if not rule.body:
+                continue
+            first = rule.body[0]
+            if len(first.args) != 1 or not isinstance(first.args[0], Var):
+                continue
+            variable = first.args[0]
+            if all(atom.args == (variable,) and atom.predicate not in {EQ, NEQ}
+                   for atom in rule.body):
+                self._unary_plans[rule] = (
+                    variable, tuple(dict.fromkeys(atom.predicate for atom in rule.body)))
 
     @staticmethod
     def _rule_dependencies(rules):
@@ -228,6 +244,8 @@ class Engine:
         self.stats = {"strategy": self.strategy, "operation": operation,
                       "update_method": method, "rounds": 0, "rule_evaluations": 0,
                       "candidate_rows": 0, "body_matches": 0, "derived_facts": 0,
+                      "unary_plan_evaluations": 0, "unary_intersections": 0,
+                      "coalesced_delta_variants": 0,
                       "equality_merges": 0, "overdeleted_facts": 0, "rederived_facts": 0}
         self._started = perf_counter()
 
@@ -429,6 +447,10 @@ class Engine:
 
     def _solutions(self, rule, delta_index=None, delta_position=None, initial=None):
         self.stats["rule_evaluations"] += 1
+        plan = self._unary_plans.get(rule) if self.strategy == "semi-naive" else None
+        if plan is not None:
+            yield from self._unary_solutions(rule, plan, delta_index, delta_position, initial)
+            return
 
         def visit(remaining, binding):
             if not remaining:
@@ -497,6 +519,50 @@ class Engine:
 
         yield from visit(tuple(range(len(rule.body))), {} if initial is None else initial)
 
+    def _unary_solutions(self, rule, plan, delta_index, delta_position, initial):
+        """Intersect unary relations sharing one variable, without nested joins.
+
+        For an individual delta variant, its relation replaces the full relation.
+        The coalesced form (delta index but no position) requires membership in
+        at least one participating delta. Set distributivity makes it identical
+        to the union of the individual variants, with each binding yielded once.
+        Constants, multiple variables, equality and inequality keep the generic
+        solver. Plans contain no data, so equality reindexing cannot stale them.
+        """
+        self.stats["unary_plan_evaluations"] += 1
+        variable, predicates = plan
+        delta_predicate = (rule.body[delta_position].predicate
+                           if delta_position is not None else None)
+        rows = [(delta_index if delta_position is not None and predicate == delta_predicate
+                 else self._index).rows.get(
+                    predicate, ()) for predicate in predicates]
+        if any(not relation for relation in rows):
+            return
+        if delta_index is not None and delta_position is None:
+            changed = set()
+            for predicate in predicates:
+                changed.update(delta_index.rows.get(predicate, ()))
+            if not changed:
+                return
+            rows.append(changed)
+        binding = {} if initial is None else initial
+        if variable in binding:
+            rows.append({(binding[variable],)})
+        rows.sort(key=len)
+        if len(rows) == 1:
+            matches = rows[0]
+        else:
+            matches = set(rows[0])
+            for relation in rows[1:]:
+                self.stats["unary_intersections"] += 1
+                matches.intersection_update(relation)
+                if not matches:
+                    return
+        for (value,) in matches:
+            self.stats["candidate_rows"] += 1
+            self.stats["body_matches"] += 1
+            yield {**binding, variable: value}
+
     def _heads(self, rule, delta_index=None, delta_position=None):
         for binding in self._solutions(rule, delta_index, delta_position):
             if rule.head is None:
@@ -509,8 +575,18 @@ class Engine:
 
     def _variants(self, delta, include_globals=True):
         predicates = {atom.predicate for atom in delta}
+        coalesced = set()
         for predicate in predicates:
-            yield from self._dependents.get(predicate, ())
+            for number, position in self._dependents.get(predicate, ()):
+                rule = self.rules[number]
+                if self.strategy == "semi-naive" and len(rule.body) > 1 and rule in self._unary_plans:
+                    if number in coalesced:
+                        self.stats["coalesced_delta_variants"] += 1
+                        continue
+                    coalesced.add(number)
+                    yield number, None
+                else:
+                    yield number, position
         if include_globals:
             for number in self._global_rules:
                 yield number, None

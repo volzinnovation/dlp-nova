@@ -1,0 +1,174 @@
+# Raphael Volz, Web Ontology Reasoning with Logic Databases (2004),
+# Table 2.5, printed p. 35 (PDF p. 51): T1-T17 and A1-A15.
+# A16 is an ellipsis in the source and contributes no invented assertions.
+#
+# OWL RDF graph syntax, exchanged as permitted by section 5.1.5, p. 119.
+# Namespace spelling follows Example 3.2.1, pp. 46-47. The complete example
+# requires DLP L3 (section 5.1.4, p. 118), including RHS existentials and
+# atomic complement constraints. No property domain/range, extra relatives,
+# converse Wife/Husband definitions, or composition metadata are assumed.
+#
+# The supplied ABox terminates. T3/T4 can generate an unbounded witness chain
+# if Wife or Husband is separately instantiated, including by a trial query.
+# Existential witnesses are unnamed: A1 does not identify its child with
+# johann-sebastian. Read together with bach-family.ttl only when explicitly
+# choosing to combine the distinct examples from chapters 2 and 6.
+
+@prefix : <http://www.jsbach.org/bach#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.jsbach.org/bach> a owl:Ontology ;
+    rdfs:label "Bach Family Knowledge Base (Table 2.5)" ;
+    rdfs:comment "Raphael Volz (2004), Table 2.5, printed page 35. T1-T17 and A1-A15; DLP L3. RDF/XML equivalent: bach.owl." .
+
+# Vocabulary declarations do not introduce additional class relationships.
+:Person a owl:Class .
+:Genius a owl:Class .
+:Composer a owl:Class .
+:LeipzigInhabitant a owl:Class .
+:Masterpiece a owl:Class .
+:Birthday a owl:Class .
+:Homage a owl:Class .
+:Composition a owl:Class .
+:Voice a owl:Class .
+:livesIn a owl:ObjectProperty .
+:hasComposed a owl:ObjectProperty .
+:forEvent a owl:ObjectProperty .
+:forInstrument a owl:ObjectProperty .
+
+# T1: Woman is a Person.
+:Woman a owl:Class ; rdfs:subClassOf :Person .
+
+# T2: Man is a Person and not a Woman (an integrity constraint).
+:Man a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        :Person [ a owl:Class ; owl:complementOf :Woman ]
+    ) ] .
+
+# T3: Every Wife is a Woman married to some Husband.
+:Wife a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        :Woman [ a owl:Restriction ; owl:onProperty :marriedTo ;
+                 owl:someValuesFrom :Husband ]
+    ) ] .
+
+# T4: Every Husband is a Man married to some Wife.
+:Husband a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        :Man [ a owl:Restriction ; owl:onProperty :marriedTo ;
+               owl:someValuesFrom :Wife ]
+    ) ] .
+
+# T5: Father is exactly a Man with some Person as a child.
+:Father a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        :Man [ a owl:Restriction ; owl:onProperty :hasChild ;
+               owl:someValuesFrom :Person ]
+    ) ] .
+
+# T6: Mother is exactly a Woman with some Person as a child.
+:Mother a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        :Woman [ a owl:Restriction ; owl:onProperty :hasChild ;
+                 owl:someValuesFrom :Person ]
+    ) ] .
+
+# T7: hasChild is a subproperty of ancestorOf.
+:hasChild a owl:ObjectProperty ; rdfs:subPropertyOf :ancestorOf .
+
+# T8: ancestorOf is transitive.
+:ancestorOf a owl:ObjectProperty, owl:TransitiveProperty .
+
+# T9: marriedTo is symmetric. Being married does not imply Wife/Husband.
+:marriedTo a owl:ObjectProperty, owl:SymmetricProperty .
+
+# T10: Living in the named individual leipzig implies LeipzigInhabitant.
+[ a owl:Restriction ; owl:onProperty :livesIn ; owl:hasValue :leipzig ]
+    rdfs:subClassOf :LeipzigInhabitant .
+
+# T11: Everything composed by a Genius who is a Composer is a Masterpiece.
+[ a owl:Class ; owl:intersectionOf ( :Genius :Composer ) ]
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty :hasComposed ;
+                     owl:allValuesFrom :Masterpiece ] .
+
+# T12: BirthdayCantata is for some Birthday and is a Cantata and Homage.
+# Parentheses resolve the displayed restriction's loose scope on p. 35.
+:BirthdayCantata a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        [ a owl:Restriction ; owl:onProperty :forEvent ;
+          owl:someValuesFrom :Birthday ]
+        :Cantata :Homage
+    ) ] .
+
+# T13: A Cantata is both a VocalComposition and an InstrumentalComposition.
+:Cantata a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ;
+        owl:intersectionOf ( :VocalComposition :InstrumentalComposition ) ] .
+
+# T14: VocalComposition is a Composition for some Voice.
+:VocalComposition a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        :Composition [ a owl:Restriction ; owl:onProperty :forInstrument ;
+                       owl:someValuesFrom :Voice ]
+    ) ] .
+
+# T15: InstrumentalComposition is a Composition for something not a Voice.
+:InstrumentalComposition a owl:Class ;
+    rdfs:subClassOf [ a owl:Class ; owl:intersectionOf (
+        :Composition [ a owl:Restriction ; owl:onProperty :forInstrument ;
+            owl:someValuesFrom [ a owl:Class ; owl:complementOf :Voice ] ]
+    ) ] .
+
+# T16: inDynasty is symmetric; it is not asserted transitive.
+:inDynasty a owl:ObjectProperty, owl:SymmetricProperty .
+
+# T17: ancestorOf is a subproperty of inDynasty.
+:ancestorOf rdfs:subPropertyOf :inDynasty .
+
+# A1: Johann Ambrosius has some child who is a Man (unnamed).
+:johann-ambrosius a [ a owl:Restriction ; owl:onProperty :hasChild ;
+                       owl:someValuesFrom :Man ] .
+
+# A2: Johann Sebastian is a Composer and a Man.
+:johann-sebastian a [ a owl:Class ; owl:intersectionOf ( :Composer :Man ) ] .
+
+# A3: Wilhelm Friedemann is a Person.
+:wilhelm-friedemann a :Person .
+
+# A4: Johann Sebastian has Wilhelm Friedemann as a child.
+:johann-sebastian :hasChild :wilhelm-friedemann .
+
+# A5: Anna Magdalena is a Woman.
+:anna-magdalena a :Woman .
+
+# A6: Johann Sebastian is married to Anna Magdalena.
+:johann-sebastian :marriedTo :anna-magdalena .
+
+# A7: Johann Ambrosius is a Man.
+:johann-ambrosius a :Man .
+
+# A8: Johann Sebastian lives in Leipzig.
+:johann-sebastian :livesIn :leipzig .
+
+# A9: Johann Sebastian is a Genius.
+:johann-sebastian a :Genius .
+
+# A10: Johann Sebastian has composed BWV248.
+:johann-sebastian :hasComposed :BWV248 .
+
+# A11: Maria Barbara is a Woman.
+:maria-barbara a :Woman .
+
+# A12: Johann Sebastian is married to Maria Barbara.
+:johann-sebastian :marriedTo :maria-barbara .
+
+# A13: BWV248 is a Cantata.
+:BWV248 a :Cantata .
+
+# A14: BWV213 is a BirthdayCantata.
+:BWV213 a :BirthdayCantata .
+
+# A15: BWV214 is a BirthdayCantata.
+:BWV214 a :BirthdayCantata .

@@ -113,7 +113,7 @@ uv build
 git diff --check
 ```
 
-## Corrected benchmark results
+## Corrected benchmark results at b1254c4
 
 The corrected benchmark run used:
 
@@ -131,4 +131,139 @@ Observed correction results:
 - The largest taxonomy case contains 105,129 RDF triples and materializes 467,416 facts in a median **4.860 seconds**. Its corrected PF target changes the input hash, so it is excluded from before/after comparisons.
 - **24 cases** have matching baseline inputs and timing boundaries; **27 are excluded** because their inputs or controls differ or they are new. The median of the 24 per-case materialization ratios is **1.012**, with ratios from **0.881 to 1.759**. The fixes do not provide a general materialization speedup. Some large-input repetitions varied substantially; separate runs were not interleaved or controlled for machine load.
 
-The full [generated report](../benchmarks/results.md) retains per-case results and comparison exclusions, and [raw observations](../benchmarks/results.json) retain all repetitions, spreads, operation statistics, input hashes, and source hashes. The [original observations](../benchmarks/baseline-results.json) remain available. Large conjunction bodies still incur evaluation cost even when their compilation is factored; the union-scaling cases expose that remaining performance limitation.
+The preserved [b1254c4 report](../benchmarks/baselines/b1254c4/results.md) retains per-case results and comparison exclusions, and [b1254c4 raw observations](../benchmarks/baselines/b1254c4/results.json) retain all repetitions, spreads, operation statistics, input hashes, and source hashes. The [original observations](../benchmarks/baseline-results.json) remain available. At that commit, large conjunction bodies still incurred evaluation cost even when their compilation was factored; the union-scaling cases exposed the limitation addressed by the subsequent research-informed execution improvements.
+
+## Validation of the research-informed improvements
+
+The [research assessment](RESEARCH_IMPROVEMENTS.md) records primary sources,
+implementation choices, and the correctness arguments for exact tuple lookup,
+unary intersection/delta coalescing, and positive schema consequence indexes.
+The compiler, supported language, equality algorithm, and DRed maintenance
+algorithm are unchanged by these optimizations.
+
+Fifteen execution regressions compare optimized and generic/naive closures and
+explicit expectations. They exercise selective joins, duplicate unary premises,
+multiple simultaneous deltas, initially bound variables, constraints, TOP,
+ground and equality heads, equality reindexing and retraction, mixed fact/rule
+updates, and fact/witness limits. Work-counter assertions verify the avoided
+interpreter work without depending on wall-clock timing.
+
+Twenty-five schema regressions compare shortcuts with the original independent
+semantic probes, including generated small class/property schemas. They check
+conjunctions, cycles, inverses, domains/ranges, equivalence-safe transitivity,
+nominal and equality counterexamples, fresh/anonymous classes, empty and
+unsatisfiable predicates, invalid API input, and consistency guards. Additional
+checks enforce lazy construction without copying a large ABox, separate query
+domain state, bounded context retention, and cache invalidation after updates.
+Rejected updates preserve the previous cache and ontology together.
+
+The integrated checkout, including the separately added Bach examples and their
+tests, passed **363 tests in 6.06 seconds** on 2026-09-09. Ruff, both independent
+errata scripts, package wheel/source builds, and whitespace checks passed.
+The existing independent OWL RL, finite-model, relation-algebra and randomized
+transaction oracles remain in the suite. These tests support the exercised
+semantics; they do not establish conformance to unsupported OWL constructs.
+
+The benchmark runner additionally verifies the immutable `b1254c4` report,
+its manifest, and every recorded source hash against the commit's Git blobs.
+A self-comparison matches all 51 original cases and 36 maintenance operation
+groups. Protocol tests reject changed input hashes, timing boundaries,
+maintenance mutation controls, and correctness evidence, and prevent outputs
+from overwriting the pinned reference. New reports retain source/checkout
+provenance and fail if source bytes change during measurement.
+
+## Performance against the fixed b1254c4 baseline
+
+The full run started at **2026-09-09T12:17:42Z** on the same reported Apple M4 Max,
+macOS 26.5.1, Python 3.12.9, RDFLib 7.6.0 and owlrl 7.6.2 environment. All
+**54 cases and 270 repetitions passed**. All **51 original cases** matched the
+pinned inputs, controls, fact counts and expected-answer checks; the **three new
+Bach cases** were excluded from historical ratios. The six original maintenance
+cases completed **180 update/fresh-closure comparisons**. The runner verified
+source integrity throughout, and a final audit matched all 12 recorded source
+digests to the measured checkout. This is a measurement of the uncommitted
+implementation recorded by those digests, not of unchanged code at HEAD.
+
+Selected medians from the recorded full run:
+
+| Workload and phase | b1254c4 | Improved implementation | Baseline/current |
+|---|---:|---:|---:|
+| Union conjunction, 4 pairs: materialization | 14.022 ms | 6.287 ms | 2.23× |
+| Union conjunction, 8 pairs: materialization | 57.850 ms | 10.985 ms | 5.27× |
+| Union conjunction, 16 pairs: materialization | 301.281 ms | 32.413 ms | 9.30× |
+| Union conjunction, 32 pairs: materialization | 1,663.508 ms | 48.117 ms | 34.57× |
+| Union conjunction, 64 pairs: materialization | 10,406.030 ms | 119.371 ms | 87.17× |
+| Enumeration conjunction, 64 pairs: materialization | 95.863 ms | 6.059 ms | 15.82× |
+| Taxonomy depth 7, 15 individuals/class, PF: subsumption | 7,983.876 ms | 12.339 ms | 647.03× |
+| Same taxonomy: materialization | 4,860.310 ms | 4,388.391 ms | 1.11× |
+| Transitive chain, 100 edges: materialization | 451.250 ms | 710.512 ms | 0.64× |
+| Cardinality taxonomy depth 5, 3 individuals/class: materialization | 243.571 ms | 367.386 ms | 0.66× |
+
+The 64-pair union keeps 130 compiled rules, 16,641 materialized facts and 96 named
+answers. Its Python candidate-row visits decrease from 401,472 to 8,352 and its
+body matches from 14,400 to 8,352. Sixty-three redundant delta variants are
+coalesced. These counters exclude work inside C-level set intersections and
+should not be interpreted as all primitive CPU operations. The largest taxonomy
+still contains 105,129 input triples and 467,416 closure facts. Its query timing
+includes lazy index construction; it is not a pre-warmed cache measurement.
+
+Across the 28 measured subsumption calls, the median of the per-case speedups is
+366.80×, ranging from 114.31× to 851.43×. These are positive named hierarchy
+queries that the selected schema fragment can prove. They do not characterize
+negative, anonymous, nominal-dependent or arbitrary classification queries.
+The median current/baseline materialization ratio over 50 DLP cases (excluding
+the external OWL RL control) is **0.939**. This unweighted description is not a
+suite-throughput estimate or a uniform speed guarantee.
+
+Maintenance is mixed. Across its six workloads, the median current/baseline
+ratios are 1.136 for fact deletion, 1.023 for fact insertion, 1.044 for rule
+insertion, 0.993 for rule deletion, 0.968 for rule replacement and 0.957 for mixed
+updates. At depth 5 with 10% changes, rule insertion rose from 219.359 to
+372.468 ms and rule replacement from 417.815 to 725.576 ms. The algorithm itself
+is still DRed; these measurements do not justify claiming a general maintenance
+improvement.
+
+Variation is substantial in several regressions: current transitivity samples
+range from 454.608 to 883.737 ms, and the cardinality case ranges from 238.193 to
+657.805 ms. The baseline and current full runs were not interleaved. Their
+original observations and regressions remain visible in the
+[full report](../benchmarks/results.md) and [raw results](../benchmarks/results.json).
+
+### Supplemental alternating-version replay
+
+A follow-up run started at **2026-09-09T12:27:28Z**, using
+`scripts/replay_b1254c4.py`. It extracted and verified the exact baseline sources
+without changing the live branch. Seven workloads ran in **35 pairs / 70
+independently launched workers**, alternating baseline/current order and sharing
+an explicit hash seed within each pair. All input, closure, expected-answer and
+maintenance checks passed. Both versions used the same Python environment, and
+the current source hashes match the full-run report. The replay driver has its
+own recorded digest.
+
+| Replayed phase | Newly measured baseline | Current | Current/baseline |
+|---|---:|---:|---:|
+| Transitivity, 100 edges: materialization | 431.559 ms | 439.196 ms | 1.018 |
+| Cardinality depth 5, 3 individuals/class: materialization | 219.843 ms | 229.828 ms | 1.045 |
+| Existentials, 100 roots: materialization | 65.344 ms | 64.770 ms | 0.991 |
+| Union conjunction, 64 pairs: materialization | 10,046.223 ms | 91.846 ms | 0.00914 |
+| Taxonomy depth 5, 9 individuals/class, PF: materialization | 152.202 ms | 149.394 ms | 0.982 |
+| Same taxonomy: subsumption | 365.093 ms | 0.782 ms | 0.00214 |
+| Maintenance depth 5, 10%: rule insertion | 211.294 ms | 206.136 ms | 0.976 |
+| Same maintenance: rule replacement | 392.590 ms | 388.564 ms | 0.990 |
+
+The large historical-run regressions were not reproduced at that magnitude.
+Small costs remain: transitivity was **1.8% slower** and the selected cardinality
+case **4.5% slower** in this replay. These regressions are retained as tradeoffs
+of the integrated implementation; the optimization is not universally faster.
+The union and schema-query gains persist. All six maintenance operation medians
+were lower in each of the two replayed sizes: approximately 3.0–9.6% at depth 3
+and 1.0–8.5% at depth 5. Five pairs and two maintenance workloads do not establish
+a general maintenance speed guarantee.
+
+The [paired report](../benchmarks/replay-results.md) and
+[raw paired observations](../benchmarks/replay-results.json) preserve all 70
+worker outputs, execution orders, controls and descriptive paired-resampling
+intervals. This provides stronger attribution evidence than the separate full
+runs, while leaving machine variability and limited sample size unresolved.
+**The pinned historical `b1254c4` report remains the default baseline.** None of
+its timings are replaced by these newly measured baseline observations.

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from bach.ttl: RDFLib canonical blank nodes, sorted triples, RDF/XML.
+     Source: Volz (2004), Table 2.5, p. 35; DLP L3. -->
+<rdf:RDF
+   xmlns="http://www.jsbach.org/bach#"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#BWV213">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#BirthdayCantata"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#BWV214">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#BirthdayCantata"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#BWV248">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Cantata"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Birthday">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#BirthdayCantata">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb162da5c5e8776cd2a2ab2e8e5a446114f210fc87e0302fdc67fd25595f2a14bc5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Cantata">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb1b201cc6ca1daeb015e3b4210b010ea5e8c636733c5187ff6bbf8c5cadbd179ea"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Composer">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Composition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Father">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:equivalentClass rdf:nodeID="cb1352b1386bef9c39539ac6e4d5c92e2cad0cc9561513a0198a3e8b18fc89bbc64"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Genius">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Homage">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Husband">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb16422d442df2f4bf81e15267755a3fe7578aa7bf2f29c4b400650265709d1209d"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#InstrumentalComposition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb128d52c410e36db8c6cbbf1cd49c0deb5ab9a8e41f8282de8993f1d96696c6a49"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#LeipzigInhabitant">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Man">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cbe90708117747f2d3ca1bc984b3f6aa6a6f5c5aa8a1a0adeddb4d5d71bf73b38f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Masterpiece">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Mother">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:equivalentClass rdf:nodeID="cb1456a97dd26ad4d54492fa73fc113b50ebc72590e0408804c7f38267b8fa48e20"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Person">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#VocalComposition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb9d6ece759e35c18582f793543c8167923ccda3691842a02a51f49d65a2cc88bc"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Voice">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Wife">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb1d69a06512c9182e2286cce4cae77378b0e1e769bc2df1214d8be91816bde921e"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#Woman">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.jsbach.org/bach#Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#ancestorOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.jsbach.org/bach#inDynasty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#anna-magdalena">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Woman"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#forEvent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#forInstrument">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#hasChild">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.jsbach.org/bach#ancestorOf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#hasComposed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#inDynasty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#johann-ambrosius">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Man"/>
+    <rdf:type rdf:nodeID="cb2b5bd686c9f5452076c6cc7da9aaa603bc2ca516c8d0f2a07445f8e9362967d43"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#johann-sebastian">
+    <hasChild rdf:resource="http://www.jsbach.org/bach#wilhelm-friedemann"/>
+    <hasComposed rdf:resource="http://www.jsbach.org/bach#BWV248"/>
+    <livesIn rdf:resource="http://www.jsbach.org/bach#leipzig"/>
+    <marriedTo rdf:resource="http://www.jsbach.org/bach#anna-magdalena"/>
+    <marriedTo rdf:resource="http://www.jsbach.org/bach#maria-barbara"/>
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Genius"/>
+    <rdf:type rdf:nodeID="cb77e03f785feff40a2da4b25049b976f09846db09b64ea91d32db1abccf9f9a59"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#livesIn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#maria-barbara">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Woman"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#marriedTo">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach#wilhelm-friedemann">
+    <rdf:type rdf:resource="http://www.jsbach.org/bach#Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.jsbach.org/bach">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:comment>Raphael Volz (2004), Table 2.5, printed page 35. T1-T17 and A1-A15; DLP L3. RDF/XML equivalent: bach.owl.</rdfs:comment>
+    <rdfs:label>Bach Family Knowledge Base (Table 2.5)</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb10bbccaf3dddcf91bab92138642584b8f0ed759bd3a7d823ac4690e0a9f5cf33c">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Woman"/>
+    <rdf:rest rdf:nodeID="cb260205d1b78641e59abd69f8feb7737b82e2d3637598d0b5b7b9fd4f42571e81e"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb11ea9cc3bbc078912f98429d063cf1634f23b42c189f0e567989306233d6e5060">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:complementOf rdf:resource="http://www.jsbach.org/bach#Voice"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb128d52c410e36db8c6cbbf1cd49c0deb5ab9a8e41f8282de8993f1d96696c6a49">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb20a518d26ca8c0d7a7f96fc0cd67961bc678de0c9cc81b5012d47bb21ca18f019"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1352b1386bef9c39539ac6e4d5c92e2cad0cc9561513a0198a3e8b18fc89bbc64">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb96c5ebd3e4deaa6e7231a23ea60b9e748fe65b4292a062cf465a087be3ce2acc"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1360a04327c8e9cbdae3ff9c8cf18715e86b8f6eb0319512b0279717de5142793">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:nodeID="cb308c946c6eb1cd249bd8b0a3bec2148d211e1f46df750ab683bfc81c476c7e47d"/>
+    <owl:intersectionOf rdf:nodeID="cb14e422735bd30953bd6f0e286bb5b5df955eea46ae301b606cb94b3df8ef6b4b2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1445afdd5060b69eeabcb3f9275fce43bf3df784e5eebb790ba3dca1f56dff3c2">
+    <rdf:first rdf:nodeID="cb2a27c36e43f1e1495e9c77e70789963baa2bfde46fda2eb97892a5653bb3ba995"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1456a97dd26ad4d54492fa73fc113b50ebc72590e0408804c7f38267b8fa48e20">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb60fe5352b7f43f5a029ecde1d582f0fbc9eb2ba315ec0059d4a320d32c1a3d1c"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb14e422735bd30953bd6f0e286bb5b5df955eea46ae301b606cb94b3df8ef6b4b2">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Genius"/>
+    <rdf:rest rdf:nodeID="cb1a2a6c0763ecc78ee21529b90f48d9eebab1f6555616696637a984b5f8e6267b0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb15c585d7583a780bb00cac0f399b658b8a2ba3136ab59e12eeb48eadadf73f283">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Man"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb15fe2668457970d9beb93564d12e1e7237bc4f3f552fb6c61fc4eebd27f2780ec">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:complementOf rdf:resource="http://www.jsbach.org/bach#Woman"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb160297fda6e68df0836272d0692739935cc4a817d552d649887296230bc35a5dd">
+    <rdf:first rdf:nodeID="cb266c1d9ed3de15400edfbc1c8d8ca5472ea5a45c298ce9ac057907c83a755ec6e"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb162da5c5e8776cd2a2ab2e8e5a446114f210fc87e0302fdc67fd25595f2a14bc5">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb173a18d98bd0d09aadaefa054159d3defaedf91f8494ad11131426ad90bf4daf0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb16422d442df2f4bf81e15267755a3fe7578aa7bf2f29c4b400650265709d1209d">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb5f78daa5027d2bc80bfcee6d15dd6e97b6f7c15bb067864ec8ac721ce2274a98"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb16647a9fe4973a44b28d957f55b5dd39bc30f61bfed1057fdaee53bcfb4d5afbb">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#InstrumentalComposition"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb173a18d98bd0d09aadaefa054159d3defaedf91f8494ad11131426ad90bf4daf0">
+    <rdf:first rdf:nodeID="cb2ce19cd1587b22653c8a50da57c14e80ddc9e970ac7f2b500c74135cf9a1429f4"/>
+    <rdf:rest rdf:nodeID="cb29ec9746f1c4e0d1d560ca2a46df4c283c8be167310e9d87bbea8a96f11c9031d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb175a31000244a3fbb9c80e24e95654ab0a7a796701dea84e55be1a8fc59419d01">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Person"/>
+    <rdf:rest rdf:nodeID="cb19914bd2038fbf36b206905041e895423e55effd1de81d1bf354be767506fa9ae"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb19914bd2038fbf36b206905041e895423e55effd1de81d1bf354be767506fa9ae">
+    <rdf:first rdf:nodeID="cb15fe2668457970d9beb93564d12e1e7237bc4f3f552fb6c61fc4eebd27f2780ec"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1a2a6c0763ecc78ee21529b90f48d9eebab1f6555616696637a984b5f8e6267b0">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Composer"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1b201cc6ca1daeb015e3b4210b010ea5e8c636733c5187ff6bbf8c5cadbd179ea">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb1f00a43c389a0c709187dec4c86ad9738db5ea5ed45fefac5c8b03fbf8d733784"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1bfef4598d7b0531d0f95b1caed83b3a34713b49207020dcb0d81c0e0b14ae1de">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#marriedTo"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Husband"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1d69a06512c9182e2286cce4cae77378b0e1e769bc2df1214d8be91816bde921e">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb10bbccaf3dddcf91bab92138642584b8f0ed759bd3a7d823ac4690e0a9f5cf33c"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1df8c5fdab070e096f6886ef70227fabdf78ae07d9fbb7317ad2a7f74993cceb4">
+    <rdf:first rdf:nodeID="cb1f64b54bbbfb835bc5bb41c767ede4224eafa235bb00f57f1e28a4f0c11acf9b5"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1f00a43c389a0c709187dec4c86ad9738db5ea5ed45fefac5c8b03fbf8d733784">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#VocalComposition"/>
+    <rdf:rest rdf:nodeID="cb16647a9fe4973a44b28d957f55b5dd39bc30f61bfed1057fdaee53bcfb4d5afbb"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb1f64b54bbbfb835bc5bb41c767ede4224eafa235bb00f57f1e28a4f0c11acf9b5">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#marriedTo"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Wife"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb204758377f908b1bb4303f29e0c3c73ffd23f03dab17ca7b464010b83a69e5cb5">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Composer"/>
+    <rdf:rest rdf:nodeID="cb15c585d7583a780bb00cac0f399b658b8a2ba3136ab59e12eeb48eadadf73f283"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2074ecb4575cadb8aa54cdbfc721757bc30ed451552758a23076a2e697696741d">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Composition"/>
+    <rdf:rest rdf:nodeID="cb160297fda6e68df0836272d0692739935cc4a817d552d649887296230bc35a5dd"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb20a518d26ca8c0d7a7f96fc0cd67961bc678de0c9cc81b5012d47bb21ca18f019">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Composition"/>
+    <rdf:rest rdf:nodeID="cb217b6992c3f4e3bac5dc2f67299826d37abb066798db161aacb384bc72d4856a1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb20a97fa9f5e91b9b96285721906e3c9b576806c85d37fd71effd431ca5e463ff9">
+    <rdf:first rdf:nodeID="cb2e5695a87cbd647d3afdea8420aa331d19a6160e4531830bb543ff662ea764101"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb217b6992c3f4e3bac5dc2f67299826d37abb066798db161aacb384bc72d4856a1">
+    <rdf:first rdf:nodeID="cb309c1c4f32222f544e8263899f5e400a64fa70e7d338c144f9d79e4574ddae2b6"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb25503103787a56346073052d3b92b6fffaa75d80e5dc56b13ce5657ce39c9af3d">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <rdfs:subClassOf rdf:resource="http://www.jsbach.org/bach#LeipzigInhabitant"/>
+    <owl:hasValue rdf:resource="http://www.jsbach.org/bach#leipzig"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#livesIn"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb260205d1b78641e59abd69f8feb7737b82e2d3637598d0b5b7b9fd4f42571e81e">
+    <rdf:first rdf:nodeID="cb1bfef4598d7b0531d0f95b1caed83b3a34713b49207020dcb0d81c0e0b14ae1de"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb266c1d9ed3de15400edfbc1c8d8ca5472ea5a45c298ce9ac057907c83a755ec6e">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#forInstrument"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Voice"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb29ec9746f1c4e0d1d560ca2a46df4c283c8be167310e9d87bbea8a96f11c9031d">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Cantata"/>
+    <rdf:rest rdf:nodeID="cb2b925d184fec8baad5c0b5b18a5a91861ab18c449d08d44c9cd346c70df0953d0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2a27c36e43f1e1495e9c77e70789963baa2bfde46fda2eb97892a5653bb3ba995">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#hasChild"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2b5bd686c9f5452076c6cc7da9aaa603bc2ca516c8d0f2a07445f8e9362967d43">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#hasChild"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Man"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2b925d184fec8baad5c0b5b18a5a91861ab18c449d08d44c9cd346c70df0953d0">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Homage"/>
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2ce19cd1587b22653c8a50da57c14e80ddc9e970ac7f2b500c74135cf9a1429f4">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#forEvent"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Birthday"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb2e5695a87cbd647d3afdea8420aa331d19a6160e4531830bb543ff662ea764101">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#hasChild"/>
+    <owl:someValuesFrom rdf:resource="http://www.jsbach.org/bach#Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb308c946c6eb1cd249bd8b0a3bec2148d211e1f46df750ab683bfc81c476c7e47d">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://www.jsbach.org/bach#Masterpiece"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#hasComposed"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb309c1c4f32222f544e8263899f5e400a64fa70e7d338c144f9d79e4574ddae2b6">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.jsbach.org/bach#forInstrument"/>
+    <owl:someValuesFrom rdf:nodeID="cb11ea9cc3bbc078912f98429d063cf1634f23b42c189f0e567989306233d6e5060"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb5f78daa5027d2bc80bfcee6d15dd6e97b6f7c15bb067864ec8ac721ce2274a98">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Man"/>
+    <rdf:rest rdf:nodeID="cb1df8c5fdab070e096f6886ef70227fabdf78ae07d9fbb7317ad2a7f74993cceb4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb60fe5352b7f43f5a029ecde1d582f0fbc9eb2ba315ec0059d4a320d32c1a3d1c">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Woman"/>
+    <rdf:rest rdf:nodeID="cb1445afdd5060b69eeabcb3f9275fce43bf3df784e5eebb790ba3dca1f56dff3c2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb77e03f785feff40a2da4b25049b976f09846db09b64ea91d32db1abccf9f9a59">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb204758377f908b1bb4303f29e0c3c73ffd23f03dab17ca7b464010b83a69e5cb5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb96c5ebd3e4deaa6e7231a23ea60b9e748fe65b4292a062cf465a087be3ce2acc">
+    <rdf:first rdf:resource="http://www.jsbach.org/bach#Man"/>
+    <rdf:rest rdf:nodeID="cb20a97fa9f5e91b9b96285721906e3c9b576806c85d37fd71effd431ca5e463ff9"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cb9d6ece759e35c18582f793543c8167923ccda3691842a02a51f49d65a2cc88bc">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb2074ecb4575cadb8aa54cdbfc721757bc30ed451552758a23076a2e697696741d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cbe90708117747f2d3ca1bc984b3f6aa6a6f5c5aa8a1a0adeddb4d5d71bf73b38f">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <owl:intersectionOf rdf:nodeID="cb175a31000244a3fbb9c80e24e95654ab0a7a796701dea84e55be1a8fc59419d01"/>
+  </rdf:Description>
+</rdf:RDF>

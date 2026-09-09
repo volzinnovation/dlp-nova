@@ -1,0 +1,57 @@
+# Raphael Volz, Web Ontology Reasoning with Logic Databases (2004).
+# Figure 6.2, p. 150, Table 6.1, p. 151, and Example 6.3.2, pp. 158-159.
+# This is the independent L0 maintenance example's initial state: two TBox
+# axioms and nine asserted ancestorOf pairs. It does not import Table 2.5.
+# All source arrows are ancestorOf assertions as specified on pp. 149/151,
+# not additional hasChild facts or gender/class assertions.
+#
+# Source abbreviations: j=johannes, h=heinrich, c=christoph,
+# jc1=johann-christoph, jm=johann-michael, mb=maria-barbara,
+# wf=wilhelm-friedemann, js=johann-sebastian, ja=johann-ambrosius.
+# The future insertion jc2=johann-christian is absent from this initial ABox.
+# Figure 6.2 disambiguates Johann Christoph (jc1) from Johann Christian (jc2).
+#
+# Fact transaction: remove ancestorOf(js,wf), add ancestorOf(js,jc2).
+# The prose and resulting deltas resolve the p. 159 "jc" insertion typo.
+# Rule scenarios: remove/reinsert ancestorOf subPropertyOf inDynasty;
+# add/remove owl:SymmetricProperty on inDynasty. Symmetry reverses ancestor
+# pairs but does not connect the unrelated jc1 and c branches (p. 151 erratum).
+
+@prefix : <http://www.jsbach.org/bach#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.jsbach.org/bach-family> a owl:Ontology ;
+    rdfs:label "Bach Family Maintenance Example (Figure 6.2)" ;
+    rdfs:comment "Raphael Volz (2004), Figure 6.2 and Table 6.1, printed pages 150-151; initial ABox from Example 6.3.2, page 158. DLP L0." .
+
+# Table 6.1 T0 and T1; symmetry T2 is a subsequent benchmark update.
+:ancestorOf a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:subPropertyOf :inDynasty .
+:inDynasty a owl:ObjectProperty .
+
+# Example 6.3.2: (j,h), (j,c).
+:johannes rdfs:label "Johannes (j)" ; :ancestorOf :heinrich, :christoph .
+
+# (h,jc1).
+:heinrich rdfs:label "Heinrich (h)" ; :ancestorOf :johann-christoph .
+
+# (jc1,jm).
+:johann-christoph rdfs:label "Johann Christoph (jc1)" ; :ancestorOf :johann-michael .
+
+# (jm,mb).
+:johann-michael rdfs:label "Johann Michael (jm)" ; :ancestorOf :maria-barbara .
+
+# (mb,wf).
+:maria-barbara rdfs:label "Maria Barbara (mb)" ; :ancestorOf :wilhelm-friedemann .
+
+# (js,wf).
+:johann-sebastian rdfs:label "Johann Sebastian (js)" ; :ancestorOf :wilhelm-friedemann .
+
+# (ja,js).
+:johann-ambrosius rdfs:label "Johann Ambrosius (ja)" ; :ancestorOf :johann-sebastian .
+
+# (c,ja).
+:christoph rdfs:label "Christoph (c)" ; :ancestorOf :johann-ambrosius .
+
+:wilhelm-friedemann rdfs:label "Wilhelm Friedemann (wf)" .

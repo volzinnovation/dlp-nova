@@ -4,14 +4,26 @@ Run from the repository root with the locked development environment:
 
 ```sh
 uv run python -m benchmarks.run --suite thesis --repeats 5 \
-  --baseline benchmarks/baseline-results.json --output /tmp/dlp-results.json
+  --output /tmp/dlp-results.json
 ```
 
-The runner writes JSON after every case and derives an adjacent Markdown report. Each case runs in a separate Python subprocess with a configurable wall-time limit (180 seconds by default). A timeout, mismatch or error is recorded and makes the runner exit unsuccessfully. Five repetitions occur within the worker; there is no discarded warm-up. Generation and N-Triples serialization are outside the timed phases. Parsing, compilation and materialization are separate, measured with `time.perf_counter`. Instance queries run against the materialized store. TBox subsumption includes an isolated probe recompilation and materialization. Full raw samples, median, mean, spread, counts and process peak RSS are recorded.
+The runner writes JSON after every case and derives an adjacent Markdown report. Each case runs in a separate Python subprocess with a configurable wall-time limit (180 seconds by default). A timeout, mismatch or error is recorded and makes the runner exit unsuccessfully. Five repetitions occur within the worker; there is no discarded warm-up. Generation and N-Triples serialization are outside the timed phases. Parsing, compilation and materialization are separate, measured with `time.perf_counter`. Instance queries run against the materialized store. TBox subsumption times the complete first public `subsumes` call on each fresh reasoner: the baseline rebuilt an isolated probe, while a new lazy schema index or fast path built inside that call remains included in its measured time. This preserves the observable operation and timing boundary when the implementation changes. Full raw samples, median, mean, spread, counts and process peak RSS are recorded.
 
-The input hash covers sorted N-Triples. Generators use fixed IRIs, fixed blank-node labels, and seed 2004. Peak RSS is the process high-water mark, including input graphs, parser, retained objects and previous repetitions; it is not the engine's isolated allocation. Values are normalized to bytes on macOS and Linux. Workloads run sequentially. Package versions, platform, architecture, CPU information, and SHA-256 hashes of every reasoner and benchmark Python source are saved. Assertions are enabled; the worker refuses optimized Python execution that would disable validation.
+The input hash covers sorted N-Triples. Generators use fixed IRIs, fixed blank-node labels, and seed 2004. Peak RSS is the process high-water mark, including input graphs, parser, retained objects and previous repetitions; it is not the engine's isolated allocation. Values are normalized to bytes on macOS and Linux. Workloads run sequentially. Package versions, platform, architecture, CPU information, Python hash-seed setting, full Git HEAD, dirty checkout status, and SHA-256 hashes of every reasoner and benchmark Python source are saved. Source hashes are checked after each case; changing measured Python files during a run stops it with an error. The Git revision identifies the checkout, while the hashes identify the exact measured source bytes, including uncommitted changes. Assertions are enabled; the worker refuses optimized Python execution that would disable validation.
 
-The full suite contains **51 cases**: 27 taxonomy cases, two external/execution comparators, two inverse-functional equality cases, one existential case, one transitivity case, four cardinality cases, five union cases, three enumeration cases, and six maintenance cases. `--suite quick` selects 14 cases, retaining a smaller example of each family. A case is reported as validated only after all of its repetitions and correctness checks finish.
+The full suite contains **54 cases**: 27 taxonomy cases, two external/execution comparators, two inverse-functional equality cases, one existential case, one transitivity case, four cardinality cases, five union cases, three enumeration cases, six synthetic maintenance cases, and three Bach cases. `--suite quick` selects 17 cases, retaining a smaller example of each family. A case is reported as validated only after all of its repetitions and correctness checks finish.
+
+Run only the source-backed Bach cases with `uv run python -m benchmarks.run --suite bach --repeats 5`.
+This suite defaults to `benchmarks/bach-results.json` and an adjacent Markdown report. It parses
+the actual [Turtle/RDF/XML ontologies](../docs/BACH_BENCHMARK.md), with file reading outside the
+timer, instead of reserializing a generated graph into N-Triples. The 25 full-ontology queries
+run for each syntax; seven further queries exercise the separate family tree. Each query's
+complete expected and actual answer and timing are recorded. The summary query time is their
+sum per repetition; complex OWL expression queries include temporary query compilation and
+materialization. The input hash uses canonical blank-node labels, with source-file and query-manifest
+hashes also saved. Bach maintenance uses the RDF API, so update and fresh-rebuild timings both
+include compilation; synthetic maintenance uses precompiled inputs. See the
+[Bach report](bach-results.md) and [query manifest](../examples/bach-queries.json).
 
 ## Cases and deviations from the thesis
 
@@ -31,6 +43,47 @@ No comparison with the thesis's historical millisecond figures is meaningful: bo
 
 ## Before/after comparisons
 
-`baseline-results.json` preserves the preceding modern implementation's measurements. The optional `--baseline` comparison matches case controls (ignoring the number of repetitions), requires identical input hashes and timing boundaries, and records both old and new source hashes. A ratio below one means a shorter current median. Source changes are deliberately allowed: they are the subject of the comparison. Different PF inputs, new workloads, and the changed maintenance population/operation protocol are excluded, with reasons in JSON. Original and current runs are not interleaved, so ratios also reflect machine load and ordinary measurement variation; they are descriptive comparisons rather than controlled speedup claims.
+The default reference is **commit `b1254c441731ca4fdf32ea83570ff99aaa84ac2a`**, preserved in [baselines/b1254c4/results.json](baselines/b1254c4/results.json) with a [manifest](baselines/b1254c4/manifest.json). It contains all 51 cases with five repetitions each. The saved report's SHA-256 is `6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2`. This replaces the older `baseline-results.json` as the default reference; that earlier artifact remains historical evidence.
 
-The earlier report records compilation and materialization under the same phase boundaries, even though it predates the explicit `measurement_protocol` field. Closure totals can change when auxiliary predicates are introduced; matching named-answer expectations remains mandatory. OWL RL counts additional schema and axiomatic triples, so its total closure count is not directly comparable to the DLP store.
+Loading the default verifies its pinned full commit and report digest, manifest/source hashes, case count, repetitions and validation status. Where the commit's Git objects are available, the report and every recorded source hash are also checked against those immutable blobs. Output paths inside `benchmarks/baselines/`, and aliases that would overwrite the chosen baseline, are rejected. Running a benchmark never updates or replaces the reference. `--baseline PATH` explicitly selects another report; an external custom report without verified provenance is labeled accordingly. `--no-baseline` explicitly disables comparisons.
+
+Comparisons match case controls (ignoring repetition count), exact input hashes, and both reports' timing protocols. All 51 original cases, including PF and maintenance, match the selected reference when the input generators remain unchanged; the three new Bach cases have no measurements in the pinned report and are excluded from its before/after ratios. Maintenance additionally requires the same operation protocol and fact/rule mutation counts. Each of its six operations reports before/after update time, fresh-rebuild time, and work counters, rather than only comparing initial materialization. Parsing, compilation, instance/property queries, and the public subsumption call receive separate comparisons. Common counters retain both versions' samples; newly introduced unary-plan/intersection/coalescing counters have `null` baseline values and an explicit availability flag, never invented zeros.
+
+`candidate_rows` counts rows visited by Python's binding evaluator. It excludes hash probes performed inside C-level set intersections; `unary_intersections` counts those intersection calls. Reductions in candidate rows therefore describe avoided interpreter work, not a count of every primitive operation performed by the engine.
+
+Cross-version correctness evidence includes both runs' successful workload checks, expected query-answer counts, unchanged initial fact counts, and corresponding maintenance closure counts. Every update still must match a fresh closure. The historical reference did not save full answer sets or their digests, so the comparison does not claim a historical output-hash match; it relies on the expected-answer assertions in the verified benchmark source. A mismatch in recorded correctness fields makes the new run exit unsuccessfully. Changes in evaluation counters are expected and are not treated as semantic failures.
+
+## Uncertainty and interpretation
+
+Each timing comparison records the ratio of medians, raw sample counts and observed ranges. For two or more positive observations per version, it also reports a deterministic 95% percentile bootstrap interval from 2,000 independent resamplings of the two recorded lists, using seed 2004. Nonpositive or missing observations yield no interval; a zero baseline median yields no ratio. The baseline's original five observations are preserved exactly.
+
+These intervals describe sensitivity to the observed samples. Five repetitions within one process cannot characterize between-process variation, between-run drift, or machine-load differences, and the old and new runs are not interleaved. The intervals therefore are **descriptive resampling intervals**, not guarantees of 95% repeated-experiment coverage, causal speedups, or significance tests. A ratio below one means a shorter current median; the full spread and absolute timings matter, especially for tiny cached queries. No suite-wide throughput claim is inferred by pooling unrelated cases.
+
+The methodology follows the emphasis on explicit experimental conditions and interpretable uncertainty in [Hoefler and Belli, *Scientific Benchmarking of Parallel Computing Systems* (2015)](https://spcl.inf.ethz.ch/Publications/index.php?pub=222), and on uncertainty in performance ratios in [Kalibera and Jones, *Quantifying Performance Changes with Effect Size Confidence Intervals* (2012)](https://www.cs.kent.ac.uk/pubs/2012/3233/). Our limited retrospective comparison does not implement their full experimental designs. A stronger follow-up would repeat independently launched processes and interleave versions under controlled machine conditions, while retaining the pinned historical results.
+
+OWL RL counts additional schema and axiomatic triples, so its total closure count is not directly comparable to the DLP store. Within a given implementation/case, unchanged closure counts are checked across versions; different stored auxiliary representations would require an explicit explanation rather than a silent comparison.
+
+## Supplemental paired replay
+
+To investigate historical-run regressions without replacing the fixed reference:
+
+```sh
+.venv/bin/python scripts/replay_b1254c4.py --timeout 300
+```
+
+Run this after other benchmarks finish. The driver extracts the exact `b1254c4`
+sources into an ignored temporary directory and verifies their hashes and Python
+import locations. Seven selected workloads each run in five baseline/current
+pairs: 35 pairs and 70 independent workers, one repetition per worker, alternating
+AB/BA order and using the same explicit hash seed within each pair. They cover
+transitivity, cardinality, existentials, the widest union, a taxonomy, and small
+and large maintenance cases. Input hashes must still match the pinned report;
+closure counts, expected answers, and update checks must agree.
+
+The separate [replay report](replay-results.md) and [raw replay data](replay-results.json)
+retain both new sample sets, execution order, source/driver hashes and paired
+descriptive resampling intervals. These intervals resample paired observations
+together, unlike the unpaired retrospective full-run comparison. Five pairs
+remain limited evidence and do not control every source of machine noise. The
+driver protects both the pinned reference and the recorded full-run outputs;
+the supplemental measurements never become the default baseline automatically.

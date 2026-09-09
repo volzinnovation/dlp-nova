@@ -1,0 +1,422 @@
+{
+  "description": "Executable Bach query expectations, using the public Reasoner API and OWL Turtle expression queries. Local names expand in namespace. Empty/false answers mean not entailed. Witnesses are excluded from named retrieval; negative class and maximum-cardinality antecedent queries are outside the DLP query fragment.",
+  "namespace": "http://www.jsbach.org/bach#",
+  "queries": [
+    {
+      "id": "fathers",
+      "variant": "ontology",
+      "source": "Table 2.5 T5/A1–A4/A7, p. 35; §5.4.2.2, p. 132",
+      "question": "Which named individuals are fathers?",
+      "method": "instances",
+      "arguments": [
+        "Father"
+      ],
+      "expected": [
+        "johann-ambrosius",
+        "johann-sebastian"
+      ]
+    },
+    {
+      "id": "mothers",
+      "variant": "ontology",
+      "source": "Table 2.5 T6, p. 35; §5.4.2.2, p. 132",
+      "question": "Which named individuals are known to be mothers?",
+      "method": "instances",
+      "arguments": [
+        "Mother"
+      ],
+      "expected": []
+    },
+    {
+      "id": "people",
+      "variant": "ontology",
+      "source": "Table 2.5 T1/T2/T5, p. 35; §5.4.2.2, p. 132",
+      "question": "Which named individuals are people?",
+      "method": "instances",
+      "arguments": [
+        "Person"
+      ],
+      "expected": [
+        "anna-magdalena",
+        "johann-ambrosius",
+        "johann-sebastian",
+        "maria-barbara",
+        "wilhelm-friedemann"
+      ]
+    },
+    {
+      "id": "masterpieces",
+      "variant": "ontology",
+      "source": "Table 2.5 T11/A2/A9/A10, p. 35",
+      "question": "Which compositions are inferred to be masterpieces?",
+      "method": "instances",
+      "arguments": [
+        "Masterpiece"
+      ],
+      "expected": [
+        "BWV248"
+      ]
+    },
+    {
+      "id": "birthday-cantatas",
+      "variant": "ontology",
+      "source": "Table 2.5 A14/A15, p. 35",
+      "question": "Which named compositions are birthday cantatas?",
+      "method": "instances",
+      "arguments": [
+        "BirthdayCantata"
+      ],
+      "expected": [
+        "BWV213",
+        "BWV214"
+      ]
+    },
+    {
+      "id": "compositions",
+      "variant": "ontology",
+      "source": "Table 2.5 T12–T15/A13–A15, p. 35",
+      "question": "Which named compositions follow through the class hierarchy?",
+      "method": "instances",
+      "arguments": [
+        "Composition"
+      ],
+      "expected": [
+        "BWV213",
+        "BWV214",
+        "BWV248"
+      ]
+    },
+    {
+      "id": "named-birthdays",
+      "variant": "ontology",
+      "source": "Table 2.5 T12/A14/A15, p. 35; Example 4.5.2, p. 94",
+      "question": "Which birthday events have names in the input?",
+      "method": "instances",
+      "arguments": [
+        "Birthday"
+      ],
+      "expected": []
+    },
+    {
+      "id": "leipzig-inhabitants",
+      "variant": "ontology",
+      "source": "Table 2.5 T10/A8, p. 35",
+      "question": "Who is classified by the livesIn has-value restriction?",
+      "method": "instances",
+      "arguments": [
+        "LeipzigInhabitant"
+      ],
+      "expected": [
+        "johann-sebastian"
+      ]
+    },
+    {
+      "id": "wives",
+      "variant": "ontology",
+      "source": "Table 2.5 T3/A5/A6/A11/A12, p. 35",
+      "question": "Does an asserted marriage suffice to infer Wife from the one-way inclusion?",
+      "method": "instances",
+      "arguments": [
+        "Wife"
+      ],
+      "expected": []
+    },
+    {
+      "id": "ambrosius-is-father",
+      "variant": "ontology",
+      "source": "Table 2.5 T5/A1/A7, p. 35; §5.4.2.1, p. 132",
+      "question": "Does the existential child assertion establish that Johann Ambrosius is a father?",
+      "method": "entails",
+      "arguments": [
+        "johann-ambrosius",
+        "rdf:type",
+        "Father"
+      ],
+      "expected": true
+    },
+    {
+      "id": "ambrosius-named-son-not-entailed",
+      "variant": "ontology",
+      "source": "Table 2.5 A1, p. 35; Example 4.5.2, p. 94",
+      "question": "Does an unnamed male child identify Johann Sebastian?",
+      "method": "entails",
+      "arguments": [
+        "johann-ambrosius",
+        "hasChild",
+        "johann-sebastian"
+      ],
+      "expected": false
+    },
+    {
+      "id": "sebastian-known-children",
+      "variant": "ontology",
+      "source": "Example 5.4.1, p. 131; §5.4.3, pp. 134–135",
+      "question": "Which named children are entailed, without an at-most-one claim?",
+      "method": "property_values",
+      "arguments": [
+        "johann-sebastian",
+        "hasChild"
+      ],
+      "expected": [
+        "wilhelm-friedemann"
+      ]
+    },
+    {
+      "id": "sebastian-marriages",
+      "variant": "ontology",
+      "source": "Table 2.5 A6/A12, p. 35; §5.4.3, pp. 134–135",
+      "question": "Which named spouses are asserted?",
+      "method": "property_values",
+      "arguments": [
+        "johann-sebastian",
+        "marriedTo"
+      ],
+      "expected": [
+        "anna-magdalena",
+        "maria-barbara"
+      ]
+    },
+    {
+      "id": "symmetric-marriage",
+      "variant": "ontology",
+      "source": "Table 2.5 T9/A6, p. 35; §5.4.3, pp. 134–135",
+      "question": "Which spouse is inferred by symmetry?",
+      "method": "property_values",
+      "arguments": [
+        "anna-magdalena",
+        "marriedTo"
+      ],
+      "expected": [
+        "johann-sebastian"
+      ]
+    },
+    {
+      "id": "sebastian-types",
+      "variant": "ontology",
+      "source": "§5.4.2.3, p. 134; Table 2.5, p. 35",
+      "question": "Which named classes describe Johann Sebastian?",
+      "method": "types",
+      "arguments": [
+        "johann-sebastian"
+      ],
+      "expected": [
+        "Composer",
+        "Father",
+        "Genius",
+        "LeipzigInhabitant",
+        "Man",
+        "Person",
+        "owl:Thing"
+      ]
+    },
+    {
+      "id": "male-child-existential",
+      "variant": "ontology",
+      "source": "Example 4.5.2, p. 94; §5.4.2, pp. 132–133",
+      "question": "Who has a male child, including an existentially required unnamed child?",
+      "method": "instances_expression",
+      "expression": "[ a owl:Restriction; owl:onProperty :hasChild; owl:someValuesFrom :Man ]",
+      "expected": [
+        "johann-ambrosius"
+      ]
+    },
+    {
+      "id": "child-filler-intersection-union",
+      "variant": "ontology",
+      "source": "Adapted Example 5.4.2, pp. 133–134; explicit filler scope",
+      "question": "Who has a child known to be a person and either a man or a woman?",
+      "method": "instances_expression",
+      "expression": "[ a owl:Restriction; owl:onProperty :hasChild; owl:someValuesFrom [ owl:intersectionOf ( :Person [ owl:unionOf ( :Man :Woman ) ] ) ] ]",
+      "expected": [
+        "johann-ambrosius"
+      ]
+    },
+    {
+      "id": "person-subsumes-father",
+      "variant": "ontology",
+      "source": "Example 2.4.3, p. 39; §5.4.4.1, p. 135",
+      "question": "Does Person subsume Father?",
+      "method": "subsumes",
+      "arguments": [
+        "Person",
+        "Father"
+      ],
+      "expected": true
+    },
+    {
+      "id": "father-does-not-subsume-person",
+      "variant": "ontology",
+      "source": "§5.4.4.1, pp. 135–136; Table 2.5 T5, p. 35",
+      "question": "Is every person necessarily a father?",
+      "method": "subsumes",
+      "arguments": [
+        "Father",
+        "Person"
+      ],
+      "expected": false
+    },
+    {
+      "id": "composition-subsumes-birthday-cantata",
+      "variant": "ontology",
+      "source": "Table 2.5 T12–T15, p. 35; §5.4.4.1, pp. 135–136",
+      "question": "Is every birthday cantata a composition?",
+      "method": "subsumes",
+      "arguments": [
+        "Composition",
+        "BirthdayCantata"
+      ],
+      "expected": true
+    },
+    {
+      "id": "father-satisfiable",
+      "variant": "ontology",
+      "source": "Example 2.4.3, p. 39; §5.4.4.4, pp. 137–138",
+      "question": "Can Father have an instance consistently?",
+      "method": "is_satisfiable",
+      "arguments": [
+        "Father"
+      ],
+      "expected": true
+    },
+    {
+      "id": "ancestor-subsumes-child",
+      "variant": "ontology",
+      "source": "Table 2.5 T7, p. 35; §5.4.4.5, pp. 138–139",
+      "question": "Is every hasChild edge an ancestorOf edge?",
+      "method": "property_subsumes",
+      "arguments": [
+        "ancestorOf",
+        "hasChild"
+      ],
+      "expected": true
+    },
+    {
+      "id": "ancestor-transitive",
+      "variant": "ontology",
+      "source": "Table 2.5 T8, p. 35; §5.4.4.6, p. 140",
+      "question": "Is ancestorOf transitive?",
+      "method": "is_transitive",
+      "arguments": [
+        "ancestorOf"
+      ],
+      "expected": true
+    },
+    {
+      "id": "marriage-symmetric",
+      "variant": "ontology",
+      "source": "Table 2.5 T9, p. 35; §5.4.4.6, pp. 139–140",
+      "question": "Is marriedTo symmetric?",
+      "method": "is_symmetric",
+      "arguments": [
+        "marriedTo"
+      ],
+      "expected": true
+    },
+    {
+      "id": "dynasty-not-transitive",
+      "variant": "ontology",
+      "source": "Table 2.5 T16/T17, p. 35; §6.2.2, p. 151 (corrected)",
+      "question": "Is transitivity of inDynasty entailed?",
+      "method": "is_transitive",
+      "arguments": [
+        "inDynasty"
+      ],
+      "expected": false
+    },
+    {
+      "id": "johannes-descendants",
+      "variant": "family",
+      "source": "Figure 6.2, p. 150; Example 6.3.2, p. 158",
+      "question": "Which named people descend from Johannes?",
+      "method": "property_values",
+      "arguments": [
+        "johannes",
+        "ancestorOf"
+      ],
+      "expected": [
+        "heinrich",
+        "christoph",
+        "johann-christoph",
+        "johann-michael",
+        "maria-barbara",
+        "wilhelm-friedemann",
+        "johann-ambrosius",
+        "johann-sebastian"
+      ]
+    },
+    {
+      "id": "ambrosius-descendants",
+      "variant": "family",
+      "source": "Figure 6.2; §6.2.1, p. 150",
+      "question": "Which descendants does Johann Ambrosius have before deletion?",
+      "method": "property_values",
+      "arguments": [
+        "johann-ambrosius",
+        "ancestorOf"
+      ],
+      "expected": [
+        "johann-sebastian",
+        "wilhelm-friedemann"
+      ]
+    },
+    {
+      "id": "johannes-reaches-wilhelm",
+      "variant": "family",
+      "source": "Figure 6.2; §6.2.1, p. 150",
+      "question": "Is Johannes an ancestor of Wilhelm Friedemann?",
+      "method": "entails",
+      "arguments": [
+        "johannes",
+        "ancestorOf",
+        "wilhelm-friedemann"
+      ],
+      "expected": true
+    },
+    {
+      "id": "base-dynasty-not-symmetric",
+      "variant": "family",
+      "source": "Table 6.1; §6.2.2, p. 151",
+      "question": "Is inDynasty symmetric before T2 is inserted?",
+      "method": "is_symmetric",
+      "arguments": [
+        "inDynasty"
+      ],
+      "expected": false
+    },
+    {
+      "id": "base-dynasty-not-transitive",
+      "variant": "family",
+      "source": "Table 6.1; §6.2.2, p. 151",
+      "question": "Does matching observed ancestor pairs establish universal transitivity?",
+      "method": "is_transitive",
+      "arguments": [
+        "inDynasty"
+      ],
+      "expected": false
+    },
+    {
+      "id": "base-ancestor-transitive",
+      "variant": "family",
+      "source": "Table 6.1 T1, p. 151",
+      "question": "Is the family ancestor property declared transitive?",
+      "method": "is_transitive",
+      "arguments": [
+        "ancestorOf"
+      ],
+      "expected": true
+    },
+    {
+      "id": "base-cross-branch-not-entailed",
+      "variant": "family",
+      "source": "§6.2.2, p. 151; docs/THESIS_ERRATA.md item 6",
+      "question": "Are separate branches connected by the base dynasty rules?",
+      "method": "entails",
+      "arguments": [
+        "johann-christoph",
+        "inDynasty",
+        "christoph"
+      ],
+      "expected": false
+    }
+  ]
+}
