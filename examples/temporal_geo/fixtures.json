@@ -1,0 +1,79 @@
+{
+  "status": "Synthetic reference fixtures for proposed semantics; not engine conformance",
+  "spatial_context": {
+    "crs": "http://www.opengis.net/def/crs/EPSG/0/25832",
+    "axis_order": ["easting", "northing"],
+    "metric": "Euclidean distance in the projected coordinate plane",
+    "unit": "metre",
+    "center": [500000, 5400000],
+    "radius": 100,
+    "lane": "eastbound"
+  },
+  "signs": [
+    {"id": "stop_near", "kind": "StopSign", "point": [500030, 5400040], "lane": "eastbound", "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "distance": 50},
+    {"id": "stop_opposite", "kind": "StopSign", "point": [499990, 5400000], "lane": "westbound", "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "distance": 10},
+    {"id": "speed_near", "kind": "SpeedSign", "point": [500000, 5400060], "lane": "eastbound", "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "distance": 60},
+    {"id": "stop_expired", "kind": "StopSign", "point": [500006, 5400008], "lane": "eastbound", "valid": ["2026-09-10T07:00:00Z", "2026-09-10T08:00:00Z"], "distance": 10},
+    {"id": "stop_boundary", "kind": "StopSign", "point": [500060, 5400080], "lane": "eastbound", "valid": ["2026-09-10T08:00:00Z", "2026-09-10T09:00:00Z"], "distance": 100},
+    {"id": "stop_outside", "kind": "StopSign", "point": [500100.1, 5400000], "lane": "eastbound", "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "distance": 100.1}
+  ],
+  "snapshot_cases": [
+    {"at": "2026-09-10T08:30:00Z", "nearby_stops": ["stop_boundary", "stop_near", "stop_opposite"], "lane_applicable": ["stop_boundary", "stop_near"]},
+    {"at": "2026-09-10T09:00:00Z", "nearby_stops": ["stop_near", "stop_opposite"], "lane_applicable": ["stop_near"]}
+  ],
+  "topology": {
+    "rectangle_min": [499900, 5399900],
+    "rectangle_max": [500100, 5400100],
+    "points": [
+      {"id": "interior", "point": [500000, 5400000], "contains": true, "covers": true},
+      {"id": "boundary", "point": [500100, 5400000], "contains": false, "covers": true},
+      {"id": "exterior", "point": [500101, 5400000], "contains": false, "covers": false}
+    ]
+  },
+  "adjacent_intervals": {
+    "first": ["2026-09-10T08:00:00Z", "2026-09-10T09:00:00Z"],
+    "second": ["2026-09-10T09:00:00Z", "2026-09-10T10:00:00Z"],
+    "probe": "2026-09-10T09:00:00Z",
+    "meets": true,
+    "intersects": false,
+    "first_contains_probe": false,
+    "second_contains_probe": true
+  },
+  "speed_versions": [
+    {"id": "speed_v1", "sign": "speed_near", "kmh": 50, "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "recorded": ["2026-09-10T08:00:00Z", "2026-09-10T09:05:00Z"]},
+    {"id": "speed_v2", "sign": "speed_near", "kmh": 30, "valid": ["2026-09-10T08:00:00Z", "2026-09-10T10:00:00Z"], "recorded": ["2026-09-10T09:05:00Z", null]}
+  ],
+  "bitemporal_cases": [
+    {"valid_at": "2026-09-10T08:30:00Z", "recorded_at": "2026-09-10T09:04:59Z", "kmh": [50]},
+    {"valid_at": "2026-09-10T08:30:00Z", "recorded_at": "2026-09-10T09:05:00Z", "kmh": [30]},
+    {"valid_at": "2026-09-10T10:00:00Z", "recorded_at": "2026-09-10T09:06:00Z", "kmh": []}
+  ],
+  "events": [
+    {"id": "outside00", "vehicle": "vehicle_a", "event_time": "2026-09-10T08:00:00Z", "record_time": "2026-09-10T08:00:00Z", "point": [500120, 5400000]},
+    {"id": "inside05", "vehicle": "vehicle_a", "event_time": "2026-09-10T08:00:05Z", "record_time": "2026-09-10T08:00:05Z", "point": [500060, 5400000]},
+    {"id": "inside10", "vehicle": "vehicle_a", "event_time": "2026-09-10T08:00:10Z", "record_time": "2026-09-10T08:00:10Z", "point": [500050, 5400000]},
+    {"id": "late03", "vehicle": "vehicle_a", "event_time": "2026-09-10T08:00:03Z", "record_time": "2026-09-10T08:00:13Z", "point": [500090, 5400000]}
+  ],
+  "window": {
+    "axis": "event_time",
+    "width_seconds": 10,
+    "bounds": "[end-width,end)",
+    "late_event_policy": "Accepted late03 revises the earlier provisional result; no scheduler is implemented",
+    "initial_ids": ["outside00", "inside05", "inside10"],
+    "corrected_ids": ["outside00", "inside05", "inside10", "late03"],
+    "cases": [
+      {"end": "2026-09-10T08:00:12Z", "accepted": "initial_ids", "count": 2, "members": ["inside05", "inside10"]},
+      {"end": "2026-09-10T08:00:12Z", "accepted": "corrected_ids", "count": 3, "members": ["inside05", "inside10", "late03"]},
+      {"end": "2026-09-10T08:00:15Z", "accepted": "corrected_ids", "count": 2, "members": ["inside05", "inside10"]}
+    ]
+  },
+  "entry": {
+    "fence": "closed disc at spatial_context.center, radius 100 metres",
+    "semantics": "Observed outside-to-inside transition between consecutive accepted observations, not interpolated crossing time",
+    "initial_entries": ["inside05"],
+    "corrected_entries": ["late03"],
+    "retract": ["inside05"],
+    "add": ["late03"]
+  },
+  "arithmetic": {"distance_metres": 50, "elapsed_seconds": 5, "expected_kmh": 36}
+}

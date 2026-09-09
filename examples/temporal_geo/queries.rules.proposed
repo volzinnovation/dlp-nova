@@ -1,0 +1,96 @@
+# DESIGN SKETCH ONLY: this file is not accepted by the current DLP parser/engine.
+# All query, filter, bind, WINDOW, PREVIOUS, COUNT_DISTINCT and EMIT constructs
+# below are proposed. They are not extensions already present in the thesis DSL.
+# Query context: projected-plane metric, EPSG:25832, metres, offset-bearing time.
+# Functions in sp:, time:, num: are custom proposed names, not standard functions.
+# In particular time: here is NOT the W3C OWL-Time namespace.
+prefix ex:   <urn:example:temporal-geo:>
+prefix sp:   <urn:dlp:proposed:spatial:>
+prefix time: <urn:dlp:proposed:temporal:>
+prefix num:  <urn:dlp:proposed:numeric:>
+prefix unit: <urn:dlp:proposed:unit:>
+prefix geo:  <http://www.opengis.net/ont/geosparql#>
+prefix geof: <http://www.opengis.net/def/function/geosparql/>
+# geo: and geof: are reserved standard namespaces; no custom dwithin is
+# asserted to be a standardized GeoSPARQL function. sp:distance has the metric
+# declared by our query context; it is not an alias claiming geof:distance conformance.
+
+# STATIC 1. Radius includes the boundary; output contains kind and validity checks.
+query NearbyStops(?sign, ?d) given (?position, ?at, ?radius) :-
+    ex:StopSign(?sign), ex:geometry(?sign, ?g), ex:validDuring(?sign, ?valid),
+    filter time:contains(?valid, ?at),
+    filter sp:dwithin(?position, ?g, ?radius, unit:metre),
+    bind sp:distance(?position, ?g, unit:metre) as ?d.
+
+# STATIC 2. Nearby across the opposite lane need not mean applicable to a driver.
+# This simplified example uses explicit lane membership, not inferred road topology.
+query ApplicableStops(?sign) given (?position, ?at, ?radius, ?lane) :-
+    ex:StopSign(?sign), ex:geometry(?sign, ?g), ex:validDuring(?sign, ?valid),
+    ex:appliesToLane(?sign, ?lane), filter time:contains(?valid, ?at),
+    filter sp:dwithin(?position, ?g, ?radius, unit:metre).
+
+# STATIC 3. covers includes a polygon boundary; contains excludes it for a point.
+query ZoneMembership(?zone, ?strict, ?inclusive) given (?position) :-
+    ex:Zone(?zone), ex:geometry(?zone, ?polygon),
+    bind sp:contains(?polygon, ?position) as ?strict,
+    bind sp:covers(?polygon, ?position) as ?inclusive.
+
+# STATIC 4. Two adjacent periods meet but have no shared valid instant in [a,b).
+query AdjacentValidity(?a, ?b) given (?asset) :-
+    ex:validDuring(?asset, ?a), ex:validDuring(?asset, ?b),
+    filter time:meets(?a, ?b).
+
+# STATIC 5. The two clocks are explicit; both intervals are closed-open.
+query HistoricalSpeedLimit(?limit) given (?sign, ?validAt, ?recordedAt) :-
+    ex:SpeedVersion(?v), ex:forSign(?v, ?sign), ex:limitKmh(?v, ?limit),
+    ex:validDuring(?v, ?valid), ex:recordedDuring(?v, ?recorded),
+    filter time:contains(?valid, ?validAt),
+    filter time:contains(?recorded, ?recordedAt).
+
+# STREAM 1. Stateful operators are separate from pure filter/bind functions.
+# WINDOW uses accepted IDs, event time and [end-10s,end). Count is by event ID.
+query RecentObservationCount(?vehicle, ?n) given (?end, ?acceptedRevision) :-
+    WINDOW ex:positions EVENT_TIME ex:eventTime WIDTH "PT10S" END ?end
+        BOUNDS "[start,end)" REVISION ?acceptedRevision AS ?w,
+    COUNT_DISTINCT ?event GROUP_BY ?vehicle FROM ?w AS ?n.
+
+# STREAM 2. PREVIOUS is a proposed order-sensitive operator over accepted history.
+# Ties use (eventTime,eventId); the initial observation has no predecessor.
+# Preserve predecessor state before a current window. No interpolation is assumed.
+query ObservedEntry(?vehicle, ?event) given (?acceptedRevision) :-
+    ex:AcceptedPosition(?event, ?vehicle, ?g, ?t, ?acceptedRevision),
+    PREVIOUS ?event BY ?vehicle ORDER (eventTime, eventId)
+        REVISION ?acceptedRevision AS (?prev, ?prevG, ?prevT),
+    ex:MonitoredFence(?vehicle, ?fence),
+    filter sp:disjoint(?fence, ?prevG), filter sp:covers(?fence, ?g)
+    EMIT CHANGES KEY (?vehicle, ?event).
+
+# STREAM 3. Compute speed only from two known, ordered samples, with positive dt.
+query ObservedSegmentSpeed(?vehicle, ?event, ?kmh) given (?acceptedRevision) :-
+    ex:AcceptedPosition(?event, ?vehicle, ?g, ?t, ?acceptedRevision),
+    PREVIOUS ?event BY ?vehicle ORDER (eventTime, eventId)
+        REVISION ?acceptedRevision AS (?prev, ?prevG, ?prevT),
+    bind time:elapsedSeconds(?prevT, ?t) as ?seconds,
+    filter num:greaterThan(?seconds, 0),
+    bind sp:distance(?prevG, ?g, unit:metre) as ?metres,
+    bind num:divide(?metres, ?seconds) as ?mps,
+    bind num:multiply(?mps, 3.6) as ?kmh.
+
+# STREAM 4. Effective restriction uses event time, with a separate knowledge cutoff.
+# applicableSignAtEvent is supplied by event-time lane/road applicability logic
+# at the same map/knowledge snapshot; it is not the vehicle's current sign.
+query ApplicableEventLimit(?event, ?limit) given (?recordedAt, ?acceptedRevision) :-
+    ex:AcceptedPosition(?event, ?vehicle, ?g, ?t, ?acceptedRevision),
+    ex:applicableSignAtEvent(?event, ?sign), ex:SpeedVersion(?v), ex:forSign(?v, ?sign),
+    ex:limitKmh(?v, ?limit), ex:validDuring(?v, ?valid),
+    ex:recordedDuring(?v, ?recorded), filter time:contains(?valid, ?t),
+    filter time:contains(?recorded, ?recordedAt).
+
+# STREAM 5. Current membership retracts on expiry; history is retained separately.
+# Emitted rows are provisional/correctable according to explicit runtime policy.
+query CurrentFenceObservations(?vehicle, ?event) given (?end, ?acceptedRevision) :-
+    WINDOW ex:positions EVENT_TIME ex:eventTime WIDTH "PT10S" END ?end
+        BOUNDS "[start,end)" REVISION ?acceptedRevision AS ?w,
+    MEMBER ?w AS (?event, ?vehicle, ?g, ?t), ex:MonitoredFence(?vehicle, ?fence),
+    filter sp:covers(?fence, ?g)
+    EMIT CHANGES KEY (?vehicle, ?event).

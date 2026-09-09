@@ -229,6 +229,19 @@ the guarantees and scope. Actual same-host comparisons with
 The [DLP assessment](docs/DLP_PROFILE_ASSESSMENT.md) treats computational value
 separately from the practical prevalence of fragment-only ontologies.
 
+## Temporal and geospatial extension research
+
+The [temporal/geospatial design study](docs/TEMPORAL_GEOSPATIAL_RESEARCH.md)
+investigates typed built-ins, arithmetic, indexed spatial predicates, and
+event-time reasoning, with equal priority for static maps and live streams.
+It includes current primary sources, code extension points, cache and update
+contracts, and a staged implementation proposal. The
+[external provider design](docs/EXTERNAL_PROVIDERS.md) covers distance/GIS
+services, batch requests, provider versions, and failure handling. The
+[traffic examples and reference checks](examples/temporal_geo/README.md)
+illustrate radius/validity queries, late events, expiration, and historical
+corrections. Their proposed rule syntax is not implemented by the current engine.
+
 ## Implementation map
 
 The [native performance experiment](docs/NATIVE_PERFORMANCE.md) profiles the
