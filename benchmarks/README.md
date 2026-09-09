@@ -115,7 +115,7 @@ The offline validator checks the preserved original report and its original
 archive; a new run records the source hashes of the checkout used for that run.
 Both experimental mechanisms failed the predeclared default-adoption screen
 and remain opt-in through the research configurations.
-The final production thesis-suite run uses `research-thesis-results.json`,
+The production thesis-suite run at `5531be4` uses `research-thesis-results.json`,
 preserving the earlier main-suite/replay outputs and pinned `b1254c4` reference.
 
 The [separate support replication](research-support-replay.md) adds 144 paired
@@ -131,3 +131,97 @@ unsupported-cycle overhead recur. Run it only after other timing work finishes:
 
 The replication refuses existing output paths and preserves the original
 factorial data; all pairs and source/protocol hashes are saved separately.
+
+## External workloads and the research preprint
+
+The [LaTeX research report](../docs/paper/README.md) brings together the thesis
+audit, subsequent work, preserved experiments and new external controls. Its
+tables are regenerated from raw JSON observations. The [target benchmark survey](../docs/research-target-benchmarks.md)
+records exact artifacts, author-reported results and comparison limits.
+
+The official [LUBM study](lubm-results.md) uses UBA 1.7, the unmodified logical
+ontology, and all fourteen official answer sets. The [ZodiacEdge study](zodiac-results.md)
+uses the author's 128-rule positive program and its two marked rule transactions,
+plus ten 1,000-fact deletion/reinsertion samples. These are different semantic
+workloads. The [native engine comparison](zodiac-native-results.md) uses the
+unmodified author implementation with an explicit representation adapter and
+exact complete-closure checks on the same host.
+
+Run reproductions sequentially, with unused output paths:
+
+```sh
+.venv/bin/python -m benchmarks.lubm --prepare
+.venv/bin/python -m benchmarks.lubm --blocks 3 --output /tmp/lubm-reproduction.json
+.venv/bin/python -m benchmarks.zodiac --prepare
+.venv/bin/python -m benchmarks.zodiac --blocks 4 --fact-samples 10 \
+  --output /tmp/zodiac-reproduction.json
+```
+
+Dataset preparation downloads public, pinned upstream artifacts. LUBM requires
+an available Java runtime for the original generator. Downloaded/generated data
+stay in ignored `tmp/`; manifests preserve their provenance and digests. The
+native comparator's `--prepare` fetches the pinned author source into that cache;
+the repository does not redistribute it. Its `--reference` argument must name
+the fresh naive reference written by the Zodiac study. `--candidate-source`
+can select the exact frozen source directory used by that study.
+
+The [TPC-H component study](external-tpch-results.md) uses DuckDB 1.4.4's official
+generator at SF0.01 and SF0.1. Q3/Q5/Q9 retain their original tables and filters
+and project all primary keys, preserving pre-aggregation row identity. They do
+not implement aggregation, ordering, top-k, or the complete TPC-H benchmark.
+Read the [component methodology](external-tpch-methodology.md) before comparing
+query-kernel times with complete pipeline totals or published SQL results.
+The optional benchmark dependency is isolated from production:
+
+```sh
+uv venv --python 3.12 tmp/tpch-python
+uv pip install --python tmp/tpch-python/bin/python duckdb==1.4.4 rdflib==7.6.0
+tmp/tpch-python/bin/python -m benchmarks.external_tpch --prepare
+tmp/tpch-python/bin/python -m benchmarks.external_tpch --blocks 3 \
+  --output /tmp/tpch-component-reproduction.json
+```
+
+The four follow-up configurations are immutable `b1254c4` and `5531be4`, the new
+source with its three new switches disabled, and that same source with all three
+enabled. The candidate combines insertion-validation reuse, incremental survivor
+index maintenance, and positional joins. The original adaptive unary and support
+certificate mechanisms remain disabled. Drivers record source, protocol, data,
+order and timing boundaries; small sample sizes support descriptive comparisons.
+Published times from different hardware or semantic contracts are contextual
+reference values, not denominators for new performance claims.
+
+The [bounded-lookahead study](external-lookahead-results.md) is a separate,
+post-hoc experiment: 54 fresh TPC-H component workers and 36 adverse controls.
+Each component gets its own process, both new arms share closure-lifetime
+cleanup, and only the ordering switch differs. Planning and complete result
+consumption are included in the join timer; component and whole-process totals
+remain separate. The feature remains disabled by default. Reproduce with:
+
+```sh
+tmp/tpch-python/bin/python -m benchmarks.external_lookahead --blocks 3 \
+  --output /tmp/lookahead-reproduction.json
+```
+
+The [HermiT bridge](owl-bridge-results.md) compares actual OWLAPI-maintained
+HermiT and two local versions on identical finite existential inputs.
+[Its methods](../docs/hermit-comparator-plan.md) document exact named-answer
+checks, consistency, dependency hashes, task/process boundaries, and the
+published jar's artifact/API version discrepancy. It tests the computational
+value of one L3 task beyond OWL 2 RL syntax, also in OWL 2 EL. It does not
+estimate fragment prevalence or compare against specialized EL systems.
+
+The [deletion diagnostic](zodiac-deletion-profile.md) is one instrumented
+profile, not another benchmark sample. It identifies transaction-wide scans
+without claiming an implemented optimization or predicted speedup.
+The final default-configuration thesis suite is preserved separately in
+[followup-thesis-results.json](followup-thesis-results.json), retaining all
+earlier observations and the immutable baseline.
+
+The [original Bach comparison](bach-external-results.md) adds the full ontology
+and family-maintenance examples to the external suite. It uses 12 repeated
+blocks with current, preserved b1254c4, HermiT and native ZodiacEdge where each
+supports the complete task. Exact failures are retained and disqualify the
+affected configuration/task from performance rankings. See the
+[protocol and reproduction instructions](../docs/BACH_EXTERNAL_BENCHMARK.md)
+for the OWL/Datalog boundary, fresh HermiT reconstructions, native incremental
+updates, pinned sources and separate task/process timing intervals.

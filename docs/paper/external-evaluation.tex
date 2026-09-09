@@ -1,0 +1,152 @@
+\subsection{Benchmark selection and comparison contracts}
+The Lehigh University Benchmark (LUBM)~\cite{guo2005} is the first external workload because its maintainers supply
+an ontology, deterministic generator, queries, and extensional reference
+answers~\cite{lubmwebsite}. UOBM~\cite{ma2006} increases expressive and structural
+demands; OWL2Bench~\cite{singh2020} provides explicit OWL 2 profile coverage.
+ORE~\cite{parsia2017} supplies real-ontology reasoning tasks. WatDiv
+\cite{aluc2014} and BSBM~\cite{bizer2009} instead stress RDF query processing.
+Table~\ref{tab:benchmarks} identifies the relevant contracts rather than
+treating these suites as interchangeable rankings.
+
+For relational workloads, the Transaction Processing Performance Council's
+Benchmark H (TPC-H) evaluates analytical queries over business
+data~\cite{tpch}. Our use of selected query components is described below.
+
+\begin{table}[ht]
+\caption{Established benchmark candidates and their applicability. Selection is
+our assessment; benchmark purpose and language come from the cited sources.}
+\label{tab:benchmarks}
+\small
+\begin{tabularx}{\linewidth}{@{}p{.18\linewidth}YY@{}}
+\toprule
+Benchmark & Appropriate use & Required boundary \\
+\midrule
+LUBM & Loading, materialization, exact named query answers & Official ontology and generator; DLP L3 for the unmodified ontology here. \\
+UOBM & More connected and expressive ontology workloads & Pin the generator: Oxford's version changes distributions; reject unsupported logical features. \\
+Oxford maintenance suite & Compare DRed, DRed$^c$, B/F, B/F$^c$ & Match the exact transformed rule program and fact-deletion batches. \\
+ORE 2015 & Coverage, consistency, classification, realization & Record unsupported ontologies; a filtered DLP track cannot inherit full DL/EL rankings. \\
+OWL2Bench & Feature coverage and scaling by OWL 2 profile & Property chains and some other profile features exceed this compiler's contract. \\
+WatDiv / BSBM & Join diversity and RDF query services & Separate query adaptation from inference; not tests of DRed or OWL completeness. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Official LUBM(1,0): independent answer validation}
+The initial external study uses UBA 1.7's unchanged bundled generator bytecode,
+university index zero, seed zero, and one university. Fifteen department files
+are generated. The original ontology IRI is retained; imports are resolved
+locally and their 15 document import statements removed after resolution.
+No logical ontology axiom is projected away. The resulting graph has 100,851
+distinct triples, including 293 ontology triples. L2 rejects existential
+consequents; DLP L3 accepts the original ontology and completes materialization.
+
+The official query file contains punctuation errors and an older namespace.
+The adapter records both the upstream bytes and its normalized queries, fixing
+only those syntax/namespace differences. RDFLib parses each basic graph
+pattern; the reasoner's existing indexed join evaluator executes it. This is
+an explicit BGP adapter, not a complete SPARQL frontend. Bindings include named
+individuals and literal values, matching the official extensional answers.
+Skolem witnesses remain present in the materialization and in intermediate
+reasoning.
+
+All nine fresh workers (three configurations, three balanced blocks) return
+exactly the official answer tuples for all fourteen queries: 126 successful
+query checks, including both missing and excess tuple detection. In query
+order, the cardinalities are
+\begin{equation*}
+(4,0,6,34,719,7790,67,7790,208,4,224,15,1,5916).
+\end{equation*}
+The full internal closure contains 234,480 facts; its named Univ-Bench projection
+contains 138,478. All nine full internal closure hashes also agree. Internal
+and named closure hashes are recorded separately; agreement does not independently certify every
+unqueried existential consequence. Reference-answer equality is the stronger
+external evidence for the named benchmark questions.
+
+\input{generated/lubm-table.tex}
+Here ``current'' denotes the earlier \code{5531be4} research state, before the
+subsequent optimizations motivated by the extended literature review. It is
+preserved as a separate external control. The fixed variant has paired median
+ratios of 0.957 for materialization and 0.6925 for the sum of fourteen query
+times against \code{b1254c4}. This is a local same-host comparison, not a
+comparison with the thesis's historical software. Three blocks and one
+university establish neither robust scalability nor an external performance
+frontier.
+
+Query preparation is outside the query timer, and each query is fully consumed
+once per worker. Cold denotes a fresh Python process, not a flushed operating
+system filesystem cache. Compilation and materialization are subintervals of
+reasoner construction; they must not be added to the already inclusive
+parse-plus-reasoner column. Peak RSS includes RDF export and validation and is
+approximately 984 MiB. The certificate mechanism concerns retractions and is
+inactive in this static benchmark.
+
+\subsection{Published reference results and what they establish}
+The 2005 LUBM study~\cite{guo2005}, Table 1 (author PDF p.~15), reports
+LUBM(1,0) loading times of 13 s for Sesame-Memory, 542 s for Sesame-DB, and
+343 s for DLDB-OWL. Table 3 (author PDF p.~31) gives Q1 latencies of 15, 46,
+and 59 ms respectively, all with four answers. Its 103,397-triple ABox count
+includes duplicates. The machine was a 1.8 GHz Pentium 4 with 256 MB RAM,
+Windows XP, Java 1.4.1, and a 512 MB heap; Sesame 1.0 used RDFS inference and
+DLDB-OWL used its 2004-03-29 release. These loading, storage, and semantic
+configurations differ from our DLP L3 materialization and BGP adapter. The numbers
+are historical reference points and must not be divided by our times.
+
+For the new maintenance hypothesis, the Oxford workloads are more relevant
+than a query-only benchmark. Table~\ref{tab:published-maintenance} records two
+verified rows from Hu et al.~\cite{hu2018}, Section 6 and Table 1 (author PDF
+pp.~7--8). That study averages ten randomly selected 1,000-fact deletions on a
+Dell PowerEdge R720 with two 2.6 GHz Xeon E5-2670 processors, 256 GB RAM, and
+Fedora 24. It demonstrates why plain DRed alone is an insufficient competitive
+control for a certificate optimization.
+
+\begin{table}[ht]
+\caption{Published small-deletion reference times from Hu et al.~\cite{hu2018}.
+Seconds, on their hardware and transformed programs; these are not new runs.}
+\label{tab:published-maintenance}
+\centering\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Program & Explicit facts & DRed & DRed$^c$ & B/F & B/F$^c$ \\
+\midrule
+Reactome-U & 12.5 million & 1.03 & 0.06 & 1.00 & 0.05 \\
+UOBM-U & 254.8 million & 1,185.87 & 179.24 & 31.96 & 1.18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The U transformation is complete but unsound relative to the original OWL
+ontology; R is sound but incomplete, and Claros-LE adds manually chosen rules.
+These labels describe OWL approximation, not an error in Datalog evaluation of
+the transformed program. The original counting artifact server could not be
+retrieved during this study. No version-identical rerun of those Oxford data
+or external DRed$^c$/B/F$^c$ executable is claimed.
+
+Other widely used benchmarks expose different limitations. ORE evaluates
+consistency, classification, and realization under DL/EL task limits; filtering
+to supported DLP inputs changes the competition population. OWL2Bench includes
+features such as property chains that this compiler currently rejects. WatDiv
+uses diverse SPARQL patterns and BSBM includes service-level and aggregate query
+workloads. Successful Horn closure does not implement those complete interfaces.
+Their proper role is a separate coverage or query track, with unsupported
+features and conversion costs recorded.
+
+The final published RPT+ evaluation by Qiao, Boncz, and Zhang~\cite{qiao2026}
+uses DuckDB 1.3.0 and eight threads on two Xeon Platinum 8474C processors with
+512 GB DDR5 memory under Debian 12. Its benchmark population includes 18
+TPC-H join queries at SF100, 113 Join Order Benchmark queries, eight Appian
+queries, and 18,251 SQLStorm queries (13,308 completed, 2,837 failed, and 2,106
+reached a ten-second timeout). Reported geometric-mean speedups are 1.17 for
+TPC-H, 1.47 for JOB, 1.01 for Appian, and 1.28 for SQLStorm. The final PVLDB
+paper is the reference here; an earlier author-hosted draft has different
+numbers. Our smaller positive join components do not measure those full SQL
+workloads, and their local speed ratios cannot be ranked against these values.
+
+The pinned ZodiacEdge repository~\cite{zodiacartifact} reports LUBM(1) initial,
+rule-insertion, and rule-deletion times of 588.9, 216.9, and 252.5 ms for the
+$*$ subset, and 603.7, 56.3, and 21.5 ms for the $\#$ subset. These are author
+README observations, separate from the paper's wind-turbine workloads with
+aggregation and negation~\cite{xu2023}. Hardware, generation seed, repetition
+count, and exact timing boundaries are not supplied for these README rows.
+The supplied positive LUBM program nevertheless permits a stronger test: run
+the author's unmodified engine and our implementation on one host with the
+same facts, rules, update sequence, and validated semantic outputs.

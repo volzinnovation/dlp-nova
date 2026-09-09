@@ -1,0 +1,103 @@
+\section{Background and related research}
+\label{sec:background}
+
+An ontology describes categories, relationships, and constraints within a
+domain. An ontology reasoner determines what follows from these descriptions
+and the available observations. We use the thesis's original Bach family
+knowledge base as a running illustration~\cite[Table~2.5, p.~35]{volz2004}.
+It describes Johann Ambrosius as a man with a male child, without naming that
+child. It also states that men are persons and defines a father as a man with
+a child who is a person. A reasoner can therefore conclude that Johann
+Ambrosius is a father without identifying his child. This distinguishes an
+implied conclusion from an explicitly recorded statement.
+
+Missing information is also different from falsehood. The same knowledge base
+names Wilhelm Friedemann as Johann Sebastian's child. As the thesis explains,
+this does not establish that he is Johann Sebastian's only child
+\cite[Example~5.4.1, p.~131]{volz2004}. Incomplete family records do not rule
+out additional children.
+
+A complementary illustration comes from the Lehigh University Benchmark
+(LUBM), used in our external comparisons~\cite{guo2005,lubmwebsite}.
+Its ontology states that every graduate student is a person who takes some
+graduate course, that graduate courses are courses, and that people taking
+courses are students. A graduate-student declaration therefore implies
+student membership even when it names no course. This distinction matters
+for LUBM's sixth query, which asks for all students. Bach connects the present
+study to the original work; LUBM connects the same reasoning ideas to an
+established benchmark.
+
+The Web Ontology Language, OWL, gives such statements a precise meaning
+\cite{owl2004,owldirect2012}. Greater expressive power permits more complex
+descriptions, but can make inference more demanding. A central research
+question is therefore which restrictions preserve useful forms of expression
+while enabling simpler reasoning. A \emph{fragment} is a language obtained by
+such restrictions. Its value can arise from a mathematical guarantee, a
+computational advantage on a specified task, or both.
+
+Description Logic Programs were introduced as a connection between ontology
+languages and rules of the form ``if these conditions hold, then this
+conclusion follows''~\cite{grosof2003}. Volz's 2004 thesis developed this
+connection into methods for answering questions and maintaining inferred
+knowledge as facts and rules change~\cite{volz2004}. The original research
+already addressed changes to the ontology's rules, rather than only changes
+to observations~\cite{volz2003maintenance}. The work examined here inherits
+that problem and semantic foundation. Its expressive mode, called DLP L3,
+also admits statements requiring an individual to exist without naming them.
+The thesis illustrates this using Johann Ambrosius's unnamed child
+\cite[Example~4.5.2, p.~94]{volz2004}. This additional capability requires separate
+attention to whether a reasoning procedure terminates.
+
+One influential approach computes consequences in advance and retains them
+for later questions. This is called \emph{materialization}. Its main attraction
+is that repeated questions can reuse earlier deductions. Its main difficulty
+is maintaining those deductions when their premises change. Adding a new
+premise usually creates further conclusions. Removing one is subtler: a
+conclusion may have several independent justifications. The thesis's extended
+Bach family tree supplies two paths from Johannes to Wilhelm Friedemann, one
+through Johann Sebastian and another through Maria Barbara. In its hypothetical
+withdrawal of the Johann Sebastian--Wilhelm Friedemann link, Johannes remains
+an inferred ancestor through Maria Barbara
+\cite[Section~6.2.1 and Figure~6.2, p.~150]{volz2004}. The example changes the
+recorded knowledge, rather than making a historical claim about parentage.
+
+Research has developed this idea in several directions. Deletion and
+rederivation, established before the thesis, first withdraw potentially affected
+conclusions and then restore those still justified~\cite{gupta1993}.
+Subsequent methods examine alternative proofs more selectively, count suitable
+forms of support, or combine specialized procedures
+\cite{motik2015bf,hu2018,motik2019,hu2022modular}. Changes to the rules
+themselves have also received renewed attention
+\cite{kotowski2011,xu2023}. These studies establish the broader principle
+that maintenance should depend on the structure of the affected reasoning,
+not simply on the number of changed statements.
+
+A second direction reduces repeated work across similar deductions.
+Type-based reasoning groups individuals with recurring descriptions, while
+compressed reasoning represents repeated patterns more economically
+\cite{bajraktari2017,hu2019compressed}. Parallel and column-oriented
+systems organize computation and storage to handle larger knowledge bases
+\cite{motik2014parallel,carral2019}. More recent work further specializes
+representations for common patterns~\cite{zhang2024}. These approaches
+motivate our investigation of whether individuals with the same current
+starting facts can share the work of establishing a surviving justification.
+The general idea of sharing proofs is inherited; the present study tests a
+restricted form of it during simultaneous changes to facts and rules.
+
+A third direction concerns the order in which conditions are tested. Combining
+records that satisfy several conditions is known as a \emph{join}. An
+unfavourable order can produce many temporary combinations that later tests
+discard. Research has established stronger algorithms for combining multiple
+relations~\cite{ngo2012}, and recent studies investigate robust filtering
+and the avoidance of unnecessary intermediate expansion
+\cite{qiao2026,bekkers2025}. These findings motivate our experiments with
+limited adaptation of evaluation order. Their mathematical guarantees do not
+automatically apply to the simpler strategy examined here.
+
+Finally, OWL 2 profiles formalize different restrictions for different
+reasoning needs. The rule-oriented RL profile explicitly acknowledges DLP
+among its influences~\cite{owlprofiles2012}. This historical continuity
+motivates reassessment rather than a claim that the earlier fragments have
+become obsolete. Our contribution is a corrected reconstruction and a
+controlled investigation of when selected restrictions and reasoning
+strategies help, including cases in which their costs outweigh their benefits.

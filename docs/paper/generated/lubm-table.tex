@@ -1,0 +1,14 @@
+\begin{table}[ht]
+\caption{Official LUBM(1,0), three fresh processes per configuration. Loading/reasoning times are seconds; the fully consumed fourteen-query total is milliseconds. Earlier current state is commit 5531be4.}
+\label{tab:lubm}
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Configuration & Parse + reasoner & Compile & Materialize & Queries (ms) \\
+\midrule
+b1254c4 & 7.423 & 1.379 & 3.322 & 217.714 \\
+current-fixed & 7.218 & 1.362 & 3.180 & 151.097 \\
+current-adaptive & 7.387 & 1.395 & 3.310 & 150.822 \\
+\bottomrule
+\end{tabular}
+\end{table}

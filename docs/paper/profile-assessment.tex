@@ -1,0 +1,128 @@
+\section{Are DLP fragments still worthwhile alongside OWL 2 RL?}
+\label{sec:profiles}
+Our answer separates theoretical and computational merit from practical
+adoption. A fragment can be worthwhile even when its prevalence in deployed
+ontologies is unknown. DLP remains useful as a foundation and as a decomposition
+of evaluator capabilities. OWL 2 RL explicitly credits DLP among its
+influences~\cite{owlprofiles2012}; standardization incorporated the central
+idea rather than making it irrelevant.
+
+In particular, DLP L3's existential consequents can express useful statements
+beyond RL's syntax. If specialized DLP L3 reasoning is faster than a more expressive
+OWL reasoner on the same DLP L3 inputs and reasoning tasks, while preserving the
+same correctness and completeness obligations, that is evidence for a useful
+computational fragment. No estimate of how often users need only DLP L3 is required
+for this conclusion. The finite existential-bridge study in
+Section~\ref{sec:hermit} now supplies such scoped computational evidence:
+the preserved baseline and candidate both answer the same consistency and
+named-instance task faster than the pinned broader-language HermiT
+distribution~\cite{glimm2014hermit}. All 27 measured workers match independently
+justified answers. The candidate/HermiT paired median task ratios are
+0.046429, 0.262592, and 0.378055 for 100, 1,000, and 10,000 named A instances;
+the corresponding full-process ratios are 0.379001, 0.475576, and 0.415056.
+These are results for one controlled family and three process blocks, not a
+new complexity bound or a comparison with every broader-language OWL implementation.
+Most of this advantage is already present in the fixed baseline.
+
+Measured advantages and mathematical guarantees provide different evidence.
+One can prove an expressiveness--complexity tradeoff without an adoption survey;
+one can also demonstrate an implementation advantage without proving a new
+complexity separation. Hustadt, Motik, and Sattler~\cite{hustadt2005} establish
+P-complete data complexity for basic Horn-SHIQ reasoning, while general SHIQ
+instance checking is coNP-complete under their assumptions. This is an example
+of prior theoretical justification for expressive Horn fragments. It does not
+identify our DLP L3 with Horn-SHIQ or give our unrestricted witness chase that bound.
+Termination, combined complexity, data complexity, and query complexity require
+their own precise language and task definitions.
+In particular, nontermination of this Skolem chase is a limitation of the
+chosen procedure, not by itself a proof that reasoning in the original
+description-logic fragment is undecidable.
+
+Three classifications must remain distinct: the thesis's constructor-position
+fragments, the actual RDF encodings accepted by this compiler, and the
+conditions under which an optimization is valid. An L0 ontology can contain
+expensive transitive binary joins. An ontology accepted with the L2 ceiling may
+contain only unary implications. Choosing a higher ceiling does not add absent
+equality or constraints, and a label alone cannot predict cost.
+
+\subsection{Overlap rather than automatic profile inclusion}
+Concrete syntax witnesses rule out identifying these labels with RL subsets.
+The DLP L3 inclusion $A\sqsubseteq\exists R.B$ has a general existential
+consequent absent from RL's superclass grammar. Even L1's $\top\sqsubseteq A$
+is outside its subclass grammar. Conversely, RL supports restricted property
+chains and keys, which this compiler rejects~\cite{owlprofiles2012}. These
+are statements about syntactic membership, not impossibility of equivalent
+rewriting or a claim that DLP L3 contains RL.
+
+Global restrictions matter independently. The compiler accepts simultaneous
+transitivity and functionality of the same property. That rule set has a
+first-order interpretation, but the property fails OWL 2 DL's simplicity
+condition for functionality~\cite{owlsyntax2012}. Parser acceptance therefore
+does not certify a standard OWL 2 RL ontology. Datatype completeness is another
+separate gap in this implementation.
+
+OWL 2 RL/RDF rules can also be applied beyond syntactically conforming RL.
+Their Direct-Semantics correspondence has explicit conditions, including
+restrictions on entity roles and on the conclusions covered by the theorem
+\cite{owlprofiles2012,owlconformance2012}. A comparison must choose its
+semantic contract. Our equality acts on individual arguments, not predicate
+identifiers. Requiring identity with every triple produced by an RDF-Based
+reasoner can therefore demand consequences outside the intended contract.
+
+\subsection{What restrictions can still buy}
+For this implementation, function freedom gives finite active-domain
+materialization. Eligible states without explicit or datatype-induced equality
+avoid representative splitting during
+deletion. Same-variable unary bodies permit set-intersection evaluation.
+These properties are useful internal dispatch conditions, including within a
+broader supported ontology. They do not require presenting another public
+ontology language as a replacement for RL.
+
+A small compiler can also be easier to audit and reproduce. Its value depends
+on real schemas fitting the contract and on explicit rejection of unsupported
+axioms. Conversion costs, excluded standard features, and additional
+conformance work are part of the cost of the restriction. The earlier
+certificate and unary experiments demonstrate workload-specific benefits and
+failures, not an advantage of requiring a DLP frontend over accepting the same
+axioms through a conforming RL frontend.
+
+LUBM illustrates the distinction between ontology coverage and query
+sufficiency. Its full ontology needs this implementation's DLP L3 mode, and all
+fourteen named answer sets match. That does not prove those questions require
+generated witnesses. Nor would matching them after a projection prove ontology
+equivalence. Existential consequences can affect named answers: from $A(a)$,
+$A\sqsubseteq\exists R.B$, and $\exists R.B\sqsubseteq C$, we obtain $C(a)$
+\cite{owldirect2012}. Dropping the witness-producing inclusion without a
+justified rewriting loses this consequence.
+The HermiT study evaluates precisely this bridge together with a B-only
+negative individual and an unrelated empty-answer class. Both GCIs are
+essential to the answer, but explicit witness construction is not: the TBox
+entails $A\sqsubseteq C$, and HermiT retains its normal optimizations. The
+family also belongs to OWL 2 EL, so the result does not establish superiority
+over specialized EL reasoners. It compares the specified entailment task,
+not entire materializations or generated witness identities.
+
+\subsection{Practical adoption is a separate question}
+OWL 2 EL and QL supply other established tradeoffs, respectively oriented toward
+large terminologies with existential descriptions and query rewriting over
+large instance data~\cite{owlprimer2012}. They are alternatives to evaluate,
+not automatic solutions for every DLP L3 query. In particular, avoiding explicit
+infinite witness expansion for classification does not establish completeness
+for arbitrary conjunctive queries or cardinality constraints.
+
+The frequency with which real applications need only DLP L3 is a difficult empirical
+question. Published ontology collections can reveal supported constructs in
+those collections, but may be unrepresentative; they also do not fully reveal
+application queries, update needs, or equivalent rewritings. We do not require
+an answer to that question before recognizing a fragment's theoretical value.
+
+For practical interoperability claims, checked standard profiles and explicit
+extensions would complement the historical DLP L0--L3 interface. A deployment study
+could measure coverage and rejection reasons, full input-to-answer and update
+costs, conversion and memory, and ablations with compiled rules held fixed.
+Its coverage conclusions would remain specific to the sampled population.
+Current evidence supports the fragments as foundations and research targets
+and demonstrates a computational advantage on the stated existential task.
+That scoped result stands independently of prevalence; it does not establish
+the historical interface as a better interoperability standard or settle
+performance on other ontology and query families.

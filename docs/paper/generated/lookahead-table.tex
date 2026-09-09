@@ -1,0 +1,17 @@
+\begin{table}[ht]
+\caption{Single-component fresh-process study: median join milliseconds, followed by paired lookahead/compiled time ratios for join, component total, and complete process. Three balanced blocks; ratios below one favor lookahead.}
+\label{tab:lookahead}
+\centering\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Case & b1254c4 & Compiled & Lookahead & Join & Total & Process \\
+\midrule
+0.01/Q3 & 6.499 & 4.436 & 4.628 & 0.996 & 0.986 & 0.979 \\
+0.01/Q5 & 58.258 & 48.740 & 49.326 & 1.001 & 1.016 & 1.011 \\
+0.01/Q9 & 48.721 & 32.406 & 33.060 & 1.040 & 1.004 & 0.998 \\
+0.1/Q3 & 58.692 & 42.424 & 43.047 & 1.015 & 1.001 & 1.003 \\
+0.1/Q5 & 923.572 & 515.218 & 260.271 & 0.510 & 0.975 & 0.990 \\
+0.1/Q9 & 398.469 & 262.076 & 272.030 & 1.043 & 1.000 & 0.998 \\
+\bottomrule
+\end{tabular}
+\end{table}

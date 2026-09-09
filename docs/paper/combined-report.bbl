@@ -1,0 +1,288 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Alu{\c c} et~al.(2014)Alu{\c c}, Hartig, {\"O}zsu, and
+  Daudjee]{aluc2014}
+G{\"u}ne{\c s} Alu{\c c}, Olaf Hartig, M.~Tamer {\"O}zsu, and Khuzaima Daudjee.
+\newblock Diversified stress testing of {RDF} data management systems.
+\newblock In \emph{Proceedings of ISWC}, pages 197--212, 2014.
+\newblock \doi{10.1007/978-3-319-11964-9_13}.
+\newblock URL
+  \url{https://cs.uwaterloo.ca/~tozsu/publications/rdf/ISWC14-final.pdf}.
+
+\bibitem[Bajraktari et~al.(2017)Bajraktari, Ortiz, and {\v
+  S}imkus]{bajraktari2017}
+Labinot Bajraktari, Magdalena Ortiz, and Mantas {\v S}imkus.
+\newblock Goal-oriented type-based reasoning for expressive {DLs}.
+\newblock In \emph{Description Logics}, volume 1879 of \emph{CEUR Workshop
+  Proceedings}, 2017.
+\newblock URL \url{https://ceur-ws.org/Vol-1879/paper63.pdf}.
+\newblock Paper 63, extended abstract.
+
+\bibitem[Bekkers et~al.(2025)Bekkers, Neven, Vansummeren, and
+  Wang]{bekkers2025}
+Liese Bekkers, Frank Neven, Stijn Vansummeren, and Yisu~Remy Wang.
+\newblock Instance-optimal acyclic join processing without regret: Engineering
+  the yannakakis algorithm in column stores.
+\newblock \emph{Proceedings of the VLDB Endowment}, 18\penalty0 (8):\penalty0
+  2413--2426, 2025.
+\newblock \doi{10.14778/3742728.3742737}.
+\newblock URL \url{https://www.vldb.org/pvldb/vol18/p2413-vansummeren.pdf}.
+
+\bibitem[Bizer and Schultz(2009)]{bizer2009}
+Christian Bizer and Andreas Schultz.
+\newblock The {Berlin SPARQL} benchmark.
+\newblock \emph{International Journal on Semantic Web and Information Systems},
+  5\penalty0 (2):\penalty0 1--24, 2009.
+\newblock \doi{10.4018/jswis.2009040101}.
+
+\bibitem[Carral et~al.(2019)Carral, Dragoste, Gonz{\'a}lez, Jacobs,
+  Kr{\"o}tzsch, and Urbani]{carral2019}
+David Carral, Irina Dragoste, Larry Gonz{\'a}lez, Ceriel Jacobs, Markus
+  Kr{\"o}tzsch, and Jacopo Urbani.
+\newblock {VLog}: A rule engine for knowledge graphs.
+\newblock In \emph{Proceedings of ISWC}, volume 11779 of \emph{LNCS}, pages
+  19--35, 2019.
+\newblock \doi{10.1007/978-3-030-30796-7_2}.
+\newblock URL \url{https://iccl.inf.tu-dresden.de/web/Inproceedings3218/en}.
+
+\bibitem[Glimm et~al.(2014)Glimm, Horrocks, Motik, Stoilos, and
+  Wang]{glimm2014hermit}
+Birte Glimm, Ian Horrocks, Boris Motik, Giorgos Stoilos, and Zhe Wang.
+\newblock {HermiT}: An {OWL} 2 reasoner.
+\newblock \emph{Journal of Automated Reasoning}, 53\penalty0 (3):\penalty0
+  245--269, 2014.
+\newblock \doi{10.1007/s10817-014-9305-1}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/boris.motik/pubs/ghmsw14HermiT.pdf}.
+
+\bibitem[Grosof et~al.(2003)Grosof, Horrocks, Volz, and Decker]{grosof2003}
+Benjamin~N. Grosof, Ian Horrocks, Raphael Volz, and Stefan Decker.
+\newblock Description logic programs: Combining logic programs with description
+  logic.
+\newblock In \emph{Proceedings of WWW}, pages 48--57, 2003.
+\newblock \doi{10.1145/775152.775160}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/ian.horrocks/Publications/download/2003/p117-grosof.pdf}.
+
+\bibitem[Guo et~al.(2005)Guo, Pan, and Heflin]{guo2005}
+Yuanbo Guo, Zhengxiang Pan, and Jeff Heflin.
+\newblock {LUBM}: A benchmark for {OWL} knowledge base systems.
+\newblock \emph{Journal of Web Semantics}, 3\penalty0 (2--3):\penalty0
+  158--182, 2005.
+\newblock \doi{10.1016/j.websem.2005.06.005}.
+\newblock URL \url{https://swat.cse.lehigh.edu/pubs/guo05a.pdf}.
+
+\bibitem[Gupta et~al.(1993)Gupta, Mumick, and Subrahmanian]{gupta1993}
+Ashish Gupta, Inderpal~Singh Mumick, and V.~S. Subrahmanian.
+\newblock Maintaining views incrementally.
+\newblock In \emph{Proceedings of SIGMOD}, pages 157--166, 1993.
+\newblock \doi{10.1145/170035.170066}.
+
+\bibitem[Hitzler et~al.(2012)Hitzler, Kr{\"o}tzsch, Parsia, Patel-Schneider,
+  and Rudolph]{owlprimer2012}
+Pascal Hitzler, Markus Kr{\"o}tzsch, Bijan Parsia, Peter~F. Patel-Schneider,
+  and Sebastian Rudolph.
+\newblock {OWL} 2 web ontology language primer (second edition), 2012.
+\newblock URL \url{https://www.w3.org/TR/owl2-primer/}.
+\newblock W3C Recommendation, 11 December 2012; Section 10.
+
+\bibitem[Hu et~al.(2018)Hu, Motik, and Horrocks]{hu2018}
+Pan Hu, Boris Motik, and Ian Horrocks.
+\newblock Optimised maintenance of {Datalog} materialisations.
+\newblock In \emph{Proceedings of AAAI}, pages 1871--1879, 2018.
+\newblock \doi{10.1609/aaai.v32i1.11554}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/ian.horrocks/Publications/download/2018/HuMH18a.pdf}.
+
+\bibitem[Hu et~al.(2019)Hu, Urbani, Motik, and Horrocks]{hu2019compressed}
+Pan Hu, Jacopo Urbani, Boris Motik, and Ian Horrocks.
+\newblock {Datalog} reasoning over compressed {RDF} knowledge bases.
+\newblock In \emph{Proceedings of CIKM}, pages 2065--2068, 2019.
+\newblock \doi{10.1145/3357384.3358147}.
+\newblock URL \url{https://arxiv.org/abs/1908.10177}.
+
+\bibitem[Hu et~al.(2022)Hu, Motik, and Horrocks]{hu2022modular}
+Pan Hu, Boris Motik, and Ian Horrocks.
+\newblock Modular materialisation of {Datalog} programs.
+\newblock \emph{Artificial Intelligence}, 308:\penalty0 103726, 2022.
+\newblock \doi{10.1016/j.artint.2022.103726}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/boris.motik/pubs/hmh22modular-materialisation.pdf}.
+
+\bibitem[Hustadt et~al.(2005)Hustadt, Motik, and Sattler]{hustadt2005}
+Ullrich Hustadt, Boris Motik, and Ulrike Sattler.
+\newblock Data complexity of reasoning in very expressive description logics.
+\newblock In \emph{Proceedings of the Nineteenth International Joint Conference
+  on Artificial Intelligence}, pages 466--471, 2005.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/boris.motik/pubs/hms05data.pdf}.
+
+\bibitem[Kotowski et~al.(2011)Kotowski, Bry, and Brodt]{kotowski2011}
+Jakub Kotowski, Fran{\c c}ois Bry, and Simon Brodt.
+\newblock Reasoning as axioms change: Incremental view maintenance
+  reconsidered.
+\newblock In \emph{Web Reasoning and Rule Systems}, volume 6902 of \emph{LNCS},
+  pages 139--154, 2011.
+\newblock \doi{10.1007/978-3-642-23580-1_11}.
+\newblock URL
+  \url{https://www.en.pms.ifi.lmu.de/publications/PMS-FB/PMS-FB-2011-5/PMS-FB-2011-5-paper.pdf}.
+
+\bibitem[{Lehigh University SWAT Project}(2026)]{lubmwebsite}
+{Lehigh University SWAT Project}.
+\newblock Lehigh university benchmark: {UBA} 1.7, ontology, queries, and
+  answers, 2026.
+\newblock URL \url{https://swat.cse.lehigh.edu/projects/lubm/}.
+\newblock Artifact page accessed 9 September 2026.
+
+\bibitem[Ma et~al.(2006)Ma, Yang, Qiu, Xie, Pan, and Liu]{ma2006}
+Li~Ma, Yang Yang, Zhaoming Qiu, Guotong Xie, Yue Pan, and Shengping Liu.
+\newblock Towards a complete {OWL} ontology benchmark.
+\newblock In \emph{Proceedings of ESWC}, volume 4011 of \emph{LNCS}, pages
+  125--139, 2006.
+\newblock \doi{10.1007/11762256_12}.
+
+\bibitem[Motik et~al.(2012{\natexlab{a}})Motik, Grau, Horrocks, Wu, Fokoue, and
+  Lutz]{owlprofiles2012}
+Boris Motik, Bernardo~Cuenca Grau, Ian Horrocks, Zhe Wu, Achille Fokoue, and
+  Carsten Lutz.
+\newblock {OWL} 2 web ontology language profiles (second edition),
+  2012{\natexlab{a}}.
+\newblock URL \url{https://www.w3.org/TR/2012/REC-owl2-profiles-20121211/}.
+\newblock W3C Recommendation, 11 December 2012; Sections 4--5.
+
+\bibitem[Motik et~al.(2012{\natexlab{b}})Motik, Patel-Schneider, and
+  Grau]{owldirect2012}
+Boris Motik, Peter~F. Patel-Schneider, and Bernardo~Cuenca Grau.
+\newblock {OWL} 2 web ontology language direct semantics (second edition),
+  2012{\natexlab{b}}.
+\newblock URL \url{https://www.w3.org/TR/owl2-direct-semantics/}.
+\newblock W3C Recommendation, 11 December 2012; Tables 4--5.
+
+\bibitem[Motik et~al.(2012{\natexlab{c}})Motik, Patel-Schneider, and
+  Parsia]{owlsyntax2012}
+Boris Motik, Peter~F. Patel-Schneider, and Bijan Parsia.
+\newblock {OWL} 2 web ontology language structural specification and
+  functional-style syntax (second edition), 2012{\natexlab{c}}.
+\newblock URL \url{https://www.w3.org/TR/owl2-syntax/}.
+\newblock W3C Recommendation, 11 December 2012; Section 11.
+
+\bibitem[Motik et~al.(2014)Motik, Nenov, Piro, Horrocks, and
+  Olteanu]{motik2014parallel}
+Boris Motik, Yavor Nenov, Robert Piro, Ian Horrocks, and Dan Olteanu.
+\newblock Parallel materialisation of {Datalog} programs in centralised,
+  main-memory {RDF} systems.
+\newblock In \emph{Proceedings of AAAI}, pages 129--137, 2014.
+\newblock \doi{10.1609/aaai.v28i1.8730}.
+\newblock URL \url{https://ojs.aaai.org/index.php/AAAI/article/view/8730}.
+
+\bibitem[Motik et~al.(2015)Motik, Nenov, Piro, and Horrocks]{motik2015bf}
+Boris Motik, Yavor Nenov, Robert Piro, and Ian Horrocks.
+\newblock Incremental update of {Datalog} materialisation: The backward/forward
+  algorithm.
+\newblock In \emph{Proceedings of AAAI}, pages 1560--1568, 2015.
+\newblock \doi{10.1609/aaai.v29i1.9409}.
+\newblock URL \url{https://ojs.aaai.org/index.php/AAAI/article/view/9409}.
+
+\bibitem[Motik et~al.(2019)Motik, Nenov, Piro, and Horrocks]{motik2019}
+Boris Motik, Yavor Nenov, Robert Piro, and Ian Horrocks.
+\newblock Maintenance of {Datalog} materialisations revisited.
+\newblock \emph{Artificial Intelligence}, 269:\penalty0 76--136, 2019.
+\newblock \doi{10.1016/j.artint.2018.12.004}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/people/ian.horrocks/Publications/download/2019/MNPH19a.pdf}.
+
+\bibitem[Ngo et~al.(2012)Ngo, Porat, R{\'e}, and Rudra]{ngo2012}
+Hung~Q. Ngo, Ely Porat, Christopher R{\'e}, and Atri Rudra.
+\newblock Worst-case optimal join algorithms, 2012.
+\newblock URL \url{https://arxiv.org/abs/1203.1952}.
+\newblock arXiv:1203.1952v1.
+
+\bibitem[Parsia et~al.(2017)Parsia, Matentzoglu, Gon{\c c}alves, Glimm, and
+  Steigmiller]{parsia2017}
+Bijan Parsia, Nicolas Matentzoglu, Rafael~S. Gon{\c c}alves, Birte Glimm, and
+  Andreas Steigmiller.
+\newblock The {OWL} reasoner evaluation ({ORE}) 2015 competition report.
+\newblock \emph{Journal of Automated Reasoning}, 59:\penalty0 455--482, 2017.
+\newblock \doi{10.1007/s10817-017-9406-8}.
+
+\bibitem[Patel-Schneider et~al.(2004)Patel-Schneider, Hayes, and
+  Horrocks]{owl2004}
+Peter~F. Patel-Schneider, Patrick Hayes, and Ian Horrocks.
+\newblock {OWL} web ontology language semantics and abstract syntax, 2004.
+\newblock URL
+  \url{https://www.w3.org/TR/2004/REC-owl-semantics-20040210/direct.html}.
+\newblock W3C Recommendation, 10 February 2004; Section 3.
+
+\bibitem[Qiao et~al.(2026)Qiao, Boncz, and Zhang]{qiao2026}
+Yiming Qiao, Peter Boncz, and Huanchen Zhang.
+\newblock Robust predicate transfer with dynamic execution.
+\newblock \emph{Proceedings of the VLDB Endowment}, 19\penalty0 (6):\penalty0
+  1278--1290, 2026.
+\newblock \doi{10.14778/3797919.3797934}.
+\newblock URL \url{https://www.vldb.org/pvldb/vol19/p1278-qiao.pdf}.
+
+\bibitem[Singh et~al.(2020)Singh, Bhatia, and Mutharaju]{singh2020}
+Gunjan Singh, Sumit Bhatia, and Raghava Mutharaju.
+\newblock {OWL2Bench}: A benchmark for {OWL} 2 reasoners.
+\newblock In \emph{Proceedings of ISWC}, volume 12507 of \emph{LNCS}, pages
+  81--96, 2020.
+\newblock \doi{10.1007/978-3-030-62466-8_6}.
+\newblock URL \url{https://github.com/kracr/owl2bench}.
+
+\bibitem[Smith et~al.(2012)Smith, Horrocks, and
+  Kr{\"o}tzsch]{owlconformance2012}
+Michael Smith, Ian Horrocks, and Markus Kr{\"o}tzsch.
+\newblock {OWL} 2 web ontology language conformance (second edition), 2012.
+\newblock URL \url{https://www.w3.org/TR/owl2-conformance/}.
+\newblock W3C Recommendation, 11 December 2012; Section 2.2.
+
+\bibitem[{Transaction Processing Performance Council}(2026)]{tpch}
+{Transaction Processing Performance Council}.
+\newblock {TPC-H}: A decision support benchmark, 2026.
+\newblock URL \url{https://www.tpc.org/tpch/}.
+\newblock Official benchmark description; accessed 9 September 2026.
+
+\bibitem[Volz(2004)]{volz2004}
+Raphael Volz.
+\newblock \emph{Web Ontology Reasoning with Logic Databases}.
+\newblock PhD thesis, Universit{\"a}t Karlsruhe (TH), 2004.
+\newblock URL \url{https://publikationen.bibliothek.kit.edu/162004}.
+
+\bibitem[Volz et~al.(2003)Volz, Staab, and Motik]{volz2003maintenance}
+Raphael Volz, Steffen Staab, and Boris Motik.
+\newblock Incremental maintenance of materialized ontologies.
+\newblock In \emph{On the Move to Meaningful Internet Systems}, volume 2888 of
+  \emph{LNCS}, pages 707--724, 2003.
+\newblock \doi{10.1007/978-3-540-39964-3_45}.
+\newblock URL
+  \url{https://www.cs.ox.ac.uk/boris.motik/pubs/vsm03incremental.pdf}.
+
+\bibitem[Xu and Cur{\'e}(2023)]{xu2023}
+Weiqin Xu and Olivier Cur{\'e}.
+\newblock {ZodiacEdge}: A {Datalog} engine with incremental rule set
+  maintenance, 2023.
+\newblock URL \url{https://arxiv.org/abs/2312.14530}.
+\newblock arXiv:2312.14530v1, 22 December 2023.
+
+\bibitem[Xu and Cur{\'e}(2026)]{zodiacartifact}
+Weiqin Xu and Olivier Cur{\'e}.
+\newblock {ZodiacEdge} repository: Additional {LUBM} rule-maintenance
+  evaluation, 2026.
+\newblock URL
+  \url{https://github.com/xwq610728213/zodiac_edge/blob/e15721161d1055f019c4b8f9ac1bd8648417f154/README.md}.
+\newblock Undated repository results; inspected 9 September 2026. Commit
+  e15721161d1055f019c4b8f9ac1bd8648417f154.
+
+\bibitem[Zhang et~al.(2024)Zhang, Hu, Nenov, and Horrocks]{zhang2024}
+Xinyue Zhang, Pan Hu, Yavor Nenov, and Ian Horrocks.
+\newblock Optimised storage for {Datalog} reasoning.
+\newblock In \emph{Proceedings of AAAI}, volume~38, pages 10748--10755, 2024.
+\newblock \doi{10.1609/aaai.v38i9.28947}.
+\newblock URL \url{https://arxiv.org/abs/2312.11297}.
+
+\end{thebibliography}

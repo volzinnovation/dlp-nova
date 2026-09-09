@@ -1,0 +1,20 @@
+\begin{table}[ht]
+\caption{Finite DLP L3 bridge task on identical RDF/XML inputs: median seconds over three fresh process blocks. Task includes loading, construction, consistency and both complete named-instance queries; process additionally includes runtime startup, answer serialization and exit.}
+\label{tab:hermit}
+\centering\small
+\begin{tabular}{@{}rlrr@{}}
+\toprule
+Named A instances & Configuration & Task & Process \\
+\midrule
+100 & b1254c4 & 0.010029 & 0.101472 \\
+100 & candidate & 0.009945 & 0.099147 \\
+100 & HermiT & 0.220450 & 0.272145 \\
+1,000 & b1254c4 & 0.086836 & 0.188231 \\
+1,000 & candidate & 0.083865 & 0.178843 \\
+1,000 & HermiT & 0.318659 & 0.372038 \\
+10,000 & b1254c4 & 1.016922 & 1.135562 \\
+10,000 & candidate & 0.937498 & 1.055745 \\
+10,000 & HermiT & 2.475294 & 2.532972 \\
+\bottomrule
+\end{tabular}
+\end{table}

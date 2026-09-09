@@ -1,0 +1,411 @@
+{
+  "purpose": "Untimed independent direct native API correctness check; not benchmark measurements",
+  "checks": [
+    {
+      "seed": 0,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "after_insert": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ],
+          "after_insert": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 5,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 6,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "after_insert": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ],
+          "after_insert": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_insert": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [],
+          "after_insert": []
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "native_direct": {
+        "initial": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "after_delete": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "after_insert": {
+          "ancestorOf": false,
+          "inDynasty": false
+        },
+        "expected_all_states": {
+          "ancestorOf": true,
+          "inDynasty": true
+        },
+        "retained_asserted_path": [
+          "http://www.jsbach.org/bach#johannes",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "missing_named_consequences": {
+          "initial": [],
+          "after_delete": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ],
+          "after_insert": [
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#ancestorOf",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ],
+            [
+              "http://www.jsbach.org/bach#johannes",
+              "http://www.jsbach.org/bach#inDynasty",
+              "http://www.jsbach.org/bach#wilhelm-friedemann"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

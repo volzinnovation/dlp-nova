@@ -8,3 +8,6 @@ __pycache__/
 *.egg-info/
 dist/
 tmp/
+
+# Unpacked copies of the preserved arXiv source archives.
+/output/arxiv/*-source/

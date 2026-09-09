@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "benchmark": "ZodiacEdge-LUBM1-128-rules-v1",
+  "started_utc": "2026-09-09T17:44:14.089425+00:00",
+  "manifest": {
+    "author_commit": "e15721161d1055f019c4b8f9ac1bd8648417f154",
+    "author_readme_url": "https://raw.githubusercontent.com/xwq610728213/zodiac_edge/e15721161d1055f019c4b8f9ac1bd8648417f154/README.md",
+    "author_readme_sha256": "5f410708840431e4cef28b8a032c5bc8f90c29260f723847c5757bf79bc6042d",
+    "rules": 128,
+    "transactions": {
+      "*": 8,
+      "#": 16
+    },
+    "dataset_manifest_sha256": "3544fb50f99b8066caf0f271a610ee1b178dadc26910cce8510834d674fcfb51",
+    "dataset_manifest": {
+      "dataset": "LUBM(1,0)",
+      "generator": "Official UBA1.7, unchanged bundled bytecode",
+      "generation_command": [
+        "java",
+        "-cp",
+        "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/lubm-official/uba/classes",
+        "edu.lehigh.swat.bench.uba.Generator",
+        "-univ",
+        "1",
+        "-index",
+        "0",
+        "-seed",
+        "0",
+        "-onto",
+        "http://swat.cse.lehigh.edu/onto/univ-bench.owl"
+      ],
+      "generator_cwd": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/lubm-official/generation",
+      "java": "openjdk version \"17.0.18\" 2026-01-20\nOpenJDK Runtime Environment Homebrew (build 17.0.18+0)\nOpenJDK 64-Bit Server VM Homebrew (build 17.0.18+0, mixed mode, sharing)",
+      "artifacts": {
+        "uba1.7.zip": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/uba1.7.zip",
+          "sha256": "3d44f468e36b7f3cd532f0f5693a019d020877846397b1fa657367cbd53f380a"
+        },
+        "univ-bench.owl": {
+          "url": "https://swat.cse.lehigh.edu/onto/univ-bench.owl",
+          "sha256": "e6eca926fcb7d6c7925ea0c48f7c5d79abc2818f89e7432fd16561aafeb3f67a"
+        },
+        "queries-sparql.txt": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt",
+          "sha256": "c34fd26ecb6fb9f0a2f185d73b72505ef0abf25705d831e6eed3c896557cd104"
+        },
+        "answers.zip": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/answers.zip",
+          "sha256": "aedb3d6c36d1f80fb3708e04b5720afe24ac5ac5d2c8e700021f3eed2f1b3307"
+        }
+      },
+      "department_files": {
+        "University0_0.owl": "020f8ab4062d31f5b41c6834dd22031afd5801572bb8bbefcea3c0073c777111",
+        "University0_1.owl": "7fcf30a6458616076f3ffc18e8be931b9902952ba49ef5c3dbacf27718e08278",
+        "University0_10.owl": "0987f4f716436b70c53c06d034f53c18526996af51bb120124de7ee10c92b0c2",
+        "University0_11.owl": "485c03900accd969f585be2c907eed85f9e52c524c5d1acf5cf4cc2b0b571877",
+        "University0_12.owl": "4fd1213bcee55755a483219a0a54e3816b5dcb2c5e9b45e23a2df2fceb21d6bc",
+        "University0_13.owl": "1b2b948b49a0d58c748eb16eccb97ad2c25290f586611067ff557fe140461f1d",
+        "University0_14.owl": "9e45c7ea4ea6c8ab916893297cacc98924adbcee98df8f435300ad35546162e8",
+        "University0_2.owl": "cb2523e9f9b2ae5808f4ee501cd05679c74e4cc33d7a4dfc387826aac92ca381",
+        "University0_3.owl": "d7b1c7633867983a3f5575e4f60d7929c9c13234ed645292b3e4c46353eb29cb",
+        "University0_4.owl": "f8fd9105bf29f5e9b1bceaf856cf97e106f11d8eaf7c3d937fcfe3d8fbb4a31e",
+        "University0_5.owl": "42daca179b2523202a55e468aa598b3764831ca13ea5610810669cb44c92240f",
+        "University0_6.owl": "d5f6d22a0389dc16315398f7d1c27575a10164dac8ccd2e81aa9e8df4e507f97",
+        "University0_7.owl": "d91631c7655eae90560722854116e2a2ce0a069465f6e34a46f53761a1d7fc47",
+        "University0_8.owl": "b9abd10510b8de2aa62aed470a915430ec4939250e4a1856bec08703b71992ef",
+        "University0_9.owl": "51c9370414f21acf8cb8d4e47491fea46895956c837861f88b994b4b643f83bf"
+      },
+      "query_sha256": {
+        "1": "bf0f472f428b8e62bc7016b8c4322627d0d395f212f2dca5e90eb8ba601d1763",
+        "2": "34858564c43a7e2cfbd6b51789bce9eb4ddb406610634403e9e52df5aab05593",
+        "3": "7679811b083bf4967517e6dd037569ef1e17a082c78d661a0134a149d03bb2e4",
+        "4": "3e7f6c1d67570c3da2081b1dbe76a64ef0b0751232a2843938ea199f0854957e",
+        "5": "5b4c8141b32710c0c0635f773697c86083ea1e727cb7659b287fe8535d3874d4",
+        "6": "511e19df8a560a18a01cb429fd095e9daaec9e027ae292d15a79a36dc5407612",
+        "7": "464044945c733ba103509a8611ed6b367a8dab1895041a1c44b71364a4517c74",
+        "8": "97e0ae538432eef20679b872c096f6e8ae24f5c028c9530469ab671447bc369d",
+        "9": "e5f32827c780b8dd02303fd4e32047d4e47ca7280b68da0b20e908908f8d65db",
+        "10": "8b7bc1b9de775454bef7a95942a9bc1633832d003b52977d748696d923eac52e",
+        "11": "b31a3f1bd60df301154c7a4a2726046990376f72b886df6835a37acdd1ac034b",
+        "12": "eed4daed8ef61872bb5d1fadced2bcab60089c2c5f128550728aa6a7a1bf8ba2",
+        "13": "bee77f8a2b5179970ae024a190203498a52d8d618df56ca9963b0d7f406d49c9",
+        "14": "748bc39679b0c3a7d8ff56706d7e70d3583ce5ae9e1e7cb8a3196ad0251e7587"
+      },
+      "reference_answers": {
+        "1": {
+          "variables": [
+            "X"
+          ],
+          "count": 4,
+          "sha256": "e813680d3a7d6e387c0d4794a7e1791bca1f2a26f607ada2c814ca54f9e6cb99"
+        },
+        "2": {
+          "variables": [],
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "3": {
+          "variables": [
+            "X"
+          ],
+          "count": 6,
+          "sha256": "fa1df6ee18680e699db342546510fb0c68fd6f93f04753a96ff5b96c811ac0b3"
+        },
+        "4": {
+          "variables": [
+            "X",
+            "Y1",
+            "Y2",
+            "Y3"
+          ],
+          "count": 34,
+          "sha256": "25b7c22a9d4eda673c488eb2c3e49d5b3b77f64b6428bade1432806b6ce59418"
+        },
+        "5": {
+          "variables": [
+            "X"
+          ],
+          "count": 719,
+          "sha256": "2a1bf4643202800da0f31776b725ce5bf13ca1194d9f3d0bcdc8775934250ce9"
+        },
+        "6": {
+          "variables": [
+            "X"
+          ],
+          "count": 7790,
+          "sha256": "d2c30b19663cbadb9e41776213a7332868c5c9d3816943b2e99fc3ae1ed40107"
+        },
+        "7": {
+          "variables": [
+            "X",
+            "Y"
+          ],
+          "count": 67,
+          "sha256": "678be0a64abb022933517e6dcdd47aa37fcfe8c2f2941c69f675d98337733e47"
+        },
+        "8": {
+          "variables": [
+            "X",
+            "Y",
+            "Z"
+          ],
+          "count": 7790,
+          "sha256": "281d318f0c167133579a886cc51196d4ad5f202c557aef2192d4bca227c730d2"
+        },
+        "9": {
+          "variables": [
+            "X",
+            "Y",
+            "Z"
+          ],
+          "count": 208,
+          "sha256": "f7a29e2b56298bbe21a5fa21e2b49c5839e42207fbfcd566f87749db263fe54f"
+        },
+        "10": {
+          "variables": [
+            "X"
+          ],
+          "count": 4,
+          "sha256": "e813680d3a7d6e387c0d4794a7e1791bca1f2a26f607ada2c814ca54f9e6cb99"
+        },
+        "11": {
+          "variables": [
+            "X"
+          ],
+          "count": 224,
+          "sha256": "5c3e3d7d18ee7d302773146e8991034f2fc2c690b67a3a6a2c944a8af7190416"
+        },
+        "12": {
+          "variables": [
+            "X",
+            "Y"
+          ],
+          "count": 15,
+          "sha256": "d4bac112c5d6dbfa8d4e75af79cf5fad2ab481e3e9b468a104b0e49604727448"
+        },
+        "13": {
+          "variables": [
+            "X"
+          ],
+          "count": 1,
+          "sha256": "bec9ca4b337d3a6a8ec79323968623cf800515e0ed847c1ff34b8424c7f8d8a5"
+        },
+        "14": {
+          "variables": [
+            "X"
+          ],
+          "count": 5916,
+          "sha256": "56da549b5b9ea012b4d82b9eae2ddd0d7e2b2d0f6958466a17059bde6261c8d2"
+        }
+      },
+      "normalizations": [
+        "Move POSIX filenames containing the original UBA Windows separator; bytes unchanged.",
+        "Use the current official ontology namespace in generated data and all 14 queries.",
+        "Remove SELECT commas and Q7 triple commas; enclose Q1/Q3 bare IRIs in angle brackets.",
+        "Resolve ontology locally, remove owl:imports triples, retain all logical axioms.",
+        "Canonicalize ontology blank-node labels; give generated RDF documents stable public IDs."
+      ]
+    },
+    "license": "No LICENSE file found in the pinned ZodiacEdge repository; source is fetched into ignored tmp, not redistributed here."
+  },
+  "baseline_commit": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "previous_commit": "5531be4010538bef47db069cd40b8550d4ef7702",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "cpu_count": 16,
+  "driver_sha256": {
+    "benchmarks/zodiac.py": "559a9297f9ee26a4a5a5602f6607f97fb255eaa87b91c22ce9980a6e98be3951",
+    "benchmarks/lubm.py": "08ce56d9daee0b7db99a1b520c977f14e43f38046e7541a009a27f78ead0f4c9"
+  },
+  "source_sha256": {
+    "b1254c4": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "673c8e50f33cdf7c9294914760fa3ead17a7ed5ca2be4f408a5031f4f29bcafe",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "2a9ea96ed518a3faae0b7c341087c327656c304f9942ce75651d8271141bfeff"
+    },
+    "5531be4": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "b3c3cf399862da792c794340764c13536da4d3c88827e98dbe9fa06f25efbee7",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+      "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+      "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+    },
+    "current-fixed": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+      "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+      "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+      "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+    },
+    "candidate": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+      "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+      "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+      "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+    }
+  },
+  "workers": [],
+  "protocol": {
+    "blocks": 4,
+    "configurations": [
+      "b1254c4",
+      "5531be4",
+      "current-fixed",
+      "candidate"
+    ],
+    "fact_samples": 10,
+    "removed_assertions_per_sample": 1000,
+    "fact_sample_seeds": [
+      9100,
+      9101,
+      9102,
+      9103,
+      9104,
+      9105,
+      9106,
+      9107,
+      9108,
+      9109
+    ],
+    "ordering": "balanced Latin-square rotations",
+    "seeds": [
+      7300,
+      7301,
+      7302,
+      7303
+    ],
+    "timeout_seconds": 300,
+    "stages": [
+      "materialize R minus marked subset",
+      "insert subset",
+      "delete subset"
+    ],
+    "validation": "complete typed tuple digests vs fresh b1254c4 naive closure",
+    "timing": "fresh process per configuration; parsing/validation outside timers",
+    "host_note": "run only in coordinated quiet window; OS caches not flushed"
+  }
+}

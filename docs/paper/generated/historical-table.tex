@@ -1,0 +1,21 @@
+\begin{table}[ht]
+\caption{Selected historical medians (ms), five samples each. These are sequential local runs, not paired external-system comparisons. Materialization unless another operation is named.}
+\label{tab:historical}
+\centering\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Workload/operation & b1254c4 & 8ce254f & 5531be4 \\
+\midrule
+Factored unions, width 64 & 10,406.030 & 119.371 & 105.388 \\
+Enumerations, width 64 & 95.863 & 6.059 & 5.717 \\
+Taxonomy D7/I15/PF & 4,860.310 & 4,388.391 & 4,777.663 \\
+Same taxonomy: subsumption & 7,983.876 & 12.339 & 12.843 \\
+Transitive, 100 & 451.250 & 710.512 & 446.153 \\
+Cardinality D5/I3 & 243.571 & 367.386 & 227.536 \\
+D5/10\% rule insert & 219.359 & 372.468 & 228.417 \\
+D5/10\% rule replace & 417.815 & 725.576 & 457.058 \\
+D5/10\% rule delete & 685.817 & 598.605 & 413.883 \\
+D5/10\% atomic mixed & 771.007 & 709.321 & 791.637 \\
+\bottomrule
+\end{tabular}
+\end{table}

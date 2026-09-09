@@ -1,0 +1,81 @@
+\section{A post-hoc bounded join-order experiment}
+\label{sec:lookahead}
+The Q5 intermediate expansion prompted a second, separately frozen experiment.
+The candidate draws on a lesson from RPT+ and Shredded Yannakakis
+\cite{qiao2026,bekkers2025}: reducing intermediate work is useful only when
+decision and reduction costs are included. It implements a smaller ordering
+heuristic, with neither their filtering architecture nor their guarantees.
+
+\subsection{Method and preservation argument}
+At a recursive positive-join step, the candidate considers the two smallest
+current index buckets only if the smaller contains at least 32 rows and the
+larger is at most four times its size. For each candidate bucket it inspects
+at most four physical rows, performs exact unification, and probes the other
+remaining atoms. The score is the current bucket size multiplied by one plus
+the average smallest next-step bucket size. A sampled row that fails repeated
+variable or constant checks contributes zero next-step work. Ties retain the
+original greedy choice. Samples are traversal estimates, never filters.
+
+Hints are cached only for the invocation, keyed by remaining atom occurrences,
+bound-variable positions, the two candidate occurrences, and bucket-size
+bit-lengths. They contain an occurrence identifier, not answer bindings. This
+coarse reuse may choose a poor order for a different binding, but cannot remove
+an answer. The fixed limits are 1,024 additional index probes and 1,024 hints;
+together they bound sampled physical rows by 8,192. A separate hint limit is
+necessary because invalid sampled rows can consume no probes. Exhaustion uses
+greedy evaluation, including ignoring already cached hints. These bounds do not
+bound the cost of a poor chosen order or the query-width-dependent cost of
+copying bindings and constructing keys.
+
+\begin{proposition}
+For a finite completed store and a validated positive relational query,
+the bounded estimator preserves the complete substitution set of the
+positional evaluator.
+\end{proposition}
+\begin{proof}
+At each step the estimator chooses one remaining atom occurrence. The evaluator
+then enumerates its entire selected index bucket and applies the same exact
+compatibility tests as before. Every compatible extension recurses on precisely
+the other occurrences. Induction on their number therefore yields all and only
+the original substitutions. A misleading sample, reused hint, or exhausted
+budget changes only the chosen occurrence. No estimate participates in a
+compatibility test or in acceptance of a completed substitution.
+\end{proof}
+
+The implementation enables this path only for external headless queries on a
+complete store. Installed rules, delta variants, incomplete stores, and
+equality/difference builtins retain their existing evaluator. Hints are released
+when the query ends. Independently of ordering, both new evaluator arms now
+break a recursive local closure's self-reference on exhaustion, explicit close,
+and exception. Tests with cyclic collection disabled check prompt release of
+the captured engine and index. That lifecycle change is shared by the two new
+arms, so their comparison isolates the ordering switch.
+
+\subsection{Protocol}
+Three balanced blocks compare \code{b1254c4}, the new compiled evaluator, and
+that evaluator with lookahead. Each TPC-H component has its own fresh process;
+two scales and three components therefore require 54 workers. Another 36
+fresh workers evaluate near-unique, nonselective, skewed, and pairwise-consistent
+but globally empty cyclic controls. The same hash seed is used within a block.
+Sampling follows physical bucket order and is not a random statistical sample.
+
+The unchanged original component definitions, SQL oracle, and row-identity
+projection are reused. The new driver and package are archived separately;
+the discovery study is not overwritten. Complete answer consumption, planning,
+and recursive-closure cleanup are included in join time. The component total
+adds extraction, encoding, and indexing. Complete process wall time additionally
+includes startup, integrity hashing, validation, serialization, and teardown;
+it is a reproducibility diagnostic rather than isolated query latency. Database
+hashing warms filesystem caches, and the operating-system cache is not flushed.
+
+This is a discovery-workload follow-up, not held-out validation. The parameter
+values were fixed before its timed series; the preceding Q5 pilot is disclosed
+and excluded from the timing summaries. Small independent finite-grounding
+tests exercise constants, repeated variables/predicates, initial bindings,
+budget exhaustion, and the zero-probe cache-bound case. Timed adverse controls
+also compare with an independent nested-loop oracle. Lookahead remains
+experimental and disabled by default.
+
+\input{generated/lookahead-table.tex}
+\input{generated/lookahead-controls-table.tex}
+\input{lookahead-results.tex}

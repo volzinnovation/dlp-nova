@@ -1,0 +1,307 @@
+{
+  "schema_version": 1,
+  "benchmark": "TPC-H-derived-primary-key-join-components-v1",
+  "started_utc": "2026-09-09T18:07:01.311295+00:00",
+  "commits": {
+    "b1254c4": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+    "5531be4": "5531be4010538bef47db069cd40b8550d4ef7702"
+  },
+  "current_head": "5531be4010538bef47db069cd40b8550d4ef7702",
+  "current_source_sha256": {
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+    "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+  },
+  "driver_sha256": "b3f26a009a329f2ae0be4391992e370b620cdf1be602127a6aa309a17df6dbf8",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "cpu_count": 16,
+  "manifest": {
+    "generator": "DuckDB official tpch extension dbgen",
+    "duckdb": "1.4.4",
+    "documentation": "https://duckdb.org/docs/lts/core_extensions/tpch",
+    "scale_factors": [
+      0.01,
+      0.1
+    ],
+    "components": {
+      "3": {
+        "relations": {
+          "customer": "SELECT c_custkey FROM customer WHERE c_mktsegment = 'BUILDING'",
+          "orders": "SELECT o_orderkey,o_custkey FROM orders WHERE o_orderdate < DATE '1995-03-15'",
+          "lineitem": "SELECT l_orderkey,l_linenumber FROM lineitem WHERE l_shipdate > DATE '1995-03-15'"
+        },
+        "body": [
+          [
+            "customer",
+            [
+              "customer"
+            ]
+          ],
+          [
+            "orders",
+            [
+              "order",
+              "customer"
+            ]
+          ],
+          [
+            "lineitem",
+            [
+              "order",
+              "line"
+            ]
+          ]
+        ],
+        "answer": [
+          "customer",
+          "order",
+          "order",
+          "line"
+        ],
+        "oracle": "SELECT c_custkey,o_orderkey,l_orderkey,l_linenumber\nFROM customer,orders,lineitem\nWHERE c_mktsegment='BUILDING' AND c_custkey=o_custkey AND l_orderkey=o_orderkey\nAND o_orderdate < DATE '1995-03-15' AND l_shipdate > DATE '1995-03-15'"
+      },
+      "5": {
+        "relations": {
+          "customer": "SELECT c_custkey,c_nationkey FROM customer",
+          "orders": "SELECT o_orderkey,o_custkey FROM orders WHERE o_orderdate >= DATE '1994-01-01' AND o_orderdate < DATE '1995-01-01'",
+          "lineitem": "SELECT l_orderkey,l_linenumber,l_suppkey FROM lineitem",
+          "supplier": "SELECT s_suppkey,s_nationkey FROM supplier",
+          "nation": "SELECT n_nationkey,n_regionkey FROM nation",
+          "region": "SELECT r_regionkey FROM region WHERE r_name='ASIA'"
+        },
+        "body": [
+          [
+            "customer",
+            [
+              "customer",
+              "nation"
+            ]
+          ],
+          [
+            "orders",
+            [
+              "order",
+              "customer"
+            ]
+          ],
+          [
+            "lineitem",
+            [
+              "order",
+              "line",
+              "supplier"
+            ]
+          ],
+          [
+            "supplier",
+            [
+              "supplier",
+              "nation"
+            ]
+          ],
+          [
+            "nation",
+            [
+              "nation",
+              "region"
+            ]
+          ],
+          [
+            "region",
+            [
+              "region"
+            ]
+          ]
+        ],
+        "answer": [
+          "customer",
+          "order",
+          "order",
+          "line",
+          "supplier",
+          "nation",
+          "region"
+        ],
+        "oracle": "SELECT c_custkey,o_orderkey,l_orderkey,l_linenumber,s_suppkey,n_nationkey,r_regionkey\nFROM customer,orders,lineitem,supplier,nation,region\nWHERE c_custkey=o_custkey AND l_orderkey=o_orderkey AND l_suppkey=s_suppkey\nAND c_nationkey=s_nationkey AND s_nationkey=n_nationkey AND n_regionkey=r_regionkey\nAND r_name='ASIA' AND o_orderdate >= DATE '1994-01-01' AND o_orderdate < DATE '1995-01-01'"
+      },
+      "9": {
+        "relations": {
+          "part": "SELECT p_partkey FROM part WHERE p_name LIKE '%green%'",
+          "supplier": "SELECT s_suppkey,s_nationkey FROM supplier",
+          "lineitem": "SELECT l_orderkey,l_linenumber,l_suppkey,l_partkey FROM lineitem",
+          "partsupp": "SELECT ps_partkey,ps_suppkey FROM partsupp",
+          "orders": "SELECT o_orderkey FROM orders",
+          "nation": "SELECT n_nationkey FROM nation"
+        },
+        "body": [
+          [
+            "part",
+            [
+              "part"
+            ]
+          ],
+          [
+            "supplier",
+            [
+              "supplier",
+              "nation"
+            ]
+          ],
+          [
+            "lineitem",
+            [
+              "order",
+              "line",
+              "supplier",
+              "part"
+            ]
+          ],
+          [
+            "partsupp",
+            [
+              "part",
+              "supplier"
+            ]
+          ],
+          [
+            "orders",
+            [
+              "order"
+            ]
+          ],
+          [
+            "nation",
+            [
+              "nation"
+            ]
+          ]
+        ],
+        "answer": [
+          "part",
+          "supplier",
+          "order",
+          "line",
+          "part",
+          "supplier",
+          "order",
+          "nation"
+        ],
+        "oracle": "SELECT p_partkey,s_suppkey,l_orderkey,l_linenumber,ps_partkey,ps_suppkey,o_orderkey,n_nationkey\nFROM part,supplier,lineitem,partsupp,orders,nation\nWHERE s_suppkey=l_suppkey AND ps_suppkey=l_suppkey AND ps_partkey=l_partkey\nAND p_partkey=l_partkey AND o_orderkey=l_orderkey AND s_nationkey=n_nationkey\nAND p_name LIKE '%green%'"
+      }
+    },
+    "databases": {
+      "0.01": {
+        "file": "tpch-sf0.01.duckdb",
+        "sha256": "7e580c74663b9e9b2429e576b6beb7e834368cfe942d67d99047f7c61d882b5d",
+        "table_counts": {
+          "customer": 1500,
+          "orders": 15000,
+          "lineitem": 60175,
+          "supplier": 100,
+          "part": 2000,
+          "partsupp": 8000,
+          "nation": 25,
+          "region": 5
+        },
+        "generation_seconds": 0.1104692500011879,
+        "generation_sql": "CALL dbgen(sf=0.01)",
+        "extension_version": "v1.4.4",
+        "extension_sha256": "9ba489be78163ee781fecab7cb20646eab68675d4de326dc09749faf32155482",
+        "original_queries": {
+          "3": "SELECT\n    l_orderkey,\n    sum(l_extendedprice * (1 - l_discount)) AS revenue,\n    o_orderdate,\n    o_shippriority\nFROM\n    customer,\n    orders,\n    lineitem\nWHERE\n    c_mktsegment = 'BUILDING'\n    AND c_custkey = o_custkey\n    AND l_orderkey = o_orderkey\n    AND o_orderdate < CAST('1995-03-15' AS date)\n    AND l_shipdate > CAST('1995-03-15' AS date)\nGROUP BY\n    l_orderkey,\n    o_orderdate,\n    o_shippriority\nORDER BY\n    revenue DESC,\n    o_orderdate\nLIMIT 10;\n",
+          "5": "SELECT\n    n_name,\n    sum(l_extendedprice * (1 - l_discount)) AS revenue\nFROM\n    customer,\n    orders,\n    lineitem,\n    supplier,\n    nation,\n    region\nWHERE\n    c_custkey = o_custkey\n    AND l_orderkey = o_orderkey\n    AND l_suppkey = s_suppkey\n    AND c_nationkey = s_nationkey\n    AND s_nationkey = n_nationkey\n    AND n_regionkey = r_regionkey\n    AND r_name = 'ASIA'\n    AND o_orderdate >= CAST('1994-01-01' AS date)\n    AND o_orderdate < CAST('1995-01-01' AS date)\nGROUP BY\n    n_name\nORDER BY\n    revenue DESC;\n",
+          "9": "SELECT\n    nation,\n    o_year,\n    sum(amount) AS sum_profit\nFROM (\n    SELECT\n        n_name AS nation,\n        extract(year FROM o_orderdate) AS o_year,\n        l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity AS amount\n    FROM\n        part,\n        supplier,\n        lineitem,\n        partsupp,\n        orders,\n        nation\n    WHERE\n        s_suppkey = l_suppkey\n        AND ps_suppkey = l_suppkey\n        AND ps_partkey = l_partkey\n        AND p_partkey = l_partkey\n        AND o_orderkey = l_orderkey\n        AND s_nationkey = n_nationkey\n        AND p_name LIKE '%green%') AS profit\nGROUP BY\n    nation,\n    o_year\nORDER BY\n    nation,\n    o_year DESC;\n"
+        },
+        "component_oracles": {
+          "3": {
+            "count": 356,
+            "sha256": "4fc7d9e20bd34e530476375816266261ee2e3982e6c4e76759486ef644d1e2db"
+          },
+          "5": {
+            "count": 103,
+            "sha256": "9abc47f8416103b3584877e525a67031f1fdfa9eacc73f388156bee79e047095"
+          },
+          "9": {
+            "count": 3223,
+            "sha256": "db204902dfe922bdfbc88d1f8c7e50e864775365f5851d400c1c3c0a7b423510"
+          }
+        }
+      },
+      "0.1": {
+        "file": "tpch-sf0.1.duckdb",
+        "sha256": "bf2a6964e78d1adc3fd08b52a1e5ef2d3a8e9bb512cbbebd6119f8c80ff4f65a",
+        "table_counts": {
+          "customer": 15000,
+          "orders": 150000,
+          "lineitem": 600572,
+          "supplier": 1000,
+          "part": 20000,
+          "partsupp": 80000,
+          "nation": 25,
+          "region": 5
+        },
+        "generation_seconds": 1.1952322920042207,
+        "generation_sql": "CALL dbgen(sf=0.1)",
+        "extension_version": "v1.4.4",
+        "extension_sha256": "9ba489be78163ee781fecab7cb20646eab68675d4de326dc09749faf32155482",
+        "original_queries": {
+          "3": "SELECT\n    l_orderkey,\n    sum(l_extendedprice * (1 - l_discount)) AS revenue,\n    o_orderdate,\n    o_shippriority\nFROM\n    customer,\n    orders,\n    lineitem\nWHERE\n    c_mktsegment = 'BUILDING'\n    AND c_custkey = o_custkey\n    AND l_orderkey = o_orderkey\n    AND o_orderdate < CAST('1995-03-15' AS date)\n    AND l_shipdate > CAST('1995-03-15' AS date)\nGROUP BY\n    l_orderkey,\n    o_orderdate,\n    o_shippriority\nORDER BY\n    revenue DESC,\n    o_orderdate\nLIMIT 10;\n",
+          "5": "SELECT\n    n_name,\n    sum(l_extendedprice * (1 - l_discount)) AS revenue\nFROM\n    customer,\n    orders,\n    lineitem,\n    supplier,\n    nation,\n    region\nWHERE\n    c_custkey = o_custkey\n    AND l_orderkey = o_orderkey\n    AND l_suppkey = s_suppkey\n    AND c_nationkey = s_nationkey\n    AND s_nationkey = n_nationkey\n    AND n_regionkey = r_regionkey\n    AND r_name = 'ASIA'\n    AND o_orderdate >= CAST('1994-01-01' AS date)\n    AND o_orderdate < CAST('1995-01-01' AS date)\nGROUP BY\n    n_name\nORDER BY\n    revenue DESC;\n",
+          "9": "SELECT\n    nation,\n    o_year,\n    sum(amount) AS sum_profit\nFROM (\n    SELECT\n        n_name AS nation,\n        extract(year FROM o_orderdate) AS o_year,\n        l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity AS amount\n    FROM\n        part,\n        supplier,\n        lineitem,\n        partsupp,\n        orders,\n        nation\n    WHERE\n        s_suppkey = l_suppkey\n        AND ps_suppkey = l_suppkey\n        AND ps_partkey = l_partkey\n        AND p_partkey = l_partkey\n        AND o_orderkey = l_orderkey\n        AND s_nationkey = n_nationkey\n        AND p_name LIKE '%green%') AS profit\nGROUP BY\n    nation,\n    o_year\nORDER BY\n    nation,\n    o_year DESC;\n"
+        },
+        "component_oracles": {
+          "3": {
+            "count": 3321,
+            "sha256": "6cff7c24881b79dd361069dea150e39374ed74bec18f68575349c1cdf88079e8"
+          },
+          "5": {
+            "count": 865,
+            "sha256": "661f201484b774ca3a2a3c2055c60736c94e35a6f8d89f7dbc5e5928bc466168"
+          },
+          "9": {
+            "count": 32160,
+            "sha256": "7801492901d3d87c8cf807c2b9e0388e7434ab900882c66ef27fae54fcf11291"
+          }
+        }
+      }
+    }
+  },
+  "workers": [],
+  "protocol": {
+    "blocks": 3,
+    "scale_factors": [
+      0.01,
+      0.1
+    ],
+    "configurations": [
+      "b1254c4",
+      "5531be4",
+      "current-fixed",
+      "candidate"
+    ],
+    "ordering": "rotate configuration order by block+scale index; same hashseed within each block",
+    "timeout_seconds": 300,
+    "max_facts": 3000000,
+    "seed_start": 5000,
+    "components": [
+      3,
+      5,
+      9
+    ],
+    "duckdb_threads": 1,
+    "input_cache": "whole database integrity hash precedes timing; filesystem cache is warm",
+    "primary_metric": "join_seconds",
+    "secondary_metric": "component_end_to_end_seconds",
+    "timing": "fresh process per scale/configuration/block; three components sequentially; fully consumed results",
+    "scope": "original FROM+WHERE primary-key row identities only; no aggregate/sort/top-k",
+    "host_note": "coordinated quiet window; filesystem caches not flushed"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "diagnostic": "single-instrumented-ZodiacEdge-hash-rule-deletion",
+  "diagnostic_only_not_timing_sample": true,
+  "observations": 1,
+  "profiled_operation": "engine.update(remove_rules=marked_hash_rules)",
+  "procedure": [
+    "Load the same official LUBM(1,0) 100543-fact ABox and 128-rule author program used in zodiac-native-results.json.",
+    "Import only the frozen primary candidate package and explicitly enable incremental validation, incremental indexes, and compiled joins; keep support certificates and join lookahead disabled.",
+    "Construct and materialize without the 16 hash-marked rules, and verify the full typed-tuple closure against the independent naive reference.",
+    "Insert those 16 rules, and verify the full typed-tuple closure.",
+    "Use cProfile only around deletion of those 16 rules; load, initial materialization, insertion, and closure validation are outside this profile.",
+    "Verify the final full typed-tuple closure equals the initial partial closure."
+  ],
+  "original_driver": "Inline diagnostic invocation; a separate driver file was not retained. The profiled call and preparation steps are recorded above.",
+  "environment": {
+    "python": "3.12.9 (main, Feb 12 2025, 15:09:19) [Clang 19.1.6 ]",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "pythonhashseed": 7300
+  },
+  "profiler": {
+    "name": "CPython cProfile / built-in _lsprof",
+    "source_sha256": {
+      "cProfile": {
+        "filename": "cProfile.py",
+        "sha256": "c4c3edb84862431dffd6c044f5c02bb27f94e5b79a708bce195a7981efcb43bc"
+      },
+      "pstats": {
+        "filename": "pstats.py",
+        "sha256": "476a7f4298d02d7445f65f464b1eeca3b1de7a74ce104e91f75c10a7eb1f9aee"
+      }
+    },
+    "compiled_backend": "_lsprof is built into this CPython executable; no separate extension file is exposed."
+  },
+  "frozen_source": {
+    "path": "tmp/zodiac-lubm/source-working-3cc7bae8d99debb5c6aa2cb9f71c4bc99e6e25947cd432566f902be42c201e89",
+    "source_sha256": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+      "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+      "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+      "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+    },
+    "flags": {
+      "_incremental_validation_enabled": true,
+      "_incremental_index_enabled": true,
+      "_compiled_joins_enabled": true,
+      "_support_certificates_enabled": false,
+      "_join_lookahead_enabled": false
+    }
+  },
+  "related_artifacts": {
+    "paired_native_results": {
+      "path": "benchmarks/zodiac-native-results.json",
+      "sha256": "dbb9e502a7e96c1eda18887a5d9e8d8a3bb7adccfe346b5f46388205b2a7f8fe"
+    },
+    "naive_reference": {
+      "path": "tmp/zodiac-lubm/reference-ee8e3995deb4d18ebaacc7d9d1721d0f624c2027e1e223fafb2d881c7c7a1bce.json",
+      "sha256": "f6473f8b728bfb86e9ea59843475032391750c4489354373a591eb59745ff013"
+    },
+    "raw_cprofile": {
+      "path": "tmp/zodiac-native/profile-hash-delete.prof",
+      "sha256": "05d2c80ecfba528763f9efce814bb3e981c681c3b31695a2de809ddb25deddb5",
+      "tracked": false
+    },
+    "expanded_diagnostic": {
+      "path": "tmp/zodiac-native/profile-hash-delete.json",
+      "sha256": "c284b3b75530068cdcee028858134868742abf7a65f38583be6619d4e3da76f0",
+      "tracked": false
+    }
+  },
+  "edb_facts": 100543,
+  "removed_rules": 16,
+  "validation": {
+    "all_three_closures_match": true,
+    "initial_and_final": {
+      "tuples": 214429,
+      "sha256": "9e09fc503a16222dbbcfbf886653e4926931548948c098201fca9b2dc0736892"
+    },
+    "after_insertion": {
+      "tuples": 238474,
+      "sha256": "3aae89c5aa5db2fc885c98d2c67933d3f275e983e8d8d304b0489aadbfdf3255"
+    },
+    "final_consistent": true,
+    "final_complete": true
+  },
+  "profiled_elapsed_seconds": 2.1317574580025394,
+  "profiled_update_cumulative_seconds": 2.13074525,
+  "nonoverlapping_global_call_groups": [
+    {
+      "file": "src/dlp_reasoner/engine.py",
+      "line": 448,
+      "function": "_canonical",
+      "primitive_calls": 100543,
+      "calls": 100543,
+      "self_seconds": 0.07561948,
+      "cumulative_seconds": 0.5516458360000001,
+      "callers": [
+        {
+          "function": "_dred",
+          "line": 870,
+          "calls": 100543,
+          "cumulative_seconds": 0.5516458360000001
+        }
+      ]
+    },
+    {
+      "file": "src/dlp_reasoner/engine.py",
+      "line": 826,
+      "function": "_can_dred",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 7.4053e-05,
+      "cumulative_seconds": 0.520191668,
+      "callers": [
+        {
+          "function": "update",
+          "line": 989,
+          "calls": 2,
+          "cumulative_seconds": 0.520191668
+        }
+      ]
+    },
+    {
+      "file": "src/dlp_reasoner/engine.py",
+      "line": 211,
+      "function": "_validate",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 0.019031605,
+      "cumulative_seconds": 0.295589833,
+      "callers": [
+        {
+          "function": "update",
+          "line": 989,
+          "calls": 1,
+          "cumulative_seconds": 0.295589833
+        }
+      ]
+    },
+    {
+      "file": "src/dlp_reasoner/engine.py",
+      "line": 495,
+      "function": "_domain_constants",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 0.069384888,
+      "cumulative_seconds": 0.186230542,
+      "callers": [
+        {
+          "function": "_dred",
+          "line": 870,
+          "calls": 1,
+          "cumulative_seconds": 0.186230542
+        }
+      ]
+    }
+  ],
+  "global_call_groups_subtotal_seconds": 1.5536578790000002,
+  "global_call_groups_fraction_of_update": 0.7291617235800479,
+  "all_other_update_work_residual_seconds": 0.5770873709999997,
+  "engine_stats_instrumented": {
+    "strategy": "semi-naive",
+    "operation": "update",
+    "update_method": "dred-rules",
+    "rounds": 1,
+    "rule_evaluations": 16,
+    "candidate_rows": 34679,
+    "body_matches": 34679,
+    "derived_facts": 0,
+    "unary_plan_evaluations": 0,
+    "unary_intersections": 0,
+    "coalesced_delta_variants": 0,
+    "unary_delta_union_input_rows": 0,
+    "unary_delta_filter_input_rows": 0,
+    "unary_intersection_input_rows": 0,
+    "unary_bound_membership_tests": 0,
+    "unary_full_delta_shortcuts": 0,
+    "unary_full_intersection_plans": 0,
+    "equality_merges": 0,
+    "overdeleted_facts": 24045,
+    "rederived_facts": 0,
+    "index_deleted_rows": 24045,
+    "seconds": 1.3030058330041356,
+    "materialized_facts": 240853,
+    "asserted_facts": 100543,
+    "terms": 26424,
+    "complete": true,
+    "consistent": true
+  },
+  "interpretation": "The four disjoint groups account for 72.9% of this instrumented candidate update. The 24045 overdeleted tuples equal the complete closure difference, with zero rederivations, so there is no excess logical overdeletion in this observation. This does not quantitatively decompose the separately measured candidate/native time ratio.",
+  "limitations": [
+    "A single deliberately selected transaction, observed after the native comparison; not a preregistered benchmark or independent timing sample.",
+    "Deterministic profiling changes timing and can disproportionately charge call-heavy Python paths; instrumented seconds must not be compared with uninstrumented native seconds.",
+    "Only the candidate was profiled; no causal fraction of the native gap or achievable optimization speedup is inferred.",
+    "The four groups include descendants but not one another. Nested normalize, _find, _literal_key, and enclosing _dred times must not be added to this subtotal.",
+    "Proposed certificate, reference-count, and identity-representative shortcuts remain unimplemented and unmeasured in this observation."
+  ]
+}

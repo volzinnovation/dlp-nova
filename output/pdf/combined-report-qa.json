@@ -1,0 +1,26 @@
+{
+  "pdf_sha256": "423605eb0ee855eb69a946487876b92dab1308caaeb1188dc1e610fdcd4f41f9",
+  "source_bundle_sha256": "70a487085c1aa2e3c0185b137e37c2eb5c27882c9109ad27e18f3ff08edade1e",
+  "pages": 32,
+  "single_tex_root": "combined-report.tex",
+  "single_title_abstract_and_bibliography": true,
+  "bibliography_entries": 35,
+  "bibliography_matches_union_of_original_documents": true,
+  "technical_appendices": "A-M",
+  "transparency_location": "Appendix M.1",
+  "isolated_source_build_passed": true,
+  "unresolved_references_or_citations": false,
+  "overfull_boxes_or_duplicate_hyperlink_destinations": false,
+  "evidence_inputs_verified": 44,
+  "derivative_pdf_in_source_archive": false,
+  "full_page_visual_reviews": [
+    9,
+    10,
+    30
+  ],
+  "visual_review_scope": "Scientific conclusion, transition to technical appendices, and final provenance/transparency appendix.",
+  "layout_findings": [],
+  "author": "Raphael Volz",
+  "affiliation": "Pforzheim University",
+  "arxiv_server_build_tested": false
+}

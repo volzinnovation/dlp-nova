@@ -1,0 +1,95 @@
+\section{A matched existential task against a broader OWL reasoner}
+\label{sec:hermit}
+We compare immutable baseline \code{b1254c4}, the frozen follow-up candidate,
+and HermiT~\cite{glimm2014hermit} on a finite DLP L3 entailment task. This is an
+original controlled family, not an established corpus benchmark. It tests
+computational specialization without assuming a frequency of suitable
+ontologies in deployed applications.
+
+\subsection{Input, task and independent semantic controls}
+All arms receive identical RDF/XML bytes containing
+\[
+ A\sqsubseteq\exists R.B,\qquad \exists R.B\sqsubseteq C,
+\]
+with $N\in\{100,1000,10000\}$ named A instances, one further named B-only
+individual, and an unrelated declared class D. Each worker establishes
+consistency and retrieves all named C and D instances. The expected C answers
+are exactly the $N$ A names; D has no entailed named instances.
+
+The GCIs entail $A\sqsubseteq C$. A model with one shared B witness reached
+from all A individuals, the B-only control outside C, and D empty satisfies
+the ontology and establishes the negative-answer obligations. An empty
+certain-answer set for D does not assert membership in its complement.
+Removing either GCI permits a model with C empty. All nine separate preflight
+processes---three arms on the full input and each omitted-GCI control---match
+these independently justified answers. Ten small Python tests also pass,
+including the semantic controls and rejection of a corrupted dependency jar.
+
+Both existential axioms are essential to C entailment, but explicit witness
+construction is not. HermiT uses its normal factory, classification and
+realization behavior; the adapter does not replace the GCIs with
+$A\sqsubseteq C$. We compare consistency and exact named answers, not complete
+materializations or generated witness identities. The input family is also in
+OWL 2 EL~\cite{owlprofiles2012}; a result against HermiT does not establish
+superiority over specialized EL reasoners. Although the existential consequent
+is outside structural RL, RDF-based subclass propagation can also answer this
+particular C query.
+
+\subsection{Pinned implementations and timing boundaries}
+The candidate comes from the hash-verified
+\path{benchmarks/followup-source.tar.gz}; it is the same package measured in
+the ZodiacEdge and TPC-H follow-up studies, regardless of subsequent source
+changes. The external distribution is the OWLAPI-maintained Maven artifact
+\path{net.sourceforge.owlapi:org.semanticweb.hermit:1.4.5.519}, with OWLAPI
+5.1.9. Its POM identifies it as a fork not officially supported by the original
+HermiT developers.\footnote{Published artifact POM:
+\url{https://repo.maven.apache.org/maven2/net/sourceforge/owlapi/org.semanticweb.hermit/1.4.5.519/org.semanticweb.hermit-1.4.5.519.pom}.}
+The bundle and Maven metadata identify 1.4.5.519, while the API reports
+1.4.1.513: bytecode inspection confirms that the pinned jar itself constructs
+\code{Version(1,4,1,513)}. Both identifiers are retained. This comparison is
+not a claim about the latest upstream distribution. Eleven downloaded Maven
+artifacts and all 43 resulting classpath jars have recorded SHA-256 hashes.
+
+Three blocks rotate the three arms by block and population position, giving
+27 fresh processes on the same macOS 26.5.1 ARM64 host. Python is 3.12.9;
+OpenJDK is 17.0.18 with \code{-Xms64m -Xmx2g}. The heap setting is not an
+isolated memory measurement. All other timed studies were idle. A 180-second
+worker limit, source/input hashes and order were recorded before measurement.
+No worker failed, exceeded its limit or changed the measured source or input.
+All 27 workers satisfy the exact answer and consistency contract.
+
+Task time sums loading, reasoner construction, consistency, and fully consumed
+C then D queries. Phase times are retained because eager DLP materialization
+and lazy HermiT reasoning place work in different operations. A separate
+parent timer covers the complete fresh process, including runtime startup,
+answer serialization and exit. Input generation, dependency preparation,
+Java compilation and the semantic preflight are excluded. The worker series
+took 18.18 seconds. At $N=10000$, HermiT's median consistency and positive-query
+phases take 1.176 and 0.903 seconds; a constructor-only comparison would omit
+substantial work.
+
+\input{generated/hermit-table.tex}
+\input{generated/hermit-ratios-table.tex}
+
+\subsection{Observed computational value and its scope}
+The candidate/HermiT paired median task ratios are 0.046429, 0.262592 and
+0.378055 as $N$ increases; the corresponding full-process ratios are
+0.379001, 0.475576 and 0.415056. Table~\ref{tab:hermit-ratios} reports the
+complete observed ranges. HermiT loading dominates its smallest case, while
+the advantage also persists in the complete process measurements. Relative
+to \code{b1254c4}, the candidate's paired task ratios are 0.985908, 0.965185
+and 0.950003. Most of its advantage over this HermiT artifact therefore
+predates the new follow-up optimizations. Three blocks describe measured
+variation; they do not establish a broad statistical population claim.
+Within-block ratios need not equal ratios of marginal medians.
+
+This demonstrates a useful implementation/task pairing with existential
+axioms, independently of ontology prevalence. It does not prove a new
+asymptotic bound, superiority over other EL or OWL implementations, or
+termination/completeness on arbitrary recursive DLP L3 inputs. Raw phase timings,
+exact-answer hashes, protocol and semantic controls are preserved in
+\path{benchmarks/owl-bridge-results.json},
+\path{benchmarks/owl-bridge-results-protocol.json} and
+\path{benchmarks/owl-bridge-smoke.json}. The table generator checks worker
+pairing, phase sums, answer hashes, protocol identity, marginal summaries and
+every stored paired ratio before rendering these tables.

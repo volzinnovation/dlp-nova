@@ -1,0 +1,16 @@
+\begin{table}[ht]
+\caption{Fresh-process wall time for the original Bach tasks, milliseconds. These intervals additionally include runtime startup, validation, serialization, and shutdown. Filesystem caches were not cleared.}
+\label{tab:bach-process}
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Static task & Earlier baseline & Current & HermiT & ZodiacEdge \\
+\midrule
+Full ontology & 220.6 & 184.1 & 503.7 & -- \\
+Original family & 136.6 & 135.6 & 416.3 & 137.9 \\
+Fact replacement & 136.4 & 134.8 & 416.8 & 138.8 \\
+Rule removal & 135.3 & 134.4 & 409.7 & 139.3 \\
+Symmetry addition & 137.0 & 135.7 & 422.1 & 141.5 \\
+\bottomrule
+\end{tabular}
+\end{table}

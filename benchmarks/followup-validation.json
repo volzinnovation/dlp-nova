@@ -1,0 +1,62 @@
+{
+  "recorded_utc": "2026-09-09T18:38:44.410771+00:00",
+  "source_sha256": {
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "80bdfa06f4d0747094f696682689c2e021b5f3ee00e8a7b88550a14518aebc20",
+    "src/dlp_reasoner/joins.py": "9e7a1cca7db9a4e4f9071abd617fdbb8cbebee8863a85b7d70f346eeb73476b5",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+  },
+  "tests_passed": 741,
+  "checks": [
+    {
+      "command": "uv run pytest -q",
+      "exit_code": 0,
+      "outcome": "741 passed in 10.43s"
+    },
+    {
+      "command": "uv run ruff check src tests benchmarks scripts",
+      "exit_code": 0,
+      "outcome": "All checks passed"
+    },
+    {
+      "command": "uv run python scripts/check_thesis_logic.py",
+      "exit_code": 0,
+      "outcome": "All finite counterexample checks passed"
+    },
+    {
+      "command": "uv run python scripts/check_thesis_errata.py",
+      "exit_code": 0,
+      "outcome": "All checks passed"
+    },
+    {
+      "command": "uv run python scripts/validate_research_artifacts.py",
+      "exit_code": 0,
+      "outcome": "648 timed workers,72 memory workers,36 finite controls verified"
+    },
+    {
+      "command": "uv build",
+      "exit_code": 0,
+      "outcome": "Source distribution and wheel built"
+    },
+    {
+      "command": "uv run python -m benchmarks.run --suite thesis --repeats 5 --output benchmarks/followup-thesis-results.json",
+      "exit_code": 0,
+      "outcome": "54 cases,270 observations,51 matched historical comparisons passed"
+    },
+    {
+      "command": "uv run python scripts/prepare_research_report.py",
+      "exit_code": 0,
+      "outcome": "Saved evidence and source archives validated; tables generated"
+    }
+  ],
+  "baseline_commit": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "baseline_sha256": "6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2",
+  "final_thesis_report_sha256": "52841a14369c302eba1c2840bab1c63f96eb6789d4a3d99759b7ce62f5e6230d",
+  "scope": "Executed local verification; not full OWL conformance or an external performance ranking."
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "archive": "benchmarks/followup-source.tar.gz",
+  "archive_sha256": "6e4589fc53920403031d40db8a64f11a7807795126cc1e70fb1e4b9299a84c9a",
+  "source_sha256": {
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+    "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+  },
+  "candidate_switches": {
+    "_incremental_validation_enabled": true,
+    "_incremental_index_enabled": true,
+    "_compiled_joins_enabled": true
+  },
+  "other_controls": {
+    "_unary_strategy": "union-first",
+    "_support_certificates_enabled": false
+  },
+  "benchmark": "benchmarks/zodiac-results.json",
+  "benchmark_sha256": "b321c12f722828be84dc97883861cf263a135483510af8eb36268fc4f4de12b0",
+  "benchmark_protocol_sha256": "6fc6715b855a02f300c52010d5c90d0cf3290b16167a5d15edf74166c84abf26",
+  "driver_sha256": {
+    "benchmarks/zodiac.py": "559a9297f9ee26a4a5a5602f6607f97fb255eaa87b91c22ce9980a6e98be3951",
+    "benchmarks/lubm.py": "08ce56d9daee0b7db99a1b520c977f14e43f38046e7541a009a27f78ead0f4c9"
+  },
+  "format": "USTAR; sorted members; uid/gid/mtime zero; mode0644; empty owner names; gzipmtime0 and no filename"
+}

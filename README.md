@@ -52,6 +52,11 @@ Property queries are `property_subsumes(superproperty, subproperty)`, `equivalen
 
 `compiler.compile_graph` exposes the Horn program. Compilation has a fixed 100,000-rule budget and rejects excessive nesting before evaluation. Auxiliary predicates factor conjunctions of unions and enumerations, avoiding explicit exponential DNF expansion. Rule-local variable names are canonical, so unrelated axiom changes preserve unchanged compiled rules. `engine.Engine` executes programs built with the immutable `Atom`, `Var`, `Skolem` and `Rule` dataclasses. A rule whose head is `None` is an integrity constraint. `Engine.update(add=..., remove=..., add_rules=..., remove_rules=...)` applies one validated fact/rule transaction; `Engine.update_rules` is the rule-only wrapper. Additions win when the same item is also removed.
 
+The low-level API's frozen records are shallow. Custom predicate identifiers and
+term values must keep stable equality and hashes while stored; RDF terms and
+the documented primitive examples meet this requirement. Mutating a custom
+value's internals can invalidate ordinary indexes as well as cached validation.
+
 ## Supported semantics
 
 | Profile | Adds |
@@ -62,6 +67,12 @@ Property queries are `property_subsumes(superproperty, subproperty)`, `equivalen
 | L3 | Existential and positive minimum-cardinality consequents, with Skolem witnesses and explicit distinctness for min-n |
 
 Constructor **position matters**. For example, `∃hasChild.Person ⊑ Parent` is L0, while `Parent ⊑ ∃hasChild.Person` needs L3. A universal restriction does not create an edge. Functional properties can identify two fillers; different IRIs alone do not prove inequality. Negation is represented by integrity constraints, never negation by failure. Equality operates on individual arguments, not class/property predicate identifiers.
+
+L0–L3 are historical implementation modes, not OWL 2 RL conformance labels.
+Their accepted syntax overlaps RL and also permits some expressions outside it;
+RL in turn includes features this compiler rejects. The [DLP profile assessment](docs/DLP_PROFILE_ASSESSMENT.md)
+explains when these restrictions remain useful and why internal optimization
+eligibility should be distinguished from a standard ontology-language profile.
 
 A false entailment result means **not entailed**, not an assertion of its negation. Inconsistent ontologies expose their violations and refuse ordinary queries rather than returning a misleading ordinary closure. A private domain representative makes the domain nonempty even with no ABox assertions.
 
@@ -95,10 +106,27 @@ anonymous children and open-world distinctions. Three maintenance scenarios chec
 fact transaction, rule deletion and symmetry insertion against independent reachability and
 fresh reconstruction. The three cases also run in the quick and thesis suites.
 See the [Bach results](benchmarks/bach-results.md) for measured parsing, reasoning and query timings.
+The [external Bach comparison](docs/BACH_EXTERNAL_BENCHMARK.md) additionally
+runs the original examples on HermiT and native ZodiacEdge, checking complete
+answers and preserving failed update observations alongside valid timings.
 
 [Recorded benchmark results](benchmarks/results.md) and [raw observations](benchmarks/results.json) include separate parsing, compilation, materialization, instance query, property query and subsumption timings, repeats, memory and correctness checks. The thesis suite uses all 27 combinations of its ternary taxonomy depths (3/5/7), individuals per non-root class (3/9/15), and property variants (P0/P1/PF). Additional cases exercise the corrected maximum-one/minimum-zero distribution, factored expressions, equality, acyclic existentials, transitivity, and maintenance across all three five-way taxonomy depths and both change ratios. Rule deletion and mixed updates are checked against fresh recomputation. Small inputs compare semi-naive execution with a naive baseline and RDFLib's OWL RL engine. These synthetic modern measurements are not a reproduction of the 2004 system timings. Commit **b1254c4** is the fixed default baseline for future comparisons; its [exact results and manifest](benchmarks/baselines/b1254c4/README.md) are preserved and verified by the runner. The older [baseline-results.json](benchmarks/baseline-results.json) remains historical evidence. Comparisons require unchanged input hashes and compatible measurement boundaries.
 
 See [validation methodology](docs/VALIDATION.md), [thesis mapping and errata](docs/THESIS_SPEC.md), and [benchmark methodology](benchmarks/README.md) for details and limitations. The test suite combines explicit semantic regressions, independent OWL RL comparison within the shared fragment, exhaustive small models, and randomized update comparisons against fresh closure.
+
+The [combined research preprint](output/pdf/combined-report.pdf) presents
+scientific questions and findings for a broader audience, followed by technical
+appendices with proofs, detailed methods, and complete experimental tables.
+It distinguishes this project's contributions from prior algorithms and cites
+the thesis and subsequent work. The [paper documentation](docs/paper/README.md)
+provides the single arXiv source archive, submission metadata, and build
+instructions; separately readable paper and supplement versions remain available.
+The author is Raphael Volz, Pforzheim University.
+Its external evaluation includes all fourteen official LUBM answer sets,
+the ZodiacEdge author's positive LUBM rule program, and TPC-H-derived join
+components. The [benchmark survey](docs/research-target-benchmarks.md) states the
+differences from the full published workloads and prevents cross-machine timing
+claims from being mistaken for matched comparisons.
 
 The [subsequent research study](docs/RESEARCH_EXPERIMENTS.md) develops adaptive
 unary evaluation and bounded proof certificates for mixed fact/rule maintenance.
@@ -110,12 +138,21 @@ novelty or state-of-the-art performance.
 Certificates reached 7.45× speedup on a supported-cycle workload but added about
 19% on unsupported cycles; adaptive planning was neutral overall. Both remain
 experimental after failing the predeclared default-adoption screen. Production
-keeps fixed unary planning and ordinary DRed, with faster unary/binary lookups.
+keeps fixed unary planning and ordinary DRed. The follow-up adds positional
+positive joins, insertion-validation reuse, and incremental survivor indexes
+to the defaults. A separate bounded query-order lookahead remains experimental.
+The [follow-up methods](docs/RESEARCH_JOIN_FOLLOWUP_IMPLEMENTATION.md) explain
+the guarantees and scope. Actual same-host comparisons with
+[ZodiacEdge](benchmarks/zodiac-native-results.md) and
+[HermiT](benchmarks/owl-bridge-results.md) report both advantages and limitations.
+The [DLP assessment](docs/DLP_PROFILE_ASSESSMENT.md) treats computational value
+separately from the practical prevalence of fragment-only ontologies.
 
 ## Implementation map
 
 - `src/dlp_reasoner/compiler.py`: OWL graph validation, expression normalization and Horn compilation.
 - `src/dlp_reasoner/engine.py`: joins/indexes, delta evaluation, equality, constraints, bounds and updates.
+- `src/dlp_reasoner/joins.py`: positional positive joins and optional bounded ordering estimates.
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
 - `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
 - `src/dlp_reasoner/support.py`: experimental current-proof certificates for DRed.

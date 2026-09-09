@@ -1,0 +1,21 @@
+\begin{table}[ht]
+\caption{Complete-update unary results (nine paired process blocks). Milliseconds; ratio below one favors adaptive planning. Intervals are descriptive.}
+\label{tab:unary}
+\centering\small
+\begin{tabular}{@{}lrrrrl@{}}
+\toprule
+Shape & Width & Fixed & Adaptive & Ratio & 95\% interval \\
+\midrule
+sparse-single & 8 & 10.623 & 10.628 & 1.0026 & [0.9768, 1.0123] \\
+sparse-single & 64 & 100.506 & 99.957 & 1.0060 & [0.9624, 1.0209] \\
+sparse-disjoint & 8 & 10.502 & 10.782 & 0.9961 & [0.9340, 1.0409] \\
+sparse-disjoint & 64 & 103.556 & 103.567 & 0.9972 & [0.9734, 1.0473] \\
+sparse-overlap & 8 & 0.271 & 0.269 & 1.0246 & [0.9672, 1.1895] \\
+sparse-overlap & 64 & 2.132 & 2.147 & 1.0018 & [0.9945, 1.0201] \\
+dense-overlap & 8 & 53.179 & 53.651 & 1.0019 & [0.9944, 1.0327] \\
+dense-overlap & 64 & 688.126 & 697.530 & 1.0127 & [0.9814, 1.0303] \\
+dense-selective & 8 & 42.324 & 41.733 & 0.9903 & [0.9777, 1.0194] \\
+dense-selective & 64 & 656.392 & 667.461 & 0.9818 & [0.9378, 1.1023] \\
+\bottomrule
+\end{tabular}
+\end{table}

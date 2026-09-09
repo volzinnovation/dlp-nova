@@ -1,0 +1,28 @@
+{
+  "pdf_sha256": "600c3a18ec102702f53c9728390629d5cb9939be97f3096df71d0222fe1aace3",
+  "source_bundle_sha256": "c2a99fe8c7933c3263a4a843346b26798e16582c4728a977013661aa3efd1cb5",
+  "pages": 10,
+  "all_pages_visually_reviewed": false,
+  "review_method": "Rebuilt successfully after terminology/conclusion edits. Visual review for the current merged submission is recorded in combined-report-qa.json; the prior standalone visual review refers to previous_visual_review_pdf_sha256.",
+  "contact_sheet_scale_to": 650,
+  "full_page_reviews": [],
+  "layout_findings": [],
+  "author": "Raphael Volz",
+  "affiliation": "Pforzheim University",
+  "isolated_source_build_passed": true,
+  "source_and_input_manifest_verified": true,
+  "evidence_input_count": 44,
+  "thesis_sha256": "80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570",
+  "first_tpch_use_expanded": true,
+  "illustrative_ontologies": [
+    "Original thesis Bach ontology",
+    "Official LUBM ontology"
+  ],
+  "bach_comparison": {
+    "workers": 336,
+    "validated_workers": 330,
+    "failed_native_fact_updates": 6,
+    "exact_query_answers_checked": 5382
+  },
+  "previous_visual_review_pdf_sha256": "ce53ed7ef6cf311bf3222abf802dc3aff13a0c7d884a6740797b2d59649642a4"
+}

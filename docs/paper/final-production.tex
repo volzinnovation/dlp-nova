@@ -1,0 +1,35 @@
+\section{Final default configuration and baseline validation}
+The production configuration now enables monotone validation/plan reuse,
+incremental survivor-index maintenance, and positional positive joins. It also
+includes the recursive-closure lifecycle correction. Adaptive unary planning,
+shared support certificates, and the new lookahead remain disabled. The final
+package is preserved in the later lookahead source archive; it differs from
+the primary follow-up archive, whose switches were enabled at runtime and which
+predates the lifecycle correction.
+
+The complete source passes 741 tests, lint, both independent thesis
+counterexample scripts, the original research-artifact validator, and a source
+and wheel build. The final thesis suite contains 54 fresh case workers, each
+with five observations: all 270 observations pass the workload's checks. All
+51 historical cases match the fixed \code{b1254c4} input hashes and correctness
+controls. The three Bach cases also pass but lie outside that baseline's
+coverage. Recorded package hashes match the frozen later archive; source
+integrity is checked throughout the suite.
+
+\input{generated/final-production-table.tex}
+All 51 recorded materialization medians are lower than the saved baseline in
+this run, with ratios ranging from 0.00791 to 0.83264. The very large factored
+expression and schema-query differences include the preceding modernization;
+they cannot be assigned to the latest three changes. These observations also
+include naive and OWL-RL controls, and historical runs were neither interleaved
+nor isolated from host drift. The result is a longitudinal regression check,
+not a causal effect estimate or external-system ranking.
+
+Maintenance is not uniformly faster. Of the 36 case/operation comparisons,
+34 have lower update medians, while D4/15\% fact insertion is 25.8\% slower
+and D5/10\% rule insertion is 2.7\% slower than the saved baseline. These costs
+are retained in the table and raw data. The matched external experiments give
+more focused attribution evidence than these sequential historical comparisons.
+The final observations are stored separately in
+\path{benchmarks/followup-thesis-results.json}; neither the original baseline
+nor the preceding production results are overwritten.

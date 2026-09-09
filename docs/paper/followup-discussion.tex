@@ -1,0 +1,79 @@
+\subsection{Interpreting the maintenance improvement}
+All 16 ZodiacEdge-program workers pass all 416 recorded complete-closure stage
+checks. Relative to \code{b1254c4}, median paired insertion ratios are 0.3144
+for $*$ and 0.4807 for $\#$, corresponding to 3.18-fold and 2.08-fold speedups.
+Deletion ratios are 0.6119 and 0.6969. These are new matched local comparisons
+on the author's program, not ratios against its published README times.
+
+The same-source control is especially useful for attribution. Candidate/fixed
+rule-insertion ratios are 0.3265 and 0.5470; deletion ratios are 0.7240 and
+0.8230. Every individual paired update ratio favors the candidate in both
+scenarios. For initial compute, however, the $*$ median ratio is 0.9770 and
+two of the four individual ratios exceed one. We do not interpret that small
+aggregate difference as a reliable initialization benefit. The $\#$ initial
+ratio is 0.9051, with all four observations below one. No predeclared statistical
+significance test or broad default-adoption criterion was attached to this
+follow-up study.
+
+Across the ten fixed 1,000-fact subsets and four blocks, pooled matched
+candidate/\code{b1254c4} ratios are 0.6251 for deletion and 0.2808 for
+reinsertion. Against the same-source fixed control they are 0.7169 and 0.3064.
+These medians describe the sampled workload, with cases nested within processes.
+They do not supply forty independent repetitions or establish the performance
+of Oxford's larger UOBM or Reactome workloads.
+
+The candidate preserves the original logical DRed work contract. For example,
+in the first block it erases 24,933 indexed tuples for $*$ rule deletion and
+24,045 for $\#$, rather than rebuilding all survivor buckets. Insertion can
+reuse validated old inputs and plans. The experiment tests the combined changes;
+it does not independently assign an exact portion of each speedup to validation,
+index erasure, or positional joins. The original adaptive unary strategy and
+proof certificates are disabled, so these results do not reverse their earlier
+default-adoption findings.
+
+\subsection{Positive-join gains and remaining intermediate work}
+All 72 TPC-H component observations pass exact SQL row-identity and complete
+base-closure checks. Paired candidate/fixed join ratios range from 0.523 to
+0.755 over the six scale/component cases. The corresponding component totals
+range from 0.919 to 1.008. Large Q5 improves about 47.7\% in the join interval,
+but only 8.1\% in the sum of extraction, encoding, indexing, and joining.
+Large Q3 does not show a component-total gain. These differences matter because
+the Python loading and representation costs dominate this adapter.
+
+Candidate and fixed configurations enumerate identical numbers of candidate
+rows in every case. Q5 increases from 13,739 to 621,901 candidates between
+SF0.01 and SF0.1, a 45.27-fold expansion for approximately tenfold input growth.
+Positional bindings reduce interpretation cost but leave this join order
+unchanged. This observation motivates the separately versioned lookahead
+experiment below; it does not by itself identify the causal ordering decision.
+
+The original component worker executes three queries sequentially. Later-query
+fact encoding was faster in the candidate despite identical encoding logic.
+Inspection found recursive local generator closures retaining captured state
+until cyclic garbage collection. The earlier summed phase intervals exclude
+explicit teardown and validation, so they are not all application CPU costs.
+This is a plausible interaction, not a proven causal explanation of those
+timings. The follow-up breaks the closure cycle in both new arms and gives each
+component its own process, while retaining the original observations unchanged.
+
+\subsection{The external comparison is mixed}
+All eight native-comparison workers pass their six full-closure checks, giving
+48 checked states. Relative to the unmodified ZodiacEdge engine, our candidate's
+paired $*$ insertion ratio is 0.161, approximately a 6.2-fold improvement.
+For $*$ deletion, however, the ratio is 1.522; for $\#$ insertion it is 3.653,
+and for $\#$ deletion it is 41.335. Initial computation also favors ZodiacEdge.
+One native $\#$ insertion is an outlier at approximately 0.215 seconds, compared
+with approximately 0.058 seconds for the other three; all observations remain
+in the artifact. Four paired blocks justify descriptive comparisons on these
+operations, not a broad statistical or state-of-the-art ranking.
+
+The large $\#$ deletion gap warrants diagnosis before another algorithmic claim.
+Index erasure reduces physical rebuilding but leaves transaction-wide
+preparation passes in place. A separately instrumented run, described below,
+attributes most of this case's cost to those passes, while its overdeletion
+set is exactly the set of lost facts. Thus this particular gap should not be
+attributed to unnecessary logical overdeletion. Dependency-local maintenance
+and safe reuse of validation evidence are relevant next directions, informed
+by ZodiacEdge~\cite{xu2023} and modular materialization~\cite{hu2022modular}.
+
+\input{deletion-diagnostic.tex}

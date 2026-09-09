@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "benchmark": "native-ZodiacEdge-LUBM1-paired-v1",
+  "started_utc": "2026-09-09T18:16:47.834860+00:00",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "cpu_count": 16,
+  "python": "3.12.9 (main, Feb 12 2025, 15:09:19) [Clang 19.1.6 ]",
+  "upstream": {
+    "commit": "e15721161d1055f019c4b8f9ac1bd8648417f154",
+    "archive_url": "https://codeload.github.com/xwq610728213/zodiac_edge/tar.gz/e15721161d1055f019c4b8f9ac1bd8648417f154",
+    "archive_sha256": "49e371017fa0a4d0602b941f2b4860823836414e7f2439059db81ac1d3e80ebe",
+    "source_sha256": {
+      "README.md": "5f410708840431e4cef28b8a032c5bc8f90c29260f723847c5757bf79bc6042d",
+      "classes/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classes/aggregation.py": "ac00bf2639205333bc1270eb4a12ab12c77f5296edee3ca640ebaf3db35c6dfc",
+      "classes/atom.py": "466da30519e26bf90f8e1fcbcfa69f4e1ca93ecf1998b5ff55c42c12ceeff4b7",
+      "classes/bind.py": "baa3683987e4f9551628ff51513fac98d7d5dc215d9fe9909148062bdba9736d",
+      "classes/binding_set.py": "1d1b2696f689552c86f1c5922406c4e8fcc2afbe84d9cfb3d1be7136ef0f3c54",
+      "classes/comp.py": "634f3b616588611ba85ae78e15689b5cac0a54ce6fddef17b40218b3eb8b29a0",
+      "classes/datastore.py": "a07a6bd3243799180d30bfc81fda6629d34930d8445ea58ec61a4a0dff995a3e",
+      "classes/datastore_tuple_index.py": "63d6b998e5189b2b221c6c2b852bd861ece2515292e29c6ff55d73f305339aad",
+      "classes/extended_atom.py": "9c5ecf5306397afce37f51cece0238e58a5336537a0cc6fae3572777f9fcfb1c",
+      "classes/hyper_node_dbs.py": "39fb41cf1c4507126fca3c75ce650fe670b32463a2c5cd22185184a90f4ce82e",
+      "classes/resultset.py": "69f33073d3217a2c3745304bcec48cdc2d8eef169e78bff2d87ae98c7636c39f",
+      "classes/rule.py": "328541a7800961a6bdfda81ab0c9902691754c2c18d954018d4c1b34b4bac70a",
+      "classes/term.py": "c09317645691ecf38655be6c962ae627492073bb9c4252826ff419627a2eed30",
+      "generate_data.py": "6c3418d1662ef553912a57b3bce3a64a870623203e7342dc644cb7f8f5db1651",
+      "main.py": "a112b847f2a9ab2d83aac64e991e93014dab2c1576bcaf43287175b94ce19f4f",
+      "reasoner/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reasoner/operators.py": "2a6129b36f388f9ac869936d0a2b6f2178246c9860bd3924ab13abb2d49b85fe",
+      "reasoner/program.py": "ed8bdb597ec1f433018363e706ef3a198d0c7c35710ff30bc6ae75307829b6a4",
+      "reasoner/ruleBodyOptimiser.py": "91081ffefc5c649f11e3c9cb59cb9880fa007e68e9f97306c238ea0271b429b5",
+      "reasoner/semi_naive.py": "e3e53b7e8edc9183f699d97aacde49962f9c07d6eccb70e187045e628cd2c681",
+      "reasoner/stratify.py": "bccc631006b0132976dadb2fcbb9ec4bda25a2a94112500577c91ce3efc1d761",
+      "selfDefinedFunc/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selfDefinedFunc/slf_defined_aggre_func.py": "6c2c04f2be64779322c9a5c68a38962fefab912efaa01b1764a36dfadff133c2",
+      "selfDefinedFunc/slf_defined_bind_func.py": "a521ba30802b740fa3764101930931a49b6b41b4fa9d0d0e58e412c5fcf4664d",
+      "util/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "util/parser.py": "726085f89777087faa6d6a41c9f4649a6b0eea83839224190a5524ed1b90a8fe"
+    },
+    "upstream_modified": false,
+    "license": "No LICENSE found; fetched into ignored tmp only."
+  },
+  "input_manifest": {
+    "author_commit": "e15721161d1055f019c4b8f9ac1bd8648417f154",
+    "author_readme_url": "https://raw.githubusercontent.com/xwq610728213/zodiac_edge/e15721161d1055f019c4b8f9ac1bd8648417f154/README.md",
+    "author_readme_sha256": "5f410708840431e4cef28b8a032c5bc8f90c29260f723847c5757bf79bc6042d",
+    "rules": 128,
+    "transactions": {
+      "*": 8,
+      "#": 16
+    },
+    "dataset_manifest_sha256": "3544fb50f99b8066caf0f271a610ee1b178dadc26910cce8510834d674fcfb51",
+    "dataset_manifest": {
+      "dataset": "LUBM(1,0)",
+      "generator": "Official UBA1.7, unchanged bundled bytecode",
+      "generation_command": [
+        "java",
+        "-cp",
+        "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/lubm-official/uba/classes",
+        "edu.lehigh.swat.bench.uba.Generator",
+        "-univ",
+        "1",
+        "-index",
+        "0",
+        "-seed",
+        "0",
+        "-onto",
+        "http://swat.cse.lehigh.edu/onto/univ-bench.owl"
+      ],
+      "generator_cwd": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/lubm-official/generation",
+      "java": "openjdk version \"17.0.18\" 2026-01-20\nOpenJDK Runtime Environment Homebrew (build 17.0.18+0)\nOpenJDK 64-Bit Server VM Homebrew (build 17.0.18+0, mixed mode, sharing)",
+      "artifacts": {
+        "uba1.7.zip": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/uba1.7.zip",
+          "sha256": "3d44f468e36b7f3cd532f0f5693a019d020877846397b1fa657367cbd53f380a"
+        },
+        "univ-bench.owl": {
+          "url": "https://swat.cse.lehigh.edu/onto/univ-bench.owl",
+          "sha256": "e6eca926fcb7d6c7925ea0c48f7c5d79abc2818f89e7432fd16561aafeb3f67a"
+        },
+        "queries-sparql.txt": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt",
+          "sha256": "c34fd26ecb6fb9f0a2f185d73b72505ef0abf25705d831e6eed3c896557cd104"
+        },
+        "answers.zip": {
+          "url": "https://swat.cse.lehigh.edu/projects/lubm/answers.zip",
+          "sha256": "aedb3d6c36d1f80fb3708e04b5720afe24ac5ac5d2c8e700021f3eed2f1b3307"
+        }
+      },
+      "department_files": {
+        "University0_0.owl": "020f8ab4062d31f5b41c6834dd22031afd5801572bb8bbefcea3c0073c777111",
+        "University0_1.owl": "7fcf30a6458616076f3ffc18e8be931b9902952ba49ef5c3dbacf27718e08278",
+        "University0_10.owl": "0987f4f716436b70c53c06d034f53c18526996af51bb120124de7ee10c92b0c2",
+        "University0_11.owl": "485c03900accd969f585be2c907eed85f9e52c524c5d1acf5cf4cc2b0b571877",
+        "University0_12.owl": "4fd1213bcee55755a483219a0a54e3816b5dcb2c5e9b45e23a2df2fceb21d6bc",
+        "University0_13.owl": "1b2b948b49a0d58c748eb16eccb97ad2c25290f586611067ff557fe140461f1d",
+        "University0_14.owl": "9e45c7ea4ea6c8ab916893297cacc98924adbcee98df8f435300ad35546162e8",
+        "University0_2.owl": "cb2523e9f9b2ae5808f4ee501cd05679c74e4cc33d7a4dfc387826aac92ca381",
+        "University0_3.owl": "d7b1c7633867983a3f5575e4f60d7929c9c13234ed645292b3e4c46353eb29cb",
+        "University0_4.owl": "f8fd9105bf29f5e9b1bceaf856cf97e106f11d8eaf7c3d937fcfe3d8fbb4a31e",
+        "University0_5.owl": "42daca179b2523202a55e468aa598b3764831ca13ea5610810669cb44c92240f",
+        "University0_6.owl": "d5f6d22a0389dc16315398f7d1c27575a10164dac8ccd2e81aa9e8df4e507f97",
+        "University0_7.owl": "d91631c7655eae90560722854116e2a2ce0a069465f6e34a46f53761a1d7fc47",
+        "University0_8.owl": "b9abd10510b8de2aa62aed470a915430ec4939250e4a1856bec08703b71992ef",
+        "University0_9.owl": "51c9370414f21acf8cb8d4e47491fea46895956c837861f88b994b4b643f83bf"
+      },
+      "query_sha256": {
+        "1": "bf0f472f428b8e62bc7016b8c4322627d0d395f212f2dca5e90eb8ba601d1763",
+        "2": "34858564c43a7e2cfbd6b51789bce9eb4ddb406610634403e9e52df5aab05593",
+        "3": "7679811b083bf4967517e6dd037569ef1e17a082c78d661a0134a149d03bb2e4",
+        "4": "3e7f6c1d67570c3da2081b1dbe76a64ef0b0751232a2843938ea199f0854957e",
+        "5": "5b4c8141b32710c0c0635f773697c86083ea1e727cb7659b287fe8535d3874d4",
+        "6": "511e19df8a560a18a01cb429fd095e9daaec9e027ae292d15a79a36dc5407612",
+        "7": "464044945c733ba103509a8611ed6b367a8dab1895041a1c44b71364a4517c74",
+        "8": "97e0ae538432eef20679b872c096f6e8ae24f5c028c9530469ab671447bc369d",
+        "9": "e5f32827c780b8dd02303fd4e32047d4e47ca7280b68da0b20e908908f8d65db",
+        "10": "8b7bc1b9de775454bef7a95942a9bc1633832d003b52977d748696d923eac52e",
+        "11": "b31a3f1bd60df301154c7a4a2726046990376f72b886df6835a37acdd1ac034b",
+        "12": "eed4daed8ef61872bb5d1fadced2bcab60089c2c5f128550728aa6a7a1bf8ba2",
+        "13": "bee77f8a2b5179970ae024a190203498a52d8d618df56ca9963b0d7f406d49c9",
+        "14": "748bc39679b0c3a7d8ff56706d7e70d3583ce5ae9e1e7cb8a3196ad0251e7587"
+      },
+      "reference_answers": {
+        "1": {
+          "variables": [
+            "X"
+          ],
+          "count": 4,
+          "sha256": "e813680d3a7d6e387c0d4794a7e1791bca1f2a26f607ada2c814ca54f9e6cb99"
+        },
+        "2": {
+          "variables": [],
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "3": {
+          "variables": [
+            "X"
+          ],
+          "count": 6,
+          "sha256": "fa1df6ee18680e699db342546510fb0c68fd6f93f04753a96ff5b96c811ac0b3"
+        },
+        "4": {
+          "variables": [
+            "X",
+            "Y1",
+            "Y2",
+            "Y3"
+          ],
+          "count": 34,
+          "sha256": "25b7c22a9d4eda673c488eb2c3e49d5b3b77f64b6428bade1432806b6ce59418"
+        },
+        "5": {
+          "variables": [
+            "X"
+          ],
+          "count": 719,
+          "sha256": "2a1bf4643202800da0f31776b725ce5bf13ca1194d9f3d0bcdc8775934250ce9"
+        },
+        "6": {
+          "variables": [
+            "X"
+          ],
+          "count": 7790,
+          "sha256": "d2c30b19663cbadb9e41776213a7332868c5c9d3816943b2e99fc3ae1ed40107"
+        },
+        "7": {
+          "variables": [
+            "X",
+            "Y"
+          ],
+          "count": 67,
+          "sha256": "678be0a64abb022933517e6dcdd47aa37fcfe8c2f2941c69f675d98337733e47"
+        },
+        "8": {
+          "variables": [
+            "X",
+            "Y",
+            "Z"
+          ],
+          "count": 7790,
+          "sha256": "281d318f0c167133579a886cc51196d4ad5f202c557aef2192d4bca227c730d2"
+        },
+        "9": {
+          "variables": [
+            "X",
+            "Y",
+            "Z"
+          ],
+          "count": 208,
+          "sha256": "f7a29e2b56298bbe21a5fa21e2b49c5839e42207fbfcd566f87749db263fe54f"
+        },
+        "10": {
+          "variables": [
+            "X"
+          ],
+          "count": 4,
+          "sha256": "e813680d3a7d6e387c0d4794a7e1791bca1f2a26f607ada2c814ca54f9e6cb99"
+        },
+        "11": {
+          "variables": [
+            "X"
+          ],
+          "count": 224,
+          "sha256": "5c3e3d7d18ee7d302773146e8991034f2fc2c690b67a3a6a2c944a8af7190416"
+        },
+        "12": {
+          "variables": [
+            "X",
+            "Y"
+          ],
+          "count": 15,
+          "sha256": "d4bac112c5d6dbfa8d4e75af79cf5fad2ab481e3e9b468a104b0e49604727448"
+        },
+        "13": {
+          "variables": [
+            "X"
+          ],
+          "count": 1,
+          "sha256": "bec9ca4b337d3a6a8ec79323968623cf800515e0ed847c1ff34b8424c7f8d8a5"
+        },
+        "14": {
+          "variables": [
+            "X"
+          ],
+          "count": 5916,
+          "sha256": "56da549b5b9ea012b4d82b9eae2ddd0d7e2b2d0f6958466a17059bde6261c8d2"
+        }
+      },
+      "normalizations": [
+        "Move POSIX filenames containing the original UBA Windows separator; bytes unchanged.",
+        "Use the current official ontology namespace in generated data and all 14 queries.",
+        "Remove SELECT commas and Q7 triple commas; enclose Q1/Q3 bare IRIs in angle brackets.",
+        "Resolve ontology locally, remove owl:imports triples, retain all logical axioms.",
+        "Canonicalize ontology blank-node labels; give generated RDF documents stable public IDs."
+      ]
+    },
+    "license": "No LICENSE file found in the pinned ZodiacEdge repository; source is fetched into ignored tmp, not redistributed here."
+  },
+  "candidate_source_sha256": {
+    "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/engine.py": "75a23892d41e495f11559c46edef462c795ce45e682cf72554c0e5f45ad09eea",
+    "src/dlp_reasoner/joins.py": "6f0fa4264209156befdc21a7ff72f7b4b39911364ce4a8d54df9c7548c224860",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+  },
+  "candidate_source_path": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/zodiac-lubm/source-working-3cc7bae8d99debb5c6aa2cb9f71c4bc99e6e25947cd432566f902be42c201e89",
+  "driver_sha256": {
+    "benchmarks/zodiac_native.py": "bc619bfa9c831430778fbc2e5b9643da095a3385c8ffad3b883b48ed24a8d795",
+    "benchmarks/zodiac.py": "559a9297f9ee26a4a5a5602f6607f97fb255eaa87b91c22ce9980a6e98be3951",
+    "benchmarks/lubm.py": "08ce56d9daee0b7db99a1b520c977f14e43f38046e7541a009a27f78ead0f4c9"
+  },
+  "reference": {
+    "full": {
+      "facts": 238474,
+      "sha256": "3aae89c5aa5db2fc885c98d2c67933d3f275e983e8d8d304b0489aadbfdf3255"
+    },
+    "*": {
+      "facts": 231588,
+      "sha256": "e815d5b45d02f0f9ec41bfd275a0269c6b3b5e93d37635481621df9567aff922"
+    },
+    "#": {
+      "facts": 214429,
+      "sha256": "9e09fc503a16222dbbcfbf886653e4926931548948c098201fca9b2dc0736892"
+    },
+    "facts-9100": {
+      "facts": 236366,
+      "sha256": "cf7891e6a5ebeaed7df069030a6f8bd514da774be2363c8548c5602cbfdd91ce"
+    },
+    "facts-9101": {
+      "facts": 236398,
+      "sha256": "e9faaa89f21b45439aff6fd520a4ec1eaade5e4da69b141057bbdab38021d4a6"
+    },
+    "facts-9102": {
+      "facts": 236399,
+      "sha256": "a88321c6f19d8baf588bed4754b915db997a6377e338016ad461de929e30ab5a"
+    },
+    "facts-9103": {
+      "facts": 236419,
+      "sha256": "fa99402ee4342a3a0597ba283ad9222868b1d516857710783f24f454966dd8e2"
+    },
+    "facts-9104": {
+      "facts": 236375,
+      "sha256": "51b4ef50dce5dd070a6481a28866752a6f302a31b790cba26fdc1f77fb88e90e"
+    },
+    "facts-9105": {
+      "facts": 236401,
+      "sha256": "3f1715f6c8e5e5808e406726ebb0816ebfb5ecd98297e9c0972a7c72b6051e94"
+    },
+    "facts-9106": {
+      "facts": 236363,
+      "sha256": "35b329645746f1dcc763355975a3ee2962408ce7268f5337d717ef8ecdc3224c"
+    },
+    "facts-9107": {
+      "facts": 236392,
+      "sha256": "3ef2eb3d3aac15181e7238e79ecb0813b3896415efce972e70ab950ef4a281e7"
+    },
+    "facts-9108": {
+      "facts": 236387,
+      "sha256": "eab75b1433b7431cf70c09033241688cf5238f467dfa3fdf801b27715a5253e0"
+    },
+    "facts-9109": {
+      "facts": 236392,
+      "sha256": "02573aded3cf2d97cd83233ae0894938841c5c058deea343b72f96007f1faffc"
+    }
+  },
+  "reference_sha256": "f6473f8b728bfb86e9ea59843475032391750c4489354373a591eb59745ff013",
+  "protocol": {
+    "blocks": 4,
+    "arms": [
+      "native",
+      "candidate"
+    ],
+    "timeout_seconds": 300,
+    "ordering": "alternating native/candidate paired blocks",
+    "seeds": [
+      7300,
+      7301,
+      7302,
+      7303
+    ],
+    "no_warmup": true,
+    "os_caches_flushed": false
+  },
+  "workers": []
+}

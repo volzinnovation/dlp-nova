@@ -18,6 +18,7 @@ from rdflib.namespace import RDF, XSD
 
 from .model import Atom, EQ, NEQ, TOP, ProfileError, Program, Rule, Skolem, Var
 from .support import UnarySupport
+from .joins import RelationalPlan
 
 
 class _DomainSeed(BNode):
@@ -104,6 +105,24 @@ class _Index:
         for position, value in enumerate(fact.args):
             self.columns[fact.predicate, position][value].add(fact.args)
 
+    def discard(self, fact):
+        """Remove one tuple and its column entries without rebuilding other rows."""
+        rows = self.rows.get(fact.predicate)
+        if rows is None or fact.args not in rows:
+            return
+        rows.remove(fact.args)
+        if not rows:
+            del self.rows[fact.predicate]
+        for position, value in enumerate(fact.args):
+            key = fact.predicate, position
+            column = self.columns[key]
+            bucket = column[value]
+            bucket.remove(fact.args)
+            if not bucket:
+                del column[value]
+            if not column:
+                del self.columns[key]
+
     def lookup(self, predicate, values):
         result = self.rows.get(predicate, ())
         # RDF compilation predominantly produces unary and binary predicates.
@@ -154,6 +173,13 @@ class Engine:
     _support_certificates_enabled = False
     _support_max_contexts = 128
     _support_max_rule_visits = 100_000
+    # Adopted after the controlled external update/query study. Private switches
+    # retain explicit ablations for reconstruction and interpreter comparisons.
+    _incremental_index_enabled = True
+    _compiled_joins_enabled = True
+    _incremental_validation_enabled = True
+    # Post-hoc research candidate: query-only ordering estimates, never pruning.
+    _join_lookahead_enabled = False
 
     def __init__(self, program: Program, strategy="semi-naive", max_rounds=1000,
                  max_facts=1_000_000, max_depth=32):
@@ -177,12 +203,18 @@ class Engine:
         self._parent = {}
         self._skolem_lookup = {}
         self._equivalence_cache = None
-        self._validate(self.rules, self.asserted)
+        arities = self._validate(self.rules, self.asserted)
+        self._validation_snapshot = (
+            (tuple(self.rules), frozenset(self.asserted), arities)
+            if self._incremental_validation_enabled else None)
         self._prepare_rules()
         self._materialized = False
 
-    def _validate(self, rules, facts):
-        arities = {EQ: 2, NEQ: 2, TOP: 1}
+    def _validate(self, rules, facts, *, base_arities=None):
+        # Copy an existing certificate so a failed validation cannot change it.
+        # Reuse is valid only when the certified rules and assertions survive.
+        arities = ({EQ: 2, NEQ: 2, TOP: 1} if base_arities is None
+                   else dict(base_arities))
 
         def atom_check(atom, ground=False):
             if not isinstance(atom, Atom) or not isinstance(atom.args, tuple):
@@ -237,10 +269,12 @@ class Engine:
             if not needed <= bound:
                 names = ", ".join(sorted(v.name for v in needed - bound))
                 raise ProfileError(f"Unsafe rule has unbound variables: {names}")
+        return arities
 
     def _prepare_rules(self):
         self._dependents, self._global_rules = self._rule_dependencies(self.rules)
         self._unary_plans = {}
+        self._relational_plans = {}
         for rule in self.rules:
             if not rule.body:
                 continue
@@ -252,6 +286,12 @@ class Engine:
                    for atom in rule.body):
                 self._unary_plans[rule] = (
                     variable, tuple(dict.fromkeys(atom.predicate for atom in rule.body)))
+        if self._compiled_joins_enabled and self.strategy == "semi-naive":
+            for rule in self.rules:
+                if rule not in self._unary_plans:
+                    plan = RelationalPlan.create(rule)
+                    if plan is not None:
+                        self._relational_plans[rule] = plan
 
     @staticmethod
     def _rule_dependencies(rules):
@@ -481,6 +521,20 @@ class Engine:
         if plan is not None:
             yield from self._unary_solutions(rule, plan, delta_index, delta_position, initial)
             return
+        if (self._compiled_joins_enabled and self.strategy == "semi-naive"
+                and not (initial and any(value is _MISSING for value in initial.values()))):
+            # External BGP queries need not belong to the installed rule set;
+            # compile those per invocation, without an unbounded query cache.
+            relational = self._relational_plans.get(rule)
+            if relational is None:
+                relational = RelationalPlan.create(rule)
+            if relational is not None:
+                lookahead = (self._join_lookahead_enabled and self.complete
+                             and delta_index is None and delta_position is None
+                             and rule.head is None and rule not in self.rules)
+                yield from relational.solutions(self, _MISSING, delta_index, delta_position, initial,
+                                                lookahead=lookahead)
+                return
 
         def visit(remaining, binding):
             if not remaining:
@@ -547,7 +601,12 @@ class Engine:
                     if matched:
                         yield from visit(rest, extended)
 
-        yield from visit(tuple(range(len(rule.body))), {} if initial is None else initial)
+        try:
+            yield from visit(tuple(range(len(rule.body))), {} if initial is None else initial)
+        finally:
+            # Recursive closures otherwise retain this engine until cyclic GC.
+            # Exhaustion, explicit close, and exceptions all release the cycle.
+            visit = None
 
     def _unary_solutions(self, rule, plan, delta_index, delta_position, initial):
         """Choose between delta union and full intersection using current sizes.
@@ -896,7 +955,16 @@ class Engine:
             self.stats.update((f"support_{key}", value) for key, value in support.stats.items())
         self.stats["overdeleted_facts"] = len(deleted)
         self.facts.difference_update(deleted)
-        self._index = _Index(self.facts)
+        if self._incremental_index_enabled and 2 * len(deleted) <= len(self.facts):
+            # Old-rule traversal has finished. Eligibility guarantees identity
+            # representatives, so only deleted tuples have changed index entries.
+            for atom in deleted:
+                self._index.discard(atom)
+            self.stats["index_deleted_rows"] = len(deleted)
+        else:
+            self._index = _Index(self.facts)
+            if self._incremental_index_enabled:
+                self.stats["index_rebuilt_rows"] = len(self.facts)
         self.terms.intersection_update(domain)
         # DRed eligibility guarantees identity representatives. Purge departed
         # terms from all identity caches so a later literal cannot merge with a
@@ -938,24 +1006,54 @@ class Engine:
         safely handles equality splitting, witnesses, and incomplete old results.
         """
         additions, removals = set(add), set(remove)
-        next_asserted = (self.asserted - removals) | additions
         rule_additions, rule_removals = list(add_rules), set(remove_rules)
-        next_rules = list(dict.fromkeys(
-            [rule for rule in self.rules if rule not in rule_removals] + rule_additions))
-        self._validate(next_rules, next_asserted)
-        actual_removed = self.asserted - next_asserted
-        actual_added = next_asserted - self.asserted
         previous_rules = self.rules
-        previous_set = set(previous_rules)
-        deleted = previous_set - set(next_rules)
-        inserted = [rule for rule in next_rules if rule not in previous_set]
+        snapshot = self._validation_snapshot
+        reuse_validation = (
+            self._incremental_validation_enabled and not removals
+            and not rule_removals and snapshot is not None
+            and tuple(self.rules) == snapshot[0] and self.asserted == snapshot[1])
+        if reuse_validation:
+            # Set equality above detects direct mutation of the public containers.
+            # It and the immutable snapshot still cost O(state size), but avoid
+            # revisiting every old term and rule through Python validation code.
+            actual_added = additions - self.asserted
+            actual_removed, deleted = set(), set()
+            next_asserted = self.asserted | additions
+            next_rules = self.rules
+            inserted = []
+            if rule_additions:
+                previous_set = set(previous_rules)
+                inserted = list(dict.fromkeys(rule for rule in rule_additions
+                                               if rule not in previous_set))
+                if inserted:
+                    next_rules = self.rules + inserted
+            # Rule safety is local; the shared arity certificate additionally
+            # checks new rules against the old program and new assertions.
+            arities = self._validate(inserted, actual_added, base_arities=snapshot[2])
+        else:
+            # Deletion can remove the last occurrence fixing a predicate's arity;
+            # submitted removals and changed public state retain full validation.
+            next_asserted = (self.asserted - removals) | additions
+            next_rules = list(dict.fromkeys(
+                [rule for rule in self.rules if rule not in rule_removals] + rule_additions))
+            arities = self._validate(next_rules, next_asserted)
+            actual_removed = self.asserted - next_asserted
+            actual_added = next_asserted - self.asserted
+            previous_set = set(previous_rules)
+            deleted = previous_set - set(next_rules)
+            inserted = [rule for rule in next_rules if rule not in previous_set]
         rules_changed = bool(deleted or inserted)
         retracting = bool(actual_removed or deleted)
         can_dred = (self._materialized and self._can_dred()
                     and self._can_dred(next_rules, next_asserted)) if retracting else False
         self.asserted = next_asserted
         self.rules = next_rules
-        self._prepare_rules()
+        self._validation_snapshot = (
+            (tuple(self.rules), frozenset(self.asserted), arities)
+            if self._incremental_validation_enabled else None)
+        if not reuse_validation or rules_changed:
+            self._prepare_rules()
         if not self._materialized or not self.complete or (retracting and not can_dred):
             self.materialize()
             self.stats["operation"] = "update"
@@ -974,8 +1072,22 @@ class Engine:
                                                if rules_changed else "rematerialize-after-dred-limit")
                 return self
         else:
-            delta = (self._ingest(Atom(TOP, (term,)) for term in self._domain_constants())
-                     if inserted else set())
+            delta = set()
+            if inserted:
+                if reuse_validation:
+                    # A complete old materialization already registered its
+                    # domain, including _SEED. New facts register their own terms;
+                    # only constants occurring solely in new rules need seeding.
+                    domain = set()
+                    for rule in inserted:
+                        for atom in (*rule.body, *((rule.head,)
+                                                  if rule.head is not None else ())):
+                            for term in atom.args:
+                                domain.update(_constants(term))
+                    domain.difference_update(self.terms)
+                else:
+                    domain = self._domain_constants()
+                delta = self._ingest(Atom(TOP, (term,)) for term in domain)
             delta.update(self._ingest(actual_added))
             if self.complete:
                 delta.update(self._derive_once(inserted))

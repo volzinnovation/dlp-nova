@@ -1,0 +1,22 @@
+\begin{table}[ht]
+\caption{Final default configuration, selected historical medians in milliseconds (materialization unless specified). Five observations per case, sharing one worker. The ratio is final/b1254c4; these longitudinal observations are not an interleaved comparison.}
+\label{tab:final-production}
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Workload/operation & b1254c4 & 5531be4 & Final & Ratio \\
+\midrule
+Unions, 64 pairs & 10,406.030 & 105.388 & 82.267 & 0.008 \\
+Enumerations, 64 pairs & 95.863 & 5.717 & 4.358 & 0.045 \\
+Taxonomy D7/I15/PF & 4,860.310 & 4,777.663 & 3,336.927 & 0.687 \\
+Same: subsumption & 7,983.876 & 12.843 & 9.338 & 0.001 \\
+Transitive, 100 & 451.250 & 446.153 & 317.792 & 0.704 \\
+Cardinality D5/I3 & 243.571 & 227.536 & 166.633 & 0.684 \\
+D5/10\% rule insert & 219.359 & 228.417 & 225.281 & 1.027 \\
+D5/10\% rule replace & 417.815 & 457.058 & 200.632 & 0.480 \\
+D5/10\% rule delete & 685.817 & 413.883 & 181.603 & 0.265 \\
+D5/10\% atomic mixed & 771.007 & 791.637 & 284.407 & 0.369 \\
+D4/15\% fact insert & 24.074 & 24.232 & 30.287 & 1.258 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,17 @@
+{
+  "matched_cases": 51,
+  "new_cases": 3,
+  "observations": 270,
+  "materialization_case_geometric_mean_ratio": 0.4873152063753867,
+  "materialization_ratio_range": [
+    0.007905676675483747,
+    0.8326417593294373
+  ],
+  "worst_materialization_case": {
+    "kind": "taxonomy",
+    "depth": 3,
+    "ipc": 3,
+    "variant": "P1",
+    "repeats": 5
+  }
+}

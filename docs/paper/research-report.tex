@@ -1,0 +1,307 @@
+\documentclass{article}
+\usepackage{arxiv}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!45!black]{hyperref}
+\hypersetup{pdftitle={Description Logic Programs Revisited: The Benefits and Limits of Specialized Ontology Reasoning},pdfauthor={Raphael Volz}}
+\renewcommand{\shorttitle}{Description Logic Programs Revisited}
+\renewcommand{\headeright}{Raphael Volz}
+\renewcommand{\undertitle}{Preprint}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\title{Description Logic Programs Revisited:\\The Benefits and Limits of Specialized Ontology Reasoning}
+\author{Raphael Volz\\Pforzheim University}
+\date{9 September 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Restricting the expressive power of a knowledge representation language can
+make reasoning more efficient, but the conditions under which this advantage
+appears require empirical examination. We revisit Description Logic Programs,
+which connect ontology languages with rule-based inference, through a
+reconstruction of the original work and experiments on changing knowledge and
+query answering. We investigate whether sharing explanations and adapting the
+order of reasoning reduce computation while preserving its conclusions.
+Sharing explanations accelerates a favourable update task by approximately
+7.5 times, with a similar result in a separate replication, but adds 18--19\%
+overhead when suitable explanations are absent. Adaptive evaluation reduces
+some intermediate work without consistently improving complete task times.
+Comparisons with established reasoners likewise reveal operation-specific
+advantages and substantial disadvantages. The original Bach examples also
+exposed a loss of valid conclusions during deletion in the tested ZodiacEdge
+rule reasoner. On a finite task involving the
+existence of unnamed individuals, specialized reasoning is 2.6--21.5 times
+faster than the tested HermiT distribution; the task also belongs to the
+established OWL 2 EL profile. These findings support a conditional account of
+specialization: benefits depend on the structure of the knowledge, the change,
+and the question. A fragment's theoretical or computational value is distinct
+from how frequently it is used. The evidence supports useful specializations,
+without establishing a general performance advantage or a new complexity bound.
+\end{abstract}
+\keywords{Ontology reasoning \and Description Logic Programs \and knowledge representation
+\and incremental reasoning \and experimental evaluation}
+
+\section{Introduction}
+A knowledge base contains more than a collection of observations. Statements
+about categories and relationships allow further conclusions to be drawn.
+In the thesis's Bach family example, Johann Ambrosius can be identified as a
+father even though the description does not name his child. An ontology
+reasoner makes such implications explicit.
+The challenge is to provide useful expressive power while keeping inference
+manageable, especially when the observations or the governing statements
+change.
+
+Description Logic Programs (DLP) address this challenge by connecting a
+restricted ontology language with rule-based inference~\cite{grosof2003}.
+The 2004 thesis \emph{Web Ontology Reasoning with Logic Databases} developed
+this connection into reasoning services and methods for maintaining inferred
+knowledge~\cite{volz2004,volz2003maintenance}. Over the following two decades,
+research advanced the treatment of alternative explanations, shared
+computation, and the order of inference. Standardized OWL 2 profiles also
+established several language restrictions intended for different reasoning
+needs~\cite{owlprofiles2012}.
+
+These developments raise a scientific question that is broader than whether
+an old implementation can be made faster: under what conditions does
+specialization remain useful? A restricted language can offer a mathematical
+advantage even when its practical prevalence is unknown. A particular reasoner
+can also outperform a broader one on a defined task without demonstrating a
+new mathematical separation. Neither kind of evidence alone establishes that
+the historical language interface is the best choice for all applications.
+
+We examine three questions. First, when can explanations shared across many
+individuals reduce the cost of keeping conclusions up to date? Second, when
+does avoiding intermediate reasoning work reduce the time required for a
+complete task? Third, can reasoning within an expressive DLP fragment offer
+computational value relative to a broader OWL reasoner, independently of how
+often applications use that fragment alone?
+
+The study combines semantic reconstruction, controlled experiments, and
+comparisons with external reasoners. It includes deliberately unfavourable
+cases and reports unsuccessful interventions. The research questions organize
+an exploratory programme developed in stages; they are not presented as a
+retrospectively preregistered experiment. A focused review of the original
+specification establishes the meaning the reconstruction must preserve.
+Constructed workloads then isolate proposed mechanisms, while established
+university and database workloads test selected tasks beyond those examples.
+
+The contribution is an empirical reassessment of DLP and an account of the
+conditions under which the examined specializations help or fail. The original
+connection between ontology languages and rules, support-aware maintenance,
+and adaptive query evaluation remain attributable to earlier work. The new
+evidence concerns the tested combination of shared explanations, bounded
+adaptation, and matched reasoning tasks. It provides preservation arguments
+and evidence against unconditional performance expectations, rather than claiming
+a generally superior reasoning algorithm.
+
+\input{scientific-background.tex}
+\input{scientific-methods.tex}
+
+\section{Results}
+\label{sec:results}
+\subsection{A semantic basis for comparison}
+The reconstruction exposed consequential inconsistencies in particular printed
+formulas and procedures. For example, separate questions about the equivalence
+of two categories can interfere if their test assumptions are combined and
+individuals may denote the same object. Similarly, withdrawing a rule must
+remove conclusions whose only explanation depends on that rule. The
+supplement gives explicit counterexamples and the required corrections.
+These findings concern the specification. The historical implementation was
+not examined, so its behaviour cannot be inferred from these findings.
+
+The experiments evaluate the corrected interpretation. The complete official
+answer sets for all fourteen LUBM questions were recovered in every measured
+run. The earlier controlled update experiments matched the full conclusions
+of fresh recomputation, and the external query comparisons matched independently
+established answers. The later Bach comparison also records an external
+update discrepancy, discussed below.
+These checks support the interpretation of the measured tasks. They do not
+establish correctness for all possible ontologies or make the distinct
+benchmark tasks semantically interchangeable.
+Table~\ref{tab:scientific-evidence} summarizes the principal comparisons and
+their different evidential roles.
+
+\subsection{Sharing explanations helps when explanations survive}
+In the favourable constructed case, many individuals shared starting facts
+and retained an independent reason for a conclusion after a change. Establishing
+that reason once avoided withdrawing and rebuilding the same kind of
+conclusion repeatedly. The median of paired update-time ratios was approximately
+0.134, corresponding to a 7.45-fold improvement. A separate replication
+obtained a 7.56-fold improvement on the corresponding case.
+
+When no suitable explanation survived, the search for one could not prevent
+the required removals. It nevertheless consumed time, producing approximately
+18--19\% overhead. The replication reproduced both the benefit and this cost.
+Cases with less opportunity to share explanations gave more limited benefits.
+Figure~\ref{fig:scientific-support} shows the full range of the replication's
+cases, including the adverse outcomes.
+
+The result supports a mechanism with identifiable conditions. Reuse is
+valuable when the same valid reasoning applies to many individuals and avoids
+a substantial amount of repeated work. Attempted reuse can be harmful when
+those conditions are absent. The experiments therefore support conditional
+use, not an expectation that additional explanation checking always improves
+maintenance.
+
+\input{generated/scientific-findings.tex}
+
+\subsection{Less intermediate work does not guarantee a faster task}
+The first adaptive intervention changed how the sets satisfying a rule's
+conditions were combined. In one case it avoided tens of thousands of
+intermediate visits. Across the ten cases, however, the geometric mean of
+paired complete-update ratios was 1.0014: there was no overall improvement.
+Every reported uncertainty interval included one. Much of the task's cost
+lay outside the condition evaluation that the intervention changed. The study
+therefore does not establish a complete-task advantage from that reduction
+in intermediate work.
+
+The subsequent query experiment examined a different source of repeated work:
+the order in which records satisfying several conditions were combined. On the
+larger TPC-H Q5 component, a brief look ahead reduced examined candidates from
+621,901 to 155,969. The median paired query-computation ratio was 0.510, with
+an observed range of 0.481--0.520 across three repetitions. The computation
+itself was therefore approximately twice as fast in this case.
+
+The benefit did not extend uniformly to the complete task. Its paired
+preparation-plus-query ratios ranged from 0.972 to 1.273, spanning both
+improvement and deterioration. Variation in preparation costs preceded query
+execution and cannot be attributed to the ordering decision on this evidence.
+The four adverse controls became 6.6--23.8\% slower in query computation.
+They retained the same number of examined candidates, exposing the cost of
+making decisions that did not reduce subsequent work. The other five database
+components showed no comparable reduction in candidates.
+
+Together, the two experiments distinguish an algorithm's local opportunity
+from the benefit of using it. Avoided combinations are a plausible mechanism,
+but total cost also includes deciding what to do and preparing the data.
+A promising reduction in one part of a task is insufficient evidence for a
+general speed advantage.
+
+\subsection{External comparisons reveal different strengths}
+The new system reduced the two designated rule-insertion times by factors of
+3.18 and 2.08 relative to the preserved local reference version. This establishes
+progress against that reference, but an external comparison asks a different
+question. On the same university rule program, it was approximately 6.2 times
+faster than ZodiacEdge when inserting the eight-rule set. ZodiacEdge was
+faster on several other operations, including deletion of the sixteen-rule set,
+where our candidate took approximately 41 times as long. The corresponding
+median deletion times were 0.97 seconds for our candidate and 0.023 seconds
+for ZodiacEdge; the large relative difference concerns an operation taking
+less than a second in either system at this scale.
+
+All conclusions agreed for these university rule changes. The difference is therefore a performance
+limitation on a matched task, not a trade of completeness for speed. A separate
+diagnostic examination found that repeated preparation and checking dominated
+the candidate's cost in that deletion case. The number of withdrawn
+conclusions was exactly the number that should disappear. This observation
+identifies a direction for further investigation, but does not demonstrate
+how much of the external performance gap a future change would remove.
+
+The final regression evaluation also preserved the less favourable local
+outcomes. All 54 workloads passed their correctness checks. Although all 51
+comparable initial-inference medians were lower than the saved reference in
+that run, two of 36 update comparisons were slower, by 25.8\% and 2.7\%.
+Those historical runs were not interleaved experiments and cannot isolate the
+effect of the latest intervention. Neither local progress nor a selected
+external win establishes an overall ranking.
+
+\subsection{The original examples test preservation of meaning}
+The Bach comparison returns to the examples that motivated the reconstruction.
+It covers the complete ontology's 25 questions and nine questions on the
+separate family graph, including all ancestor and dynasty relationships.
+These original examples are small: their timings describe the cost of answering
+and maintaining a particular set of questions, rather than performance on
+large family histories.
+
+\input{generated/bach-findings.tex}
+
+Independent checks of the recorded ZodiacEdge version exposed a limitation in
+one family update. After withdrawing the Johann Sebastian--Wilhelm Friedemann
+link and inserting another, some executions lost the conclusion that Johannes
+is an ancestor of Wilhelm Friedemann. The path through Maria Barbara still
+justifies that conclusion. Recomputing the changed family from its assertions
+provides a separate check of the required result. The discrepancy concerns
+the tested incremental operation in that version; it does not contradict the
+successful checks on the earlier university rule changes.
+
+The affected system--task combination is excluded from performance rankings.
+Retaining this discrepancy is part of the comparison: an apparently quicker
+operation cannot count as an improvement when it loses a required answer.
+The evidence also distinguishes computing a changed state afresh from
+maintaining it through a sequence of changes.
+
+\subsection{A restricted language can offer computational value}
+The existential reasoning experiment examines the distinction between existence
+and naming illustrated by Johann Ambrosius's unnamed child and LUBM's unnamed
+course. It uses a separate, simplified family of constructed ontologies:
+belonging to one class requires a
+related individual to exist, and that relationship implies membership in
+another class. These measured inputs are distinct from both illustrative
+ontologies. The
+existential statement is essential to the tested conclusion; removing it
+changes the correct answer. Its form goes beyond the permitted syntax of
+OWL 2 RL.
+
+Across the three populations, the candidate's paired task-time ratios to
+HermiT were approximately 0.046, 0.263, and 0.378. These correspond to
+21.5-, 3.8-, and 2.6-fold advantages for the selected tasks. At the largest
+population, median task times were 0.94 seconds for the candidate and
+2.48 seconds for HermiT. The result persists
+when the entire fresh process is timed, including startup and completion:
+the corresponding ratios are approximately 0.379, 0.476, and 0.415.
+All systems agreed on consistency and the named individuals satisfying both
+questions. Most of the advantage was already present in the earlier local
+version, so it cannot be attributed to the latest optimizations.
+
+This provides an example of useful computational specialization. It requires
+no assumption about how commonly the fragment occurs. Its scope is nonetheless
+specific: the family also belongs to OWL 2 EL, and the relevant conclusion can
+be reached without explicitly constructing the unnamed individuals. The
+experiment does not establish superiority over specialized EL reasoners or
+performance on arbitrary existential ontologies.
+
+\input{scientific-discussion.tex}
+
+\section{Conclusion}
+Description Logic Programs offer useful computational specializations, with
+advantages that depend on the knowledge, the change, and the question.
+Sharing valid explanations reduced selected update costs, while unsuccessful
+searches added work. Changing evaluation order reduced some intermediate
+results without consistently improving complete task times. The DLP L3
+comparisons with HermiT demonstrate benefits on defined tasks, while the
+mixed ZodiacEdge results show why performance must be assessed alongside
+preservation of every required conclusion.
+
+These findings support restricted reasoning languages without establishing
+a general performance ranking or a new complexity bound. Their computational
+value is distinct from their prevalence in applications. The next step is to
+test whether observable properties of knowledge and updates predict the
+reported benefits across broader, independently selected workloads.
+
+\section*{Data, supporting material, and research transparency}
+The technical supplement contains the semantic counterexamples, preservation
+arguments, detailed protocols, full result tables, and reproducibility
+information. The accompanying research artifact contains the code and saved
+experimental observations; the
+\href{https://github.com/volzinnovation/my-phd-thesis-gpt-6-astra}{project repository}
+provides the development history.
+The fixed reference results and earlier measurements are preserved.
+The Bach comparisons add new observations of the thesis's original examples,
+including fresh measurements of the preserved reference implementation.
+AI assistance was used in implementation, literature retrieval, analysis, and
+manuscript preparation. The manuscript has not been submitted to arXiv.
+
+\setlength{\bibsep}{3pt}
+\renewcommand{\bibfont}{\small\raggedright}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

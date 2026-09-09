@@ -1,0 +1,1619 @@
+{
+  "created_utc": "2026-09-09T19:42:28.452264+00:00",
+  "blocks": 12,
+  "baseline_commit": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "metadata": {
+    "queries": {
+      "ontology": [
+        {
+          "id": "fathers",
+          "variant": "ontology",
+          "source": "Table 2.5 T5/A1\u2013A4/A7, p. 35; \u00a75.4.2.2, p. 132",
+          "question": "Which named individuals are fathers?",
+          "method": "instances",
+          "arguments": [
+            "Father"
+          ]
+        },
+        {
+          "id": "mothers",
+          "variant": "ontology",
+          "source": "Table 2.5 T6, p. 35; \u00a75.4.2.2, p. 132",
+          "question": "Which named individuals are known to be mothers?",
+          "method": "instances",
+          "arguments": [
+            "Mother"
+          ]
+        },
+        {
+          "id": "people",
+          "variant": "ontology",
+          "source": "Table 2.5 T1/T2/T5, p. 35; \u00a75.4.2.2, p. 132",
+          "question": "Which named individuals are people?",
+          "method": "instances",
+          "arguments": [
+            "Person"
+          ]
+        },
+        {
+          "id": "masterpieces",
+          "variant": "ontology",
+          "source": "Table 2.5 T11/A2/A9/A10, p. 35",
+          "question": "Which compositions are inferred to be masterpieces?",
+          "method": "instances",
+          "arguments": [
+            "Masterpiece"
+          ]
+        },
+        {
+          "id": "birthday-cantatas",
+          "variant": "ontology",
+          "source": "Table 2.5 A14/A15, p. 35",
+          "question": "Which named compositions are birthday cantatas?",
+          "method": "instances",
+          "arguments": [
+            "BirthdayCantata"
+          ]
+        },
+        {
+          "id": "compositions",
+          "variant": "ontology",
+          "source": "Table 2.5 T12\u2013T15/A13\u2013A15, p. 35",
+          "question": "Which named compositions follow through the class hierarchy?",
+          "method": "instances",
+          "arguments": [
+            "Composition"
+          ]
+        },
+        {
+          "id": "named-birthdays",
+          "variant": "ontology",
+          "source": "Table 2.5 T12/A14/A15, p. 35; Example 4.5.2, p. 94",
+          "question": "Which birthday events have names in the input?",
+          "method": "instances",
+          "arguments": [
+            "Birthday"
+          ]
+        },
+        {
+          "id": "leipzig-inhabitants",
+          "variant": "ontology",
+          "source": "Table 2.5 T10/A8, p. 35",
+          "question": "Who is classified by the livesIn has-value restriction?",
+          "method": "instances",
+          "arguments": [
+            "LeipzigInhabitant"
+          ]
+        },
+        {
+          "id": "wives",
+          "variant": "ontology",
+          "source": "Table 2.5 T3/A5/A6/A11/A12, p. 35",
+          "question": "Does an asserted marriage suffice to infer Wife from the one-way inclusion?",
+          "method": "instances",
+          "arguments": [
+            "Wife"
+          ]
+        },
+        {
+          "id": "ambrosius-is-father",
+          "variant": "ontology",
+          "source": "Table 2.5 T5/A1/A7, p. 35; \u00a75.4.2.1, p. 132",
+          "question": "Does the existential child assertion establish that Johann Ambrosius is a father?",
+          "method": "entails",
+          "arguments": [
+            "johann-ambrosius",
+            "rdf:type",
+            "Father"
+          ]
+        },
+        {
+          "id": "ambrosius-named-son-not-entailed",
+          "variant": "ontology",
+          "source": "Table 2.5 A1, p. 35; Example 4.5.2, p. 94",
+          "question": "Does an unnamed male child identify Johann Sebastian?",
+          "method": "entails",
+          "arguments": [
+            "johann-ambrosius",
+            "hasChild",
+            "johann-sebastian"
+          ]
+        },
+        {
+          "id": "sebastian-known-children",
+          "variant": "ontology",
+          "source": "Example 5.4.1, p. 131; \u00a75.4.3, pp. 134\u2013135",
+          "question": "Which named children are entailed, without an at-most-one claim?",
+          "method": "property_values",
+          "arguments": [
+            "johann-sebastian",
+            "hasChild"
+          ]
+        },
+        {
+          "id": "sebastian-marriages",
+          "variant": "ontology",
+          "source": "Table 2.5 A6/A12, p. 35; \u00a75.4.3, pp. 134\u2013135",
+          "question": "Which named spouses are asserted?",
+          "method": "property_values",
+          "arguments": [
+            "johann-sebastian",
+            "marriedTo"
+          ]
+        },
+        {
+          "id": "symmetric-marriage",
+          "variant": "ontology",
+          "source": "Table 2.5 T9/A6, p. 35; \u00a75.4.3, pp. 134\u2013135",
+          "question": "Which spouse is inferred by symmetry?",
+          "method": "property_values",
+          "arguments": [
+            "anna-magdalena",
+            "marriedTo"
+          ]
+        },
+        {
+          "id": "sebastian-types",
+          "variant": "ontology",
+          "source": "\u00a75.4.2.3, p. 134; Table 2.5, p. 35",
+          "question": "Which named classes describe Johann Sebastian?",
+          "method": "types",
+          "arguments": [
+            "johann-sebastian"
+          ]
+        },
+        {
+          "id": "male-child-existential",
+          "variant": "ontology",
+          "source": "Example 4.5.2, p. 94; \u00a75.4.2, pp. 132\u2013133",
+          "question": "Who has a male child, including an existentially required unnamed child?",
+          "method": "instances_expression",
+          "expression": "[ a owl:Restriction; owl:onProperty :hasChild; owl:someValuesFrom :Man ]",
+          "expression_file": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/male-child-existential.owl",
+          "expression_class": "urn:bach:expression:male-child-existential"
+        },
+        {
+          "id": "child-filler-intersection-union",
+          "variant": "ontology",
+          "source": "Adapted Example 5.4.2, pp. 133\u2013134; explicit filler scope",
+          "question": "Who has a child known to be a person and either a man or a woman?",
+          "method": "instances_expression",
+          "expression": "[ a owl:Restriction; owl:onProperty :hasChild; owl:someValuesFrom [ owl:intersectionOf ( :Person [ owl:unionOf ( :Man :Woman ) ] ) ] ]",
+          "expression_file": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/child-filler-intersection-union.owl",
+          "expression_class": "urn:bach:expression:child-filler-intersection-union"
+        },
+        {
+          "id": "person-subsumes-father",
+          "variant": "ontology",
+          "source": "Example 2.4.3, p. 39; \u00a75.4.4.1, p. 135",
+          "question": "Does Person subsume Father?",
+          "method": "subsumes",
+          "arguments": [
+            "Person",
+            "Father"
+          ]
+        },
+        {
+          "id": "father-does-not-subsume-person",
+          "variant": "ontology",
+          "source": "\u00a75.4.4.1, pp. 135\u2013136; Table 2.5 T5, p. 35",
+          "question": "Is every person necessarily a father?",
+          "method": "subsumes",
+          "arguments": [
+            "Father",
+            "Person"
+          ]
+        },
+        {
+          "id": "composition-subsumes-birthday-cantata",
+          "variant": "ontology",
+          "source": "Table 2.5 T12\u2013T15, p. 35; \u00a75.4.4.1, pp. 135\u2013136",
+          "question": "Is every birthday cantata a composition?",
+          "method": "subsumes",
+          "arguments": [
+            "Composition",
+            "BirthdayCantata"
+          ]
+        },
+        {
+          "id": "father-satisfiable",
+          "variant": "ontology",
+          "source": "Example 2.4.3, p. 39; \u00a75.4.4.4, pp. 137\u2013138",
+          "question": "Can Father have an instance consistently?",
+          "method": "is_satisfiable",
+          "arguments": [
+            "Father"
+          ]
+        },
+        {
+          "id": "ancestor-subsumes-child",
+          "variant": "ontology",
+          "source": "Table 2.5 T7, p. 35; \u00a75.4.4.5, pp. 138\u2013139",
+          "question": "Is every hasChild edge an ancestorOf edge?",
+          "method": "property_subsumes",
+          "arguments": [
+            "ancestorOf",
+            "hasChild"
+          ]
+        },
+        {
+          "id": "ancestor-transitive",
+          "variant": "ontology",
+          "source": "Table 2.5 T8, p. 35; \u00a75.4.4.6, p. 140",
+          "question": "Is ancestorOf transitive?",
+          "method": "is_transitive",
+          "arguments": [
+            "ancestorOf"
+          ]
+        },
+        {
+          "id": "marriage-symmetric",
+          "variant": "ontology",
+          "source": "Table 2.5 T9, p. 35; \u00a75.4.4.6, pp. 139\u2013140",
+          "question": "Is marriedTo symmetric?",
+          "method": "is_symmetric",
+          "arguments": [
+            "marriedTo"
+          ]
+        },
+        {
+          "id": "dynasty-not-transitive",
+          "variant": "ontology",
+          "source": "Table 2.5 T16/T17, p. 35; \u00a76.2.2, p. 151 (corrected)",
+          "question": "Is transitivity of inDynasty entailed?",
+          "method": "is_transitive",
+          "arguments": [
+            "inDynasty"
+          ]
+        }
+      ],
+      "family": [
+        {
+          "id": "johannes-descendants",
+          "variant": "family",
+          "source": "Figure 6.2, p. 150; Example 6.3.2, p. 158",
+          "question": "Which named people descend from Johannes?",
+          "method": "property_values",
+          "arguments": [
+            "johannes",
+            "ancestorOf"
+          ]
+        },
+        {
+          "id": "ambrosius-descendants",
+          "variant": "family",
+          "source": "Figure 6.2; \u00a76.2.1, p. 150",
+          "question": "Which descendants does Johann Ambrosius have before deletion?",
+          "method": "property_values",
+          "arguments": [
+            "johann-ambrosius",
+            "ancestorOf"
+          ]
+        },
+        {
+          "id": "johannes-reaches-wilhelm",
+          "variant": "family",
+          "source": "Figure 6.2; \u00a76.2.1, p. 150",
+          "question": "Is Johannes an ancestor of Wilhelm Friedemann?",
+          "method": "entails",
+          "arguments": [
+            "johannes",
+            "ancestorOf",
+            "wilhelm-friedemann"
+          ]
+        },
+        {
+          "id": "base-dynasty-not-symmetric",
+          "variant": "family",
+          "source": "Table 6.1; \u00a76.2.2, p. 151",
+          "question": "Is inDynasty symmetric before T2 is inserted?",
+          "method": "is_symmetric",
+          "arguments": [
+            "inDynasty"
+          ]
+        },
+        {
+          "id": "base-dynasty-not-transitive",
+          "variant": "family",
+          "source": "Table 6.1; \u00a76.2.2, p. 151",
+          "question": "Does matching observed ancestor pairs establish universal transitivity?",
+          "method": "is_transitive",
+          "arguments": [
+            "inDynasty"
+          ]
+        },
+        {
+          "id": "base-ancestor-transitive",
+          "variant": "family",
+          "source": "Table 6.1 T1, p. 151",
+          "question": "Is the family ancestor property declared transitive?",
+          "method": "is_transitive",
+          "arguments": [
+            "ancestorOf"
+          ]
+        },
+        {
+          "id": "base-cross-branch-not-entailed",
+          "variant": "family",
+          "source": "\u00a76.2.2, p. 151; docs/THESIS_ERRATA.md item 6",
+          "question": "Are separate branches connected by the base dynasty rules?",
+          "method": "entails",
+          "arguments": [
+            "johann-christoph",
+            "inDynasty",
+            "christoph"
+          ]
+        },
+        {
+          "id": "all-ancestorOf",
+          "method": "property_pairs",
+          "arguments": [
+            "ancestorOf"
+          ],
+          "variant": "family"
+        },
+        {
+          "id": "all-inDynasty",
+          "method": "property_pairs",
+          "arguments": [
+            "inDynasty"
+          ],
+          "variant": "family"
+        }
+      ]
+    },
+    "expected": {
+      "ontology": {
+        "fathers": [
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-sebastian"
+        ],
+        "mothers": [],
+        "people": [
+          "http://www.jsbach.org/bach#anna-magdalena",
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "masterpieces": [
+          "http://www.jsbach.org/bach#BWV248"
+        ],
+        "birthday-cantatas": [
+          "http://www.jsbach.org/bach#BWV213",
+          "http://www.jsbach.org/bach#BWV214"
+        ],
+        "compositions": [
+          "http://www.jsbach.org/bach#BWV213",
+          "http://www.jsbach.org/bach#BWV214",
+          "http://www.jsbach.org/bach#BWV248"
+        ],
+        "named-birthdays": [],
+        "leipzig-inhabitants": [
+          "http://www.jsbach.org/bach#johann-sebastian"
+        ],
+        "wives": [],
+        "ambrosius-is-father": true,
+        "ambrosius-named-son-not-entailed": false,
+        "sebastian-known-children": [
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "sebastian-marriages": [
+          "http://www.jsbach.org/bach#anna-magdalena",
+          "http://www.jsbach.org/bach#maria-barbara"
+        ],
+        "symmetric-marriage": [
+          "http://www.jsbach.org/bach#johann-sebastian"
+        ],
+        "sebastian-types": [
+          "http://www.jsbach.org/bach#Composer",
+          "http://www.jsbach.org/bach#Father",
+          "http://www.jsbach.org/bach#Genius",
+          "http://www.jsbach.org/bach#LeipzigInhabitant",
+          "http://www.jsbach.org/bach#Man",
+          "http://www.jsbach.org/bach#Person",
+          "http://www.w3.org/2002/07/owl#Thing"
+        ],
+        "male-child-existential": [
+          "http://www.jsbach.org/bach#johann-ambrosius"
+        ],
+        "child-filler-intersection-union": [
+          "http://www.jsbach.org/bach#johann-ambrosius"
+        ],
+        "person-subsumes-father": true,
+        "father-does-not-subsume-person": false,
+        "composition-subsumes-birthday-cantata": true,
+        "father-satisfiable": true,
+        "ancestor-subsumes-child": true,
+        "ancestor-transitive": true,
+        "marriage-symmetric": true,
+        "dynasty-not-transitive": false
+      },
+      "initial": {
+        "johannes-descendants": [
+          "http://www.jsbach.org/bach#christoph",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "ambrosius-descendants": [
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "johannes-reaches-wilhelm": true,
+        "base-dynasty-not-symmetric": false,
+        "base-dynasty-not-transitive": false,
+        "base-ancestor-transitive": true,
+        "base-cross-branch-not-entailed": false,
+        "all-ancestorOf": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ],
+        "all-inDynasty": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ]
+      },
+      "fact-replace": {
+        "johannes-descendants": [
+          "http://www.jsbach.org/bach#christoph",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-christian",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "ambrosius-descendants": [
+          "http://www.jsbach.org/bach#johann-christian",
+          "http://www.jsbach.org/bach#johann-sebastian"
+        ],
+        "johannes-reaches-wilhelm": true,
+        "base-dynasty-not-symmetric": false,
+        "base-dynasty-not-transitive": false,
+        "base-ancestor-transitive": true,
+        "base-cross-branch-not-entailed": false,
+        "all-ancestorOf": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ],
+        "all-inDynasty": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ]
+      },
+      "rule-remove": {
+        "johannes-descendants": [
+          "http://www.jsbach.org/bach#christoph",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "ambrosius-descendants": [
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "johannes-reaches-wilhelm": true,
+        "base-dynasty-not-symmetric": false,
+        "base-dynasty-not-transitive": false,
+        "base-ancestor-transitive": true,
+        "base-cross-branch-not-entailed": false,
+        "all-ancestorOf": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ],
+        "all-inDynasty": []
+      },
+      "symmetry-insert": {
+        "johannes-descendants": [
+          "http://www.jsbach.org/bach#christoph",
+          "http://www.jsbach.org/bach#heinrich",
+          "http://www.jsbach.org/bach#johann-ambrosius",
+          "http://www.jsbach.org/bach#johann-christoph",
+          "http://www.jsbach.org/bach#johann-michael",
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#maria-barbara",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "ambrosius-descendants": [
+          "http://www.jsbach.org/bach#johann-sebastian",
+          "http://www.jsbach.org/bach#wilhelm-friedemann"
+        ],
+        "johannes-reaches-wilhelm": true,
+        "base-dynasty-not-symmetric": true,
+        "base-dynasty-not-transitive": false,
+        "base-ancestor-transitive": true,
+        "base-cross-branch-not-entailed": false,
+        "all-ancestorOf": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ]
+        ],
+        "all-inDynasty": [
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#heinrich",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-ambrosius",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-christoph",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-michael",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#johann-sebastian",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ],
+          [
+            "http://www.jsbach.org/bach#johannes",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#maria-barbara",
+            "http://www.jsbach.org/bach#wilhelm-friedemann"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#heinrich"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#johann-ambrosius"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#johann-christoph"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#johann-michael"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#johann-sebastian"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#johannes"
+          ],
+          [
+            "http://www.jsbach.org/bach#wilhelm-friedemann",
+            "http://www.jsbach.org/bach#maria-barbara"
+          ]
+        ]
+      }
+    },
+    "inputs": {
+      "ontology": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/examples/bach.owl",
+      "initial": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-initial.owl",
+      "fact-replace": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-fact-replace.owl",
+      "rule-remove": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-rule-remove.owl",
+      "symmetry-insert": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-symmetry-insert.owl"
+    },
+    "runtime": {
+      "distribution": "net.sourceforge.owlapi:org.semanticweb.hermit:1.4.5.519",
+      "owlapi_version": "5.1.9",
+      "dependency_lock_sha256": "1c4be00a263575646cb9f0a607cf93deeebb7be72e80c09bcea9ede00625e5e9",
+      "classpath": [
+        "current-hermit/org.semanticweb.hermit-1.4.5.519.jar",
+        "current-hermit/owlapi-osgidistribution-5.1.9.jar",
+        "current-hermit/trove4j-3.0.3.jar",
+        "current-hermit/guava-18.0.jar",
+        "current-hermit/slf4j-api-1.7.22.jar",
+        "current-hermit/slf4j-nop-1.7.22.jar",
+        "current-hermit/commons-io-2.5.jar",
+        "current-hermit/commons-codec-1.10.jar",
+        "current-hermit/commons-logging-1.2.jar",
+        "current-hermit/org.apache.servicemix.bundles.javax-inject-1_2.jar",
+        "current-hermit/java-getopt-1.0.13.jar",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/automaton-1.11-8.jar",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-api-1.2.14.jar",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-c14n-1.2.14.jar",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-dom-1.2.14.jar",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-impl-1.2.14.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/caffeine-2.5.6.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/commons-rdf-api-0.3.0-incubating.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/hppcrt-0.7.5.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpclient-4.5.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpclient-cache-4.5.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpcore-4.4.5.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-annotations-2.9.7.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-core-2.9.7.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-databind-2.9.7.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jsonld-java-0.12.0.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jsr305-3.0.1.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-model-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-api-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-binary-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-datatypes-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-jsonld-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-languages-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-n3-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-nquads-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-ntriples-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-rdfjson-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-rdfxml-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-trig-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-trix-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-turtle-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-util-2.3.2.jar",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/xz-1.6.jar"
+      ],
+      "classpath_sha256": {
+        "current-hermit/org.semanticweb.hermit-1.4.5.519.jar": "722e79b4d1e11dd08ecc90b1bf65a7c7342cd25ca7ec2664e3a18235bfc6f278",
+        "current-hermit/owlapi-osgidistribution-5.1.9.jar": "b6b226a4330e45f912e62838bbe7cc2a0e2fdefa974f173972f93d178c9fdc47",
+        "current-hermit/trove4j-3.0.3.jar": "3c8616203d61a12a7e3487e8b34f3c198c2b5ba9e90da0c7ea32d99cd4958012",
+        "current-hermit/guava-18.0.jar": "d664fbfc03d2e5ce9cab2a44fb01f1d0bf9dfebeccc1a473b1f9ea31f79f6f99",
+        "current-hermit/slf4j-api-1.7.22.jar": "3a4cd4969015f3beb4b5b4d81dbafc01765fb60b8a439955ca64d8476fef553e",
+        "current-hermit/slf4j-nop-1.7.22.jar": "feb0fa75202caba910801bd100940282680537755eb728f28a1db51d23903e55",
+        "current-hermit/commons-io-2.5.jar": "a10418348d234968600ccb1d988efcbbd08716e1d96936ccc1880e7d22513474",
+        "current-hermit/commons-codec-1.10.jar": "4241dfa94e711d435f29a4604a3e2de5c4aa3c165e23bd066be6fc1fc4309569",
+        "current-hermit/commons-logging-1.2.jar": "daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636",
+        "current-hermit/org.apache.servicemix.bundles.javax-inject-1_2.jar": "3f0540bb6d56269b17fe4897a1197f48e07d63b993c8b73a48b63e0cdc76a4bb",
+        "current-hermit/java-getopt-1.0.13.jar": "f09dc6369ffc4fe4362cbd49b6ac6c4a7471375ac5d884c71b0a625a889c38c4",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/automaton-1.11-8.jar": "a24475f6ccfe1cc7a4fe9e34e05ce687b0ce0c6e8cb781e0eced3b186482c61e",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-api-1.2.14.jar": "c17b35199ff938240ac18f70e0750888269432375029e15d8e5d49ce294a654d",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-c14n-1.2.14.jar": "082da81c99890e2007452c6231483120c6c7d0374fcb4b8bfcc61ba858833a87",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-dom-1.2.14.jar": "7f3aaf83dfbcfbec5d5ad915f77349d884323f6a28134e1a11e28de0d1792bb1",
+        "current-hermit/nested/org.semanticweb.hermit-1.4.5.519/axiom-impl-1.2.14.jar": "cfafc9dab48292b86932b29b1e3c08b4dd2fa1f1e2a7bc9cd0f0f88868edf222",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/caffeine-2.5.6.jar": "7feb3a77b5eaf0cacca642b94480abe72ad529159f6ca234131f8ba0141a13a4",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/commons-rdf-api-0.3.0-incubating.jar": "16516a8a02c8f7f8775f73ec2bc3b0ab07fe48927797fb3751044f36761f9e03",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/hppcrt-0.7.5.jar": "f3cfbd511d0bd5a29b72bcca97fcaa81889cf6698f045c5f658744829c8784b9",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpclient-4.5.2.jar": "0dffc621400d6c632f55787d996b8aeca36b30746a716e079a985f24d8074057",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpclient-cache-4.5.2.jar": "343cbee681f2b57ecdda0102a4b7ac247db1be1b36b8ff71c40ceea8cd56f239",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/httpcore-4.4.5.jar": "64d5453874cab7e40a7065cb01a9a9ca1053845a9786b478878b679e0580cec3",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-annotations-2.9.7.jar": "8bf8c224e9205f77a0e239e96e473bdb263772db4ab85ecd1810e14c04132c5e",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-core-2.9.7.jar": "9e5bc0efabd9f0cac5c1fdd9ae35b16332ed22a0ee19a356de370a18a8cb6c84",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jackson-databind-2.9.7.jar": "675376decfc070b039d2be773a97002f1ee1e1346d95bd99feee0d56683a92bf",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jsonld-java-0.12.0.jar": "57e60ed820590a43670898222ef4b6c711732b5060d9b060726b3b1e6d08181c",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/jsr305-3.0.1.jar": "c885ce34249682bc0236b4a7d56efcc12048e6135a5baf7a9cde8ad8cda13fcd",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-model-2.3.2.jar": "3743db4ea34aea9e71a184d8cd7a47c96f65befb091d3e4e8e88a10b762e9077",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-api-2.3.2.jar": "63ecaf147f4795f53c25a7c34d617eac16bbd0ac6375b80fce9a947cc0e2a1b4",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-binary-2.3.2.jar": "dff3fd9986c9a6109bea469831f80511f5c962d5757475609c2777c007726309",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-datatypes-2.3.2.jar": "91347e39d3a9525da894912317490d5334561f30e32f30d18eeb822afa1b4185",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-jsonld-2.3.2.jar": "a6f9e30a3457dd5aec2bfe11e9474d3245124bad90a2aa58deafac9a7538f5b7",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-languages-2.3.2.jar": "86c7a299be3a7b549e7ed641842eb76ed7c2b155342a51eef179db07029223f1",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-n3-2.3.2.jar": "3fb7d7b81f5c0274da198c7acee061f05ea1f856062572d9020d64945ae12118",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-nquads-2.3.2.jar": "1fcd903ee5d512eeb6c38b3646399ebaaefb2484a80eaac501935d950989f6b4",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-ntriples-2.3.2.jar": "803c83f6b6fcf8a578daec1b7912c030ae15923f2e0c20eddfb00e3b9fd1d770",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-rdfjson-2.3.2.jar": "50e449c6fc0b9f9fa1058ccc07931729c25b5b76c11651e1b9a0b1172ebb53f5",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-rdfxml-2.3.2.jar": "c3163d9ac8e7ecc8b11887952b8f86895fc850361408c2b9be3f642a67d24a1b",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-trig-2.3.2.jar": "c140ff124e7c1c3388064f723486d38a98db3f8c47295ee46ed7502aae822a5f",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-trix-2.3.2.jar": "2aea0394601e5699c2b8b8155463770ed9ffcdbfcc306ee1b452a433ac6506ab",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-rio-turtle-2.3.2.jar": "21c5852401c370c51faf37de1c04ced64e497338a280c5ddd7482be80ac24c1b",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/rdf4j-util-2.3.2.jar": "1f04337201d3a8c23eb15af29c48d25b904e435e49fdc288aa42cf788b06745c",
+        "current-hermit/nested/owlapi-osgidistribution-5.1.9/xz-1.6.jar": "a594643d73cc01928cf6ca5ce100e094ea9d73af760a5d4fb6b75fa673ecec96"
+      }
+    },
+    "native": {
+      "commit": "e15721161d1055f019c4b8f9ac1bd8648417f154",
+      "archive_url": "https://codeload.github.com/xwq610728213/zodiac_edge/tar.gz/e15721161d1055f019c4b8f9ac1bd8648417f154",
+      "archive_sha256": "49e371017fa0a4d0602b941f2b4860823836414e7f2439059db81ac1d3e80ebe",
+      "source_sha256": {
+        "README.md": "5f410708840431e4cef28b8a032c5bc8f90c29260f723847c5757bf79bc6042d",
+        "classes/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "classes/aggregation.py": "ac00bf2639205333bc1270eb4a12ab12c77f5296edee3ca640ebaf3db35c6dfc",
+        "classes/atom.py": "466da30519e26bf90f8e1fcbcfa69f4e1ca93ecf1998b5ff55c42c12ceeff4b7",
+        "classes/bind.py": "baa3683987e4f9551628ff51513fac98d7d5dc215d9fe9909148062bdba9736d",
+        "classes/binding_set.py": "1d1b2696f689552c86f1c5922406c4e8fcc2afbe84d9cfb3d1be7136ef0f3c54",
+        "classes/comp.py": "634f3b616588611ba85ae78e15689b5cac0a54ce6fddef17b40218b3eb8b29a0",
+        "classes/datastore.py": "a07a6bd3243799180d30bfc81fda6629d34930d8445ea58ec61a4a0dff995a3e",
+        "classes/datastore_tuple_index.py": "63d6b998e5189b2b221c6c2b852bd861ece2515292e29c6ff55d73f305339aad",
+        "classes/extended_atom.py": "9c5ecf5306397afce37f51cece0238e58a5336537a0cc6fae3572777f9fcfb1c",
+        "classes/hyper_node_dbs.py": "39fb41cf1c4507126fca3c75ce650fe670b32463a2c5cd22185184a90f4ce82e",
+        "classes/resultset.py": "69f33073d3217a2c3745304bcec48cdc2d8eef169e78bff2d87ae98c7636c39f",
+        "classes/rule.py": "328541a7800961a6bdfda81ab0c9902691754c2c18d954018d4c1b34b4bac70a",
+        "classes/term.py": "c09317645691ecf38655be6c962ae627492073bb9c4252826ff419627a2eed30",
+        "generate_data.py": "6c3418d1662ef553912a57b3bce3a64a870623203e7342dc644cb7f8f5db1651",
+        "main.py": "a112b847f2a9ab2d83aac64e991e93014dab2c1576bcaf43287175b94ce19f4f",
+        "reasoner/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reasoner/operators.py": "2a6129b36f388f9ac869936d0a2b6f2178246c9860bd3924ab13abb2d49b85fe",
+        "reasoner/program.py": "ed8bdb597ec1f433018363e706ef3a198d0c7c35710ff30bc6ae75307829b6a4",
+        "reasoner/ruleBodyOptimiser.py": "91081ffefc5c649f11e3c9cb59cb9880fa007e68e9f97306c238ea0271b429b5",
+        "reasoner/semi_naive.py": "e3e53b7e8edc9183f699d97aacde49962f9c07d6eccb70e187045e628cd2c681",
+        "reasoner/stratify.py": "bccc631006b0132976dadb2fcbb9ec4bda25a2a94112500577c91ce3efc1d761",
+        "selfDefinedFunc/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "selfDefinedFunc/slf_defined_aggre_func.py": "6c2c04f2be64779322c9a5c68a38962fefab912efaa01b1764a36dfadff133c2",
+        "selfDefinedFunc/slf_defined_bind_func.py": "a521ba30802b740fa3764101930931a49b6b41b4fa9d0d0e58e412c5fcf4664d",
+        "util/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "util/parser.py": "726085f89777087faa6d6a41c9f4649a6b0eea83839224190a5524ed1b90a8fe"
+      },
+      "upstream_modified": false,
+      "license": "No LICENSE found; fetched into ignored tmp only."
+    },
+    "java": "openjdk version \"17.0.18\" 2026-01-20\nOpenJDK Runtime Environment Homebrew (build 17.0.18+0)\nOpenJDK 64-Bit Server VM Homebrew (build 17.0.18+0, mixed mode, sharing)",
+    "sources": {
+      "b1254c4": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/source-b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+      "candidate": "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/source-working-b49848c5f9dafd792ab3106b4eea1d14441e3688c6b7516615b714fa8affd90a"
+    },
+    "source_sha256": {
+      "b1254c4": {
+        "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+        "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+        "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+        "src/dlp_reasoner/engine.py": "673c8e50f33cdf7c9294914760fa3ead17a7ed5ca2be4f408a5031f4f29bcafe",
+        "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+        "src/dlp_reasoner/reasoner.py": "2a9ea96ed518a3faae0b7c341087c327656c304f9942ce75651d8271141bfeff"
+      },
+      "candidate": {
+        "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+        "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+        "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+        "src/dlp_reasoner/engine.py": "80bdfa06f4d0747094f696682689c2e021b5f3ee00e8a7b88550a14518aebc20",
+        "src/dlp_reasoner/joins.py": "9e7a1cca7db9a4e4f9071abd617fdbb8cbebee8863a85b7d70f346eeb73476b5",
+        "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+        "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+        "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+        "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+      }
+    },
+    "java_classes_sha256": {
+      "BachOwlBridge.class": "90078a2e4ea1a769716be5cc60d954c40e99f6bff1c1c42611fcb57de66f02ff",
+      "BachOwlBridge$Query.class": "6f1f5bb4ff126017d2c680fa398aad95eab1fd8a251dce6fecca69bd99d7e5eb"
+    }
+  },
+  "workers": [],
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "processor": "arm",
+  "python": "3.12.9 (main, Feb 12 2025, 15:09:19) [Clang 19.1.6 ]",
+  "driver_sha256": {
+    "benchmarks/bach_external.py": "94c1e6226d30babe4ffe313cbcf453b31213841bd8aeaeac6829ad8fc3ac06c0",
+    "benchmarks/BachOwlBridge.java": "d5fdc9eda3eacf4fb699e1f084c4fe54142daa81c68bc9626198b01b366a74d2",
+    "benchmarks/bach_zodiac.py": "7acaf76e4c6fb0766f9f341076fb7169f42fed881558dfc07c5f49717dff6e81",
+    "benchmarks/bach.py": "0df8b29183b8d620b9c463a474d7337d8cf433aaeaae252a443513a5abcfacf4",
+    "benchmarks/lubm.py": "08ce56d9daee0b7db99a1b520c977f14e43f38046e7541a009a27f78ead0f4c9",
+    "benchmarks/owl_bridge.py": "e8b646df06dbaa547aa91a2ea037acd176182b463af466431172ff9b05031f30",
+    "benchmarks/zodiac.py": "559a9297f9ee26a4a5a5602f6607f97fb255eaa87b91c22ce9980a6e98be3951",
+    "benchmarks/zodiac_native.py": "bc619bfa9c831430778fbc2e5b9643da095a3385c8ffad3b883b48ed24a8d795"
+  },
+  "source_inputs_sha256": {
+    "docs/Volltext.pdf": "80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570",
+    "examples/bach.owl": "250c75c80a04c3b0ec649c7ba2106e1330561a250c46d665cbb9089000dbb3fc",
+    "examples/bach.ttl": "3bc19b93d56bad90f4bf7025611dfb7e8a3de8635dade8162ab6c56b254de40f",
+    "examples/bach-family.ttl": "93ec09cbda8a3cbb5ad2171ef4055cc94642bc322257ea835ab339b54049fa48",
+    "examples/bach-queries.json": "a39948c29c288dd909979328b68ace7fa9a39855c733dd79aa9d055ab18dc891",
+    "benchmarks/bach-native-deletion-diagnostic.json": "a41284546abfdc82568ee6ef9619acb1d3faf06a989c492fc0e205c3704b2d0d"
+  },
+  "baseline_saved_sha256": "6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2",
+  "input_sha256": {
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/examples/bach.owl": "250c75c80a04c3b0ec649c7ba2106e1330561a250c46d665cbb9089000dbb3fc",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-initial.owl": "2626ce2256bf69bfcbd9b4e86680d3eb403964e23a0cdfeee8a1138c2011d4c4",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-fact-replace.owl": "ff39bda28b55dd290b73cb426ab73dca4cd735b2683954863813f2c27a8942ba",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-rule-remove.owl": "30c43dde1b8bc34ee4a874ad950a606e23f5ba99906a97bc99cdce8f6cc3737e",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/family-symmetry-insert.owl": "5ec35d7f4056858a4e843ac5aaed88c9d9fe19f5041a6ddfb8b8bcf177de6fc3",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/male-child-existential.owl": "3902356f3869c9cc54f5887a155d39d55e39ebbb04fe509788b631384b50064d",
+    "/Users/raphaelvolz/Github/my-phd-thesis-gpt-6-astra/tmp/bach-external/child-filler-intersection-union.owl": "f9a55148992b0e16f29239990b9ce56fd64c6d1049bb5d888890b586ba2fdb25"
+  },
+  "protocol": {
+    "order": "Rotate arm order by block plus job index; jobs in listed order",
+    "jobs": [
+      [
+        "static",
+        "ontology",
+        [
+          "b1254c4",
+          "candidate",
+          "hermit"
+        ]
+      ],
+      [
+        "static",
+        "initial",
+        [
+          "b1254c4",
+          "candidate",
+          "hermit",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "static",
+        "fact-replace",
+        [
+          "b1254c4",
+          "candidate",
+          "hermit",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "static",
+        "rule-remove",
+        [
+          "b1254c4",
+          "candidate",
+          "hermit",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "static",
+        "symmetry-insert",
+        [
+          "b1254c4",
+          "candidate",
+          "hermit",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "incremental",
+        "fact-replace",
+        [
+          "b1254c4",
+          "candidate",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "incremental",
+        "rule-remove",
+        [
+          "b1254c4",
+          "candidate",
+          "zodiac-native"
+        ]
+      ],
+      [
+        "incremental",
+        "symmetry-insert",
+        [
+          "b1254c4",
+          "candidate",
+          "zodiac-native"
+        ]
+      ]
+    ],
+    "hashseeds": [
+      7100,
+      7101,
+      7102,
+      7103,
+      7104,
+      7105,
+      7106,
+      7107,
+      7108,
+      7109,
+      7110,
+      7111
+    ],
+    "task": "Input/query preparation, conversion/indexing, construction or update, consistency when supplied, complete sorted answers; phase sum",
+    "process": "Fresh process including module/runtime startup, native bootstrap, validation, serialization and shutdown; caches not purged",
+    "schema_queries": "Native Zodiac uses fresh canonical facts with active rules; all preparation and probe reasoning charged to query",
+    "expressions": "Helpers parsed before input; Python API requires query-specific graph copy/reconstruction, included in query time",
+    "incremental": "Original, one change, inverse change. Native fact replacement is sequential delete+insert. HermiT static rebuild only.",
+    "unsupported": "ZodiacEdge full Table2.5 OWL ontology",
+    "prior_correctness_finding": "Untimed direct-native deletion checks already exposed intermittent loss of surviving ancestry; retained diagnostic is hashed; formal seeds not selected by outcomes",
+    "scale": "Unmodified original ontology/family; no synthetic replicas"
+  },
+  "candidate_archive": "benchmarks/bach-external-source.tar.gz",
+  "candidate_archive_sha256": "1c12a4fefd36b4eb8636e4930e39a935cc861d599109ae8c0f8004eb0bfdfede",
+  "inputs_archive": "benchmarks/bach-external-inputs.tar.gz",
+  "inputs_archive_sha256": "883fc013eed6c9dc5d37c4330708ed09b0b95b612bf381570ddaec6639cc2666"
+}

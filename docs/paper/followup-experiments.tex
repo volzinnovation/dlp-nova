@@ -1,0 +1,158 @@
+\section{Follow-up implementation informed by the literature}
+\label{sec:followup}
+The literature review and the first experiment changed the optimization target.
+The earlier selector saved inner-evaluator work while transaction preparation
+dominated several complete updates. Changing-rule maintenance already has a
+substantial history~\cite{volz2003maintenance,kotowski2011,xu2023}; recent join
+research emphasizes the costs of execution choices and filtering
+\cite{qiao2026}. We therefore implemented three further specializations and
+evaluated them against both preserved commits and a same-source control.
+These are engineering adaptations of established ideas. They neither implement
+RPT+ nor replace B/F$^c$, modular maintenance, or a worst-case-optimal join.
+
+\subsection{Reusing validation for monotone transactions}
+The engine records the validated rule sequence, assertion set, and predicate
+arities. An insertion-only transaction may reuse this certificate only when
+the public rule and assertion containers still match it exactly. New facts and
+rules are checked against the recorded arities and one another before the
+transaction changes state. Submitted removals, a missing certificate, or direct
+container mutation trigger complete validation. Deletion can release the last
+occurrence fixing a predicate's arity, so applying the monotone shortcut there
+would be unsound.
+
+\begin{proposition}
+For an unchanged validated input state whose embedded terms and identifiers
+have stable values, equality, and hashes, checking the added facts and rules
+against its arity map preserves the engine's input-validation conditions for
+insertion-only transactions.
+\end{proposition}
+\begin{proof}
+Groundness and permitted-term conditions on old facts, and rule safety and
+permitted-term conditions on old rules, continue to hold because those objects
+retain their structure and embedded values. These local conditions are checked on
+every genuinely new object. The remaining shared condition is that every
+occurrence of a predicate has the same arity. Extending a copy of the old arity
+map while checking all new occurrences enforces that condition across old and
+new objects and within the additions. The extended certificate is installed
+only after these checks succeed.
+\end{proof}
+
+The API's frozen rule and atom records are shallow: arbitrary custom hashable
+values can still have mutable internals. The stated stable-value assumption is
+required for both the certificate and ordinary hash indexes. RDF terms and the
+primitive identifiers used in these experiments satisfy it; snapshot equality
+does not detect arbitrary in-place changes inside custom value objects.
+
+When no rule is genuinely new, prepared plans are retained. A complete old
+materialization has already registered its domain, including the private
+nonempty-domain seed. Insertion of new rules therefore requires explicit
+domain seeding only for their previously unseen constants; ingesting new facts
+registers their own terms. Incomplete old states retain rematerialization.
+Snapshot equality, assertion-set construction, and immutable snapshots still
+incur work proportional to the existing state. This is a reduction in repeated
+Python validation and preparation, not an $O(|\Delta|)$ bound for the complete
+transaction.
+
+\subsection{Maintaining surviving DRed indexes}
+After overdeletion has finished using the old closure, ordinary DRed rebuilds
+the index over the survivors. The candidate can instead erase each overdeleted
+tuple from its relation and every corresponding column bucket. It uses erasure
+when $2|D|\leq|I\setminus D|$, where $D$ is the overdeleted set and $I$ the old
+indexed closure, and otherwise rebuilds. Empty buckets and relations are
+removed. The threshold is an implementation heuristic, not a competitive
+runtime guarantee.
+
+For each relation $P$, column $j$, and value $v$, the index invariant is
+\[
+ B_{P,j,v}=\{t\in I_P:t_j=v\}.
+\]
+Erasing every $d\in D_P$ from $I_P$ and from $B_{P,j,d_j}$ leaves exactly the
+buckets obtained by rebuilding over $I_P\setminus D_P$. Deletion occurs only
+after the overdelete traversal, so its old-index access remains valid.
+Rederivation then sees the same survivor index under either implementation.
+The eligibility checks for equality, function terms, and complete old closures
+are unchanged. This optimization reduces index construction costs; it does not
+reduce the logical overdeletion set or solve incremental equality splitting.
+
+\subsection{Positional bindings for ordinary positive joins}
+For positive bodies without equality or inequality atoms, a reusable plan
+assigns each variable a position in a binding vector. Atom terms are compiled
+to variable positions or constant positions. Each recursive step retains the
+existing dynamic choice of the smallest available exact index bucket, extends
+a copied binding vector, and checks repeated variables. Constants are
+canonicalized on every invocation because equality representatives can change.
+The final vector is converted back to the original variable-binding interface.
+Unary same-variable plans and the generic fallback remain available.
+
+For validated bodies, the preservation argument is an induction on the remaining
+body atoms; nonground Skolem patterns in bodies are rejected by validation. A
+vector position represents exactly the binding of its corresponding variable.
+The chosen index bucket is a superset of matches for the current partial
+binding; constant and repeated-variable checks retain precisely the compatible
+tuples. Every compatible extension recurses on the remaining atoms. At an
+empty body, conversion preserves all bindings. Semi-naive evaluation keeps the
+designated delta \emph{occurrence}, including when several atoms share a
+predicate. Changing atom order does not change the set of substitutions.
+This specializes an interpreter; it adds neither semijoin filtering nor the
+Bloom-filter pipelines of Qiao et al.~\cite{qiao2026}.
+
+Before the external timing series, the complete suite passed 698 tests. New
+controls include 420 randomized insertion states, 140 randomized mixed
+transactions with index comparisons, and 180 generated relational bodies
+compared with an independent Cartesian-product evaluator. Tests also cover
+failed-validation atomicity, public-container mutation, new domain constants,
+equality fallback, and repeated delta predicates. These checks address the
+implemented contracts rather than full OWL conformance.
+
+\subsection{Matched author-program and SQL-component protocols}
+The four local configurations are immutable commits \code{b1254c4} and
+\code{5531be4}, the new source with all three switches disabled, and that same
+source with all three enabled. The earlier adaptive unary selector and support
+certificates remain disabled throughout. The same-source control distinguishes
+the enabled bundle from changes that affect both paths. Comparing the bundle
+does not isolate the contribution of each maintenance optimization.
+
+The ZodiacEdge author repository~\cite{zodiacartifact} supplies a 128-rule
+positive LUBM program and two marked rule subsets: eight rules marked $*$ and
+sixteen marked $\#$, with one rule shared. Each scenario materializes without
+the marked rules, inserts them, and removes them. Official UBA generation
+provides 100,543 ABox facts after excluding ontology metadata. The author's
+generation seed and file hashes are unavailable, so matching its published
+input count is not proof of byte-identical data. The final author-program
+closure has 238,474 non-domain tuples, including the 100,543 wrapped input
+facts. It is a different semantic artifact from full-ontology DLP L3 reasoning.
+
+Four balanced process blocks evaluate all four configurations. Ten fixed,
+seeded samples each remove and reinsert 1,000 assertions under the complete
+program. This follows the small-update scale used by Hu, Motik, and
+Horrocks~\cite{hu2018}, but does not reproduce their Reactome or UOBM programs.
+Thirteen fresh naive reference closures cover the full program, both partial
+programs, and the ten fact-deletion states. Every timed worker checks complete
+typed-tuple digests after every transaction outside the timer. The ten samples
+within one worker are correlated: forty paired sample ratios are not forty
+independent process replicates. Reported summaries are descriptive.
+
+The Qiao-related component experiment uses official DuckDB \code{dbgen} data
+at scale factors 0.01 and 0.1 and the positive joins underlying TPC-H Q3, Q5,
+and Q9. It retains the original tables and filters, but projects every
+participating row's complete primary key. Under the checked key constraints,
+that projection identifies the entire tuple of input rows injectively and
+therefore preserves the pre-aggregation SQL bag's multiplicity. Exact answers
+are checked against independently executed SQL over the original database.
+The engine's rule-free base closure is independently checked as its input
+facts plus all required domain facts.
+
+DuckDB performs date/string selections and projection; their time and complete
+transfer to Python are recorded. Fact conversion, engine construction/indexing,
+and complete join consumption are separate intervals, all included in the cold
+component total. The three components run sequentially inside each fresh
+worker, with a new reasoner per component but shared DuckDB and filesystem
+caches. Aggregation, arithmetic, ordering, and top-$k$ are outside
+this experiment. Three blocks, two scales, and four configurations yield 24
+fresh workers and 72 component observations. Three rotations do not completely
+balance four configurations. These small components are useful regression and
+optimization probes, not a full TPC-H result or a reproduction of Qiao et al.'s
+SF100 evaluation.
+
+\input{generated/followup-results.tex}
+\input{followup-discussion.tex}

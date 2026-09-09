@@ -7,6 +7,11 @@ and final production run are documented at the end of this file and in
 
 The checks implement the semantic obligations in [THESIS_SPEC.md](THESIS_SPEC.md) and deliberately use several different reference methods. Passing these tests is evidence for the exercised fragment and cases, not a proof of conformance to all OWL or all possible DLP ontologies.
 
+The [DLP profile assessment](DLP_PROFILE_ASSESSMENT.md) explains the distinction
+between compiler modes and standard OWL 2 RL membership. Comparisons with an
+RL/RDF rule implementation concern explicitly matched assertions and semantics;
+they do not certify the compiler as an OWL 2 profile conformance checker.
+
 Run the independent suite with:
 
 ```sh
@@ -273,9 +278,9 @@ runs, while leaving machine variability and limited sample size unresolved.
 **The pinned historical `b1254c4` report remains the default baseline.** None of
 its timings are replaced by these newly measured baseline observations.
 
-## Subsequent original research and final production validation
+## Original research stage at 5531be4
 
-The final source passes **593 tests**, Ruff, both thesis errata/logic scripts,
+That source passed **593 tests**, Ruff, both thesis errata/logic scripts,
 and package build. Added checks include 1,458 exhaustive relation/delta cases,
 1,000 randomized mixed fact/rule transaction states with independent grounding,
 current-domain and replacement-proof regressions, bounded proof search,
@@ -297,7 +302,7 @@ up to 7.45× with surviving support. Production therefore keeps fixed unary
 planning and ordinary DRed, with the unary/binary lookup specialization enabled.
 The exact experimental source remains recoverable from its archive.
 
-The final production [thesis-suite results](../benchmarks/research-thesis-results.md)
+That stage's production [thesis-suite results](../benchmarks/research-thesis-results.md)
 started at **2026-09-09T17:09:20Z**. All **54 cases × five repetitions** passed;
 all **51 historical comparisons** verified unchanged inputs and correctness
 controls, and the 14 saved source hashes match the final source. The three
@@ -313,3 +318,67 @@ new paired hash seeds. All full outcomes matched the original experiment and
 fresh reconstruction. It reproduced the roughly 7.6× supported-case gain and
 18–19% unsupported-case overhead. It is a post-hoc robustness check prompted by
 possible concurrent host activity, not a replacement for the original evidence.
+
+## External follow-up and final defaults
+
+The final source passes **741 tests**, Ruff, both thesis counterexample scripts,
+the original artifact validator, and source/wheel builds. The
+[verification record](../benchmarks/followup-validation.json) identifies the
+commands and tested package hashes. New tests cover validation certificates,
+incremental index deletion, positional joins, independent finite join oracles,
+bounded lookahead, and prompt release of recursive generator closures.
+
+Insertion validation/plan reuse, survivor-index maintenance, and positional
+joins are now enabled by default. Adaptive unary planning, shared support
+certificates, and query-order lookahead remain disabled. Lookahead roughly
+halves large-Q5 join time against its same-source control, but introduces
+6.6–23.8% adverse-control join overhead and has mixed total-time evidence.
+The [separate study](../benchmarks/external-lookahead-analysis.md) preserves all
+90 fresh workers, exact outcomes, ordering and source/protocol hashes.
+
+External evidence includes 126 exact official LUBM query checks, 416 full
+closure stage checks on the author's ZodiacEdge program, 48 full closure
+checks against the actual native ZodiacEdge engine, 72 original TPC-H component
+checks, and 27 matched HermiT task checks plus nine semantic controls. These
+test different contracts, as documented in the [research report](paper/README.md).
+Native ZodiacEdge results are mixed, and the HermiT family also belongs to OWL
+2 EL. No global state-of-the-art or complete OWL-conformance claim follows.
+
+The final [thesis-suite run](../benchmarks/followup-thesis-results.md), started
+at **2026-09-09T18:32:53Z**, passed all **54 cases × five observations**.
+All **51 historical comparisons** verified unchanged inputs and correctness
+controls; the three additional Bach cases also passed. Package hashes match
+the separately preserved later source archive. All 51 materialization medians
+were lower than the saved baseline in this run, but historical measurements
+are not interleaved causal comparisons. Among 36 maintenance comparisons,
+34 medians improved; D4/15% fact insertion regressed 25.8% and D5/10% rule
+insertion regressed 2.7%. All observations and previous artifacts remain intact.
+The fixed `b1254c4` baseline digest is unchanged.
+
+## Original Bach examples with external reasoners
+
+The [expanded comparison](BACH_EXTERNAL_BENCHMARK.md) records **336 fresh
+processes in 12 blocks**. All supported current, preserved-baseline and HermiT
+tasks pass. All four engines agree on the complete family answers when each
+state is reconstructed. **330 workers pass**, yielding **5,382 checked query
+answers** across their completed states. The six other workers are native
+ZodiacEdge fact-replacement failures: both Johannes–Wilhelm Friedemann
+consequences disappear despite a surviving supporting path. Their full
+diagnostics are retained, and the entire affected task is excluded from timing
+rankings. Separate direct native API checks reproduce the deletion defect
+without the ontology compiler or schema-query adapter.
+
+The current complete-ontology task median is **55.6 ms**, compared with
+**89.5 ms** for newly measured `b1254c4` and **347.4 ms** for HermiT.
+ZodiacEdge has lower task times for the family reconstructions and the two
+correctly handled rule updates; process startup changes that comparison on
+these tiny inputs. HermiT reconstructs family states and is not described as
+an incremental comparator. ZodiacEdge's positive rule interface does not
+support the complete existential OWL ontology.
+
+The full suite passes **785 tests**, including 44 new adapter and comparison
+checks. Ruff passes. The paper generator independently checks all successful
+answers, full process pairing, phase sums, medians, failure diagnostics,
+protocol/source hashes and archives. New source and RDF/XML snapshots accompany
+the new results; all previous benchmark files and the fixed baseline remain
+unchanged by this extension.

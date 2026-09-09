@@ -1,0 +1,17 @@
+\begin{table}[ht]
+\caption{Fully consumed join kernel for TPC-H-derived Q3/Q5/Q9 components (ms). Three fresh workers per scale/configuration. Final column is the median paired candidate/current-fixed ratio; smaller favors the candidate.}
+\label{tab:tpch-joins}
+\centering\small
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+SF & Join & b1254c4 & 5531be4 & Fixed & Candidate & Ratio \\
+\midrule
+0.01 & Q3 & 5.03 & 4.76 & 4.69 & 3.69 & 0.755 \\
+0.01 & Q5 & 20.26 & 21.30 & 21.26 & 11.34 & 0.538 \\
+0.01 & Q9 & 35.98 & 34.76 & 34.43 & 23.08 & 0.670 \\
+0.1 & Q3 & 45.10 & 44.80 & 43.05 & 31.78 & 0.752 \\
+0.1 & Q5 & 941.87 & 957.38 & 949.31 & 500.09 & 0.523 \\
+0.1 & Q9 & 390.87 & 378.17 & 380.53 & 266.40 & 0.700 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,154 @@
+\section{Comparing the original Bach examples}
+\label{sec:bach-comparison}
+
+This comparison returns to the thesis's worked examples without enlarging them
+or adding historical assertions. It distinguishes the complete ontology in
+Table~2.5, p.~35, from the separate family maintenance example in Figure~6.2,
+p.~150, Table~6.1, p.~151, and Example~6.3.2, pp.~158--159
+\cite{volz2004}. The complete ontology uses the reconstruction's DLP L3 mode;
+the family graph requires only its positive L0 rules. The examples' small
+size makes them useful semantic tests, while limiting performance conclusions.
+
+\subsection{Inputs, questions, and independent expectations}
+
+The complete ontology retains T1--T17 and A1--A15. The displayed A16 is an
+ellipsis and contributes no assertions. The supplied Turtle and RDF/XML
+documents are checked for graph equivalence. The OWL comparisons use the same
+RDF/XML bytes and 25 questions, covering named individuals, named relationships,
+class descriptions, and schema properties. The current implementation and
+the preserved \code{b1254c4} implementation are compared with the pinned
+HermiT distribution described in Section~\ref{sec:hermit}. ZodiacEdge does not
+provide the complete ontology's existence and constraint semantics through the
+positive-rule interface evaluated here, so it has no full-ontology comparison.
+
+The query expectations preserve the distinctions developed in the thesis.
+Johann Ambrosius is a father because he is a man with a male child, although
+that child is unnamed. The child is not thereby identified with Johann
+Sebastian. Wilhelm Friedemann is recorded as a person; importing historical
+knowledge to classify him as a man would change the answers to the
+gender-qualified child questions. Marriage assertions alone do not imply
+membership in the one-way definitions of \emph{Wife} or \emph{Husband}.
+Empty named answers for birthday events do not deny the events required to
+exist. Negative answers consistently mean absence of entailment, not entailed
+negation. Generated witness identities and internal fact counts are not
+cross-system answer criteria.
+
+The reconstruction retains the documented scope decisions for Table~2.5 T12
+and Example~5.4.2, pp.~133--134. The latter question explicitly applies its
+person and gender conditions to the child. The father satisfiability question
+does not imply that every possible fresh class assertion terminates under the
+same procedure; the mutual existence requirements of \emph{Wife} and
+\emph{Husband} remain outside such a conclusion.
+
+The family input has nine asserted ancestor links and two initial rules:
+ancestor transitivity and inclusion of ancestry in dynasty. Its nine questions
+consist of the seven existing source-based questions and retrieval of both
+complete named relations. The three changes independently replace one
+ancestor assertion, remove the ancestor-to-dynasty rule, or add dynasty
+symmetry. Each begins with the original input. Each incremental sequence also
+reverses its change, providing a check that the original answers are restored.
+
+Independent graph traversal establishes the expected relations. The original
+state has 24 ancestor and 24 dynasty pairs. Replacing the Johann
+Sebastian--Wilhelm Friedemann assertion by the Johann Sebastian--Johann
+Christian assertion gives 25 pairs in each relation. Removing the inclusion
+rule leaves 24 ancestor pairs and no dynasty pairs. Adding dynasty symmetry
+leaves ancestry unchanged and produces 48 dynasty pairs. These are expected
+logical counts, not internal storage counts. Every answer set is compared in
+full, rather than accepted from its cardinality alone.
+
+Two source corrections matter directly. The insertion notation on p.~159 is
+resolved by its preceding prose and resulting deltas. Symmetry in the p.~151
+example reverses ancestry pairs but does not connect the separate Johann
+Christoph and Christoph branches. In particular, Johannes remains an ancestor
+of Wilhelm Friedemann after the fact replacement because the path through
+Maria Barbara survives. The thesis presents this retraction as a hypothetical
+change to recorded knowledge, not a historical discovery about parentage.
+
+Schema questions are not answered from accidental properties of the observed
+relations. In the original state, dynasty happens to contain the same pairs
+as ancestry, although its transitivity is not entailed. ZodiacEdge evaluates
+these questions through fresh canonical assertions and the active positive
+rules. The isolated rule evaluation tests the required implication; it does
+not inspect the existing relation for apparent symmetry or transitivity.
+Preparation and reasoning for these probes are charged to query time.
+
+\subsection{Comparison matrix and timing boundaries}
+
+The recorded design specifies twelve blocks of 28 fresh processes, giving
+336 processes. Each block contains three complete-ontology runs, sixteen
+family reconstructions, and nine incremental sequences. The reconstructions
+cover four states in each of four systems. The sequences cover three changes
+in the current implementation, the preserved baseline, and ZodiacEdge.
+HermiT reconstructs the four family states; no incremental HermiT measurement
+is claimed. System order rotates within blocks and benchmark processes run
+sequentially. The protocol records the inputs, implementations, order, and
+hash seeds before the timed series.
+
+These are new observations of the preserved baseline implementation. Its
+original saved benchmark report contained no Bach cases. The current source
+is archived separately, and neither new measurement replaces earlier results.
+Likewise, the earlier university rule-program comparison and the synthetic
+existential HermiT comparison retain their original inputs and outcomes.
+
+Static task time sums input and query preparation, conversion where required,
+reasoner construction, consistency when supplied, and all fully consumed
+answers. Phase times are retained because implementations defer different
+amounts of work to queries. Query-specific reconstruction required by a local
+API is included. Incremental task time includes preparation and application
+of the change followed by the nine updated answers; original-state setup is
+separate. The reverse change is also recorded and checked. ZodiacEdge's
+mixed fact replacement uses its separate deletion and insertion calls, with
+both included and no intervening query. This sequence is not described as an
+atomic mixed update.
+
+An independent outer measurement covers the full process, including runtime
+startup, native bootstrap, checking, serialization, and shutdown. Source
+preparation and Java compilation are outside the timed series. Process
+restarts do not purge filesystem caches. The task intervals are reported as
+defined phase sums, rather than assumed to account for every part of the
+outer measurement. Absolute times are important on these small inputs, and
+the comparison makes no claim about scaling to larger genealogies.
+
+\subsection{Correctness outcomes and an external update discrepancy}
+
+\input{generated/bach-comparison-table.tex}
+\input{generated/bach-process-table.tex}
+
+Separate diagnostic execution of the pinned ZodiacEdge version exposed a
+loss of surviving support during fact replacement in some repeated executions.
+The affected updated ancestor and dynasty relations omit the
+Johannes--Wilhelm Friedemann pair despite the intact path through Maria
+Barbara. The corresponding changed state has an independent graph-traversal
+oracle and can also be evaluated from its assertions. This separates an
+incremental-state discrepancy from ambiguity in the intended logical answer.
+The observation is scoped to the tested version, input, and operation; it
+does not establish the behaviour of other versions or all incremental methods.
+
+The retained direct-API diagnostic in
+\path{benchmarks/bach-native-deletion-diagnostic.json} reproduces the loss
+without using the reconstructed reasoner, its ontology compiler, or the
+comparison's schema-query probes. Native iteration can depend on object
+identities as well as hash seeds, so selecting a seed does not guarantee the
+same outcome in another process. The diagnostic and formal-run failure counts
+describe the recorded executions; they are not estimates of a general failure
+probability.
+
+Failed executions, their diagnostics, and any answers emitted before failure
+remain in the raw record. Any failed execution disqualifies its complete
+system--task combination from timing rankings, rather than leaving a median
+computed from selected successful executions. Unsupported comparisons are
+reported separately from wrong answers or failures to complete. The earlier
+successful checks on ZodiacEdge's university rule changes remain evidence
+about those particular tasks, not a guarantee that every other change is
+handled correctly.
+
+Raw observations and the frozen protocol are retained in
+\path{benchmarks/bach-external-results.json} and
+\path{benchmarks/bach-external-results-protocol.json}.
+The candidate source and actual generated inputs are preserved separately in
+\path{benchmarks/bach-external-source.tar.gz} and
+\path{benchmarks/bach-external-inputs.tar.gz}.
+The paper preparation step checks the answer contracts, pairing, and timing
+eligibility before producing the result table and records the evidence files'
+digests. Rebuilding the manuscript does not rerun the experiments.

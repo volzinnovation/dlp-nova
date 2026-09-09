@@ -1,0 +1,17 @@
+\begin{table}[ht]
+\caption{Cold component total for TPC-H-derived Q3/Q5/Q9 components (ms). Three fresh workers per scale/configuration. Final column is the median paired candidate/current-fixed ratio; smaller favors the candidate.}
+\label{tab:tpch-total}
+\centering\small
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+SF & Join & b1254c4 & 5531be4 & Fixed & Candidate & Ratio \\
+\midrule
+0.01 & Q3 & 224.58 & 221.31 & 226.80 & 223.30 & 0.985 \\
+0.01 & Q5 & 428.23 & 429.61 & 438.62 & 419.32 & 0.974 \\
+0.01 & Q9 & 657.89 & 650.38 & 654.30 & 627.63 & 0.959 \\
+0.1 & Q3 & 4,040.74 & 4,130.65 & 3,999.45 & 4,057.00 & 1.008 \\
+0.1 & Q5 & 8,767.87 & 8,767.37 & 8,712.05 & 8,112.88 & 0.919 \\
+0.1 & Q9 & 11,740.80 & 11,615.00 & 11,533.75 & 10,994.71 & 0.952 \\
+\bottomrule
+\end{tabular}
+\end{table}

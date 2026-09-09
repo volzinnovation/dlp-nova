@@ -1,0 +1,38 @@
+\subsection{Results and adoption decision}
+All 90 workers pass their independent answer and full base-closure checks.
+At SF0.1, Q5 candidate visits fall from 621,901 to 155,969 in every block.
+Each lookahead invocation performs 30 extra probes, examines 16 physical rows,
+retains two hints, and changes 101 ordering choices. The paired
+lookahead/compiled join ratio is 0.509923, with observed range
+$[0.480504,0.519889]$. Against \code{b1254c4}, which also differs in earlier
+indexing and interpreter improvements, the join ratio is 0.273615
+$[0.268051,0.284502]$. These comparisons isolate ordering only when the
+denominator is the same-source compiled arm.
+
+The result does not establish a robust pipeline gain. Large-Q5 component-total
+paired ratios are 0.975196 $[0.971553,1.272566]$, and process ratios are
+0.990329 $[0.976037,1.284827]$. Separate component-total medians are 9.298 seconds
+with lookahead and 7.307 seconds compiled, despite the median paired ratio
+being below one. The block-specific shifts explain why the two summary
+statistics differ; neither should be substituted for the other. One block has
+a slower lookahead pipeline, largely in phases preceding query execution.
+All observations are retained. The experiment did not control desktop activity
+or processor affinity, and the preparation code is shared between these arms.
+The data do not establish that lookahead caused the preceding-phase variation.
+
+The other five TPC-H components keep their candidate-row counts unchanged.
+Their paired join ratios range from 0.996 to 1.043, with the larger Q9 case
+about 4.3\% slower. The four adverse-control join ratios are 1.123 for unique
+joins, 1.066 for nonselective joins, 1.155 for skew, and 1.238 for the empty
+cycle. Thus the extra decision machinery has measurable costs even when it
+does not change the traversal. The very large nonselective improvement against
+\code{b1254c4} is already present in the compiled control and must not be
+attributed to lookahead.
+
+The heuristic remains disabled by default. Its conditional Q5 success supports
+further investigation of intermediate-sensitive ordering, while the adverse
+results reject a universal benefit. No workload-specific dispatcher was tuned
+on these final observations. The stored protocol was frozen locally before
+measurement, not independently timestamped or publicly preregistered. This
+post-hoc discovery-workload result establishes neither RPT+/SYA superiority
+nor worst-case-optimal or no-regret evaluation.

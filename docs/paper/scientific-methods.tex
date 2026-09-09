@@ -1,0 +1,140 @@
+\section{Study design}
+\label{sec:methods}
+The study developed in stages. We first examined two ways of reducing repeated
+reasoning after changes to a knowledge base, then used the observed costs and
+the literature review to select further experiments. The later questions and
+comparisons were therefore exploratory. Protocols were recorded before their
+respective timing series, but the research programme was not publicly
+preregistered. Earlier trials, unsuccessful cases, and subsequent replications
+are retained in the supplementary evidence.
+
+\subsection{Interventions and comparisons}
+The first intervention changes how groups of records satisfying a rule's
+conditions are combined. One option first collects the records affected by a
+change; another starts with records meeting all the conditions and then checks
+which were affected. We investigated whether information about recent changes
+helps choose between these equivalent approaches, including the cost of the choice.
+
+The second intervention shares explanations for conclusions that remain valid
+after a change. Several individuals may satisfy exactly the same relevant
+conditions. When they do, one calculation can establish which conclusions
+still follow for all of them. These explanations can prevent unnecessary
+withdrawal and restoration of conclusions. If no suitable explanation is
+found, the ordinary maintenance procedure still determines the answer. This
+restricted use of shared explanations builds on support-aware maintenance and
+shared reasoning~\cite{motik2015bf,hu2018,hu2019compressed,hu2022modular}.
+
+Follow-up changes reduced repeated work in three further ways: reusing checks
+that remain valid when information is added, updating access structures only
+where information has changed, and preparing common rule operations for
+repeated use. These changes apply established techniques; the experiment
+evaluates their combined effect. A later experiment reconsidered evaluation
+order by briefly examining likely consequences of alternative choices. This
+was motivated by recent work on avoiding large intermediate results
+\cite{qiao2026,bekkers2025}. The examination changes the search order, without
+excluding possible answers.
+
+We distinguish three comparisons. Controlled variants of the same system
+estimate an intervention's effect. Comparisons with a preserved earlier
+version describe cumulative progress. Executing an independent reasoner on
+matched inputs and tasks tests relative performance beyond the local system.
+Published timings on different machines provide context, but cannot supply
+speed ratios for our experiments.
+
+\subsection{Controlled and established workloads}
+The initial experiment combined the first two interventions in a factorial
+design: each was either present or absent, yielding four variants. Eighteen
+constructed cases varied the concentration of changes, surviving explanations,
+recursion, and opportunities to share reasoning. Nine repetition blocks tested
+all variants in fresh processes, with a rotating order. Complete update time
+was the primary outcome. A separate replication used new random seeds and
+144 fresh processes to re-examine the main explanation-sharing benefit and its
+adverse cases. It supplements the original observations rather than replacing
+them.
+
+External validation began with LUBM, which
+provides a university ontology, generated data, and reference answers
+\cite{guo2005,lubmwebsite}. We used one generated university and retained the
+logical ontology. Three repetition blocks compared three local variants, and
+all fourteen queries were checked against the complete official answer sets.
+This tests established questions on a modest dataset; it is not a scalability
+study.
+
+For changing rules, we used the positive university rule programme supplied
+with ZodiacEdge~\cite{xu2023,zodiacartifact}. Two scenarios added and removed
+designated sets of eight and sixteen rules. Four repetition blocks compared
+four local variants; a separate four-block comparison alternated our candidate
+and ZodiacEdge itself. Additional samples removed and restored 1,000 facts,
+following the update size used in earlier maintenance research~\cite{hu2018}.
+Samples within one process are repeated observations, not independent process
+replicates. The author's rule programme and the complete LUBM ontology are
+distinct reasoning tasks.
+
+The Transaction Processing Performance Council's Benchmark H (TPC-H) evaluates
+database systems answering analytical questions over business data~\cite{tpch}.
+Our query experiments used the conditions underlying its queries Q3, Q5,
+and Q9 at two data scales. These six components retain the combinations of
+input rows satisfying each query, but exclude aggregation and result ordering.
+They therefore do not constitute a full TPC-H evaluation or reproduce the
+larger study of Qiao and colleagues~\cite{qiao2026}. The first comparison used
+three blocks, with all three components evaluated sequentially in each fresh
+process. A follow-up gave each component its own process and compared three
+variants across three blocks. It added controls deliberately chosen to expose
+unhelpful decision costs and misleading intermediate patterns, giving 90
+processes overall. The follow-up revisits the workload that motivated it;
+it does not provide independent evidence of generalization.
+
+\subsection{Expressiveness, correctness, and measurement}
+A separate experiment compared our reasoner with HermiT~\cite{glimm2014hermit}
+on a finite family using existential statements: every member of one class
+must relate to some member of another. Both systems determined consistency
+and returned all named members of two target classes. Populations of 100,
+1,000, and 10,000 individuals were tested in three blocks, comparing the
+candidate, its earlier baseline, and HermiT. These 27 processes test a selected
+DLP L3 task beyond the structural OWL 2 RL syntax. The family also belongs to
+OWL 2 EL~\cite{owlprofiles2012}, and its answers do not require explicitly
+constructing the unnamed individuals. It tests computational specialization,
+without assuming that such ontologies are common.
+
+Correctness was checked separately from performance. Update experiments
+compared complete conclusions with fresh recomputation; small cases also used
+independently written reference procedures. Query experiments checked exact
+answers against official LUBM answers or independent database evaluation.
+The existential experiment used independently justified answers and controls
+omitting each essential statement. Agreement of counts alone was insufficient.
+
+A further comparison returned to the original Bach examples at their original
+scale~\cite[Table~2.5, p.~35; Figure~6.2, p.~150]{volz2004}. The current
+reasoner, its preserved earlier version, and HermiT answered 25 questions on
+the complete ontology. A separate family task asked nine questions, including
+the complete ancestor and dynasty relationships. All four systems evaluated
+the original and three changed family states from scratch; the two local
+versions and ZodiacEdge also applied and reversed each change while retaining
+state. Twelve repetition blocks specified 336 fresh processes, with rotating
+system order. The older version was measured anew: its saved historical
+results contained no Bach comparison. These small examples test source fidelity
+and update behaviour, without making a scaling claim.
+
+For this comparison, the complete ontology's existence requirements and
+constraints fall outside ZodiacEdge's positive-rule task. Its family evaluation
+uses the same recorded relationships and rules. A wrong answer disqualifies
+the entire system--task combination from a timing ranking; passing executions
+are not selected to hide unsuccessful ones. Separate diagnostic checks
+investigate discrepancies while retaining the recorded implementation.
+
+Timings include complete updates or complete consumption of query answers.
+Query computation and data preparation are reported separately, with combined
+costs where measured. HermiT comparisons include loading, consistency, and
+answer retrieval because systems perform inference at different stages.
+Independent checks lie outside these task intervals. In controlled comparisons,
+ratios pair observations within repetition blocks and report their median,
+rather than dividing two separately calculated medians. Historical comparisons
+use ratios of the medians from separate runs.
+
+All new measurements used one Apple M4 Max desktop. Process restarts did not clear
+filesystem caches. Unrelated activity may have overlapped the primary study;
+its extent is unknown, and the original samples were retained. Later timed
+studies were scheduled separately. Small repetition counts, one host, and
+selected workloads make the comparisons descriptive. Detailed protocols,
+timing boundaries, individual observations, and preservation arguments are
+provided in the supplement.

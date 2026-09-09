@@ -1,0 +1,64 @@
+{
+  "validation_completed_utc": "2026-09-09T19:49:20.471447+00:00",
+  "status": "complete_with_retained_external_correctness_failures",
+  "baseline_commit": "b1254c441731ca4fdf32ea83570ff99aaa84ac2a",
+  "baseline_saved_sha256": "6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2",
+  "results_sha256": "b1d61883547d1cc029d93a0d429e1b90f66f6863208dd7b19db09de83b9e4e27",
+  "protocol_sha256": "2cd6491bce6d936a3028793e3b3e3b99265e79be17a42e21375a9d425184aba1",
+  "source_sha256": {
+    "b1254c4": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "673c8e50f33cdf7c9294914760fa3ead17a7ed5ca2be4f408a5031f4f29bcafe",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "2a9ea96ed518a3faae0b7c341087c327656c304f9942ce75651d8271141bfeff"
+    },
+    "candidate": {
+      "src/dlp_reasoner/__init__.py": "fcb7867c41765714be1095a1ac9a3ecf20b44fda6cc3581ddd160b4389ad1491",
+      "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "src/dlp_reasoner/cli.py": "d89bb60136ad9f39b6741c9ce53bc94fe63be163da5ced1d4fae631736be7951",
+      "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+      "src/dlp_reasoner/engine.py": "80bdfa06f4d0747094f696682689c2e021b5f3ee00e8a7b88550a14518aebc20",
+      "src/dlp_reasoner/joins.py": "9e7a1cca7db9a4e4f9071abd617fdbb8cbebee8863a85b7d70f346eeb73476b5",
+      "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+      "src/dlp_reasoner/reasoner.py": "762de240f25fe4fe7be2425aae1eb25335d69ade74769cfba8f7a024c664a895",
+      "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+      "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851"
+    }
+  },
+  "driver_sha256": {
+    "benchmarks/bach_external.py": "94c1e6226d30babe4ffe313cbcf453b31213841bd8aeaeac6829ad8fc3ac06c0",
+    "benchmarks/BachOwlBridge.java": "d5fdc9eda3eacf4fb699e1f084c4fe54142daa81c68bc9626198b01b366a74d2",
+    "benchmarks/bach_zodiac.py": "7acaf76e4c6fb0766f9f341076fb7169f42fed881558dfc07c5f49717dff6e81",
+    "benchmarks/bach.py": "0df8b29183b8d620b9c463a474d7337d8cf433aaeaae252a443513a5abcfacf4",
+    "benchmarks/lubm.py": "08ce56d9daee0b7db99a1b520c977f14e43f38046e7541a009a27f78ead0f4c9",
+    "benchmarks/owl_bridge.py": "e8b646df06dbaa547aa91a2ea037acd176182b463af466431172ff9b05031f30",
+    "benchmarks/zodiac.py": "559a9297f9ee26a4a5a5602f6607f97fb255eaa87b91c22ce9980a6e98be3951",
+    "benchmarks/zodiac_native.py": "bc619bfa9c831430778fbc2e5b9643da095a3385c8ffad3b883b48ed24a8d795"
+  },
+  "workers": 336,
+  "validated_workers": 330,
+  "failed_workers": 6,
+  "exact_query_answers_checked": 5382,
+  "tests": {
+    "command": "uv run pytest -q",
+    "passed": 785,
+    "duration_seconds": 14.7
+  },
+  "ruff_passed": true,
+  "git_diff_check_passed": true,
+  "report_tampering_controls_rejected": [
+    "missing worker",
+    "incorrect named answers",
+    "invalid task interval",
+    "fabricated median"
+  ],
+  "paper_build_command": "uv run python scripts/build_research_report.py --check-bundle",
+  "paper_builds_and_isolated_bundles_passed": true,
+  "visual_qa_files": [
+    "output/pdf/research-report-qa.json",
+    "output/pdf/technical-supplement-qa.json"
+  ]
+}

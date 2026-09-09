@@ -1,0 +1,50 @@
+\subsection{Diagnostic profile of the rule-deletion gap}
+\label{sec:deletion-diagnostic}
+After the paired native comparison, we profiled one deletion of the sixteen
+$\#$-marked rules using CPython 3.12.9 \code{cProfile}. The process used the
+frozen primary candidate, its three enabled optimizations, the same 100,543
+assertions and 128-rule program, and hash seed 7300. It first materialized the
+partial program and inserted the marked rules; only their subsequent removal
+was profiled. All three full typed-tuple closure checks passed. This is a
+separate instrumented diagnostic, not an additional timing replicate.
+
+The profiled public update accumulated 2.130745 seconds. Four disjoint call
+groups accounted for 1.553658 seconds, or 72.9\%: canonicalizing all 100,543
+assertions for protection, 0.551646 seconds; two checks of old and new DRed
+eligibility, 0.520192 seconds; full input validation, 0.295590 seconds; and
+recomputing active-domain constants, 0.186231 seconds. These cumulative times
+include descendants but not one another. Nested normalization and literal-key
+operations, or the enclosing DRed routine, must not be added again. All other
+update work accounts for the remaining 0.577087 seconds. The engine's internal
+update counter excludes validation and eligibility checks and therefore covers
+a narrower interval.
+
+Only sixteen rules were evaluated. The deletion overdeleted 24,045 facts and
+rederived none, exactly matching the difference between the complete closures
+of 238,474 and 214,429 tuples. Thus this observation contains no excess logical
+overdeletion. Global preparation and protection passes dominate the observed
+candidate cost. Since the native engine was not profiled, this result does not
+quantitatively decompose the separately measured 41.3-fold runtime ratio or
+show that eliminating those passes would close the gap.
+
+Maintaining auxiliary state incrementally is established practice in view and
+materialization maintenance~\cite{gupta1993,motik2019}; dependency analysis also
+limits reconsideration under rule changes~\cite{kotowski2011,xu2023}. Applying
+these general principles to the engine's metadata suggests eligibility
+certificates, predicate occurrence counts, and active-domain reference counts.
+The exact proposals here are not claims about the implementations in those
+papers. Any certificate must detect relevant public-state changes and handle
+datatype aliases and equality history. Arity counts must release a predicate's
+constraint when its last occurrence disappears; domain counts must handle
+constants supported only by removed rules and preserve the nonempty-domain
+seed. Within an eligible DRed update, identity representatives also suggest
+avoiding repeated canonicalization of unchanged assertions while preserving
+inequality symmetry and domain protection.
+
+These changes remain proposals, not implemented or measured improvements.
+Deterministic profiling perturbs runtime, particularly for call-heavy Python
+paths, and this single transaction cannot establish general workload behavior
+or an achievable speedup. The compact artifact
+\code{benchmarks/zodiac-deletion-profile.json} records frozen source and
+profiler source hashes, the raw profile hash, independent closure checks,
+nonoverlapping costs, and the instrumented engine counters.

@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/kourgeorge/arxiv-style",
+  "commit": "920514696f6e7270cab0558fd97c44515c63b4c4",
+  "retrieved": "2026-09-09",
+  "files": {
+    "TEMPLATE-LICENSE": {
+      "source": "License.txt",
+      "sha256": "30341c1894f9f766c1969a808d8e81d46d88108456571f4dc0f1f2937a3f6c84"
+    },
+    "arxiv.sty": {
+      "source": "arxiv.sty",
+      "sha256": "5ca551dbda41573265dd8c1e9c983ba9729f7d4070a9f1503dd8c7fd65d1dc46"
+    }
+  }
+}

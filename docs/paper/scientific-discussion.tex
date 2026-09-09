@@ -1,0 +1,112 @@
+\section{Discussion}
+\label{sec:discussion}
+
+The findings support a conditional account of efficient ontology reasoning.
+Restricting a language can create opportunities for simpler computation, but
+the benefit also depends on the arrangement of facts, the available
+justifications, and the questions being asked. In the present experiments,
+sharing surviving justifications was valuable when many individuals could
+reuse the same reasoning. It became a cost when the attempted justification
+did not exist. Similarly, spending more effort choosing an evaluation order
+helped one demanding query, but imposed overhead on adverse cases. These
+results identify conditions for improvement rather than a universally
+preferable strategy.
+
+The external comparisons make this distinction especially important. One
+rule insertion was approximately six times faster than ZodiacEdge, whereas
+one rule deletion was approximately forty-one times slower. Neither result
+alone characterizes the relative quality of the two approaches. Together,
+they show why an average across unlike operations can conceal a substantial
+weakness. They also motivate a more discriminating question: which observable
+properties of a change predict whether shared reasoning, selective
+reconsideration, or broader recomputation will be most effective? The current
+evidence does not yet establish a reliable general answer.
+
+The Bach update discrepancy adds a distinct qualification. Successful
+recomputation of a state does not establish that every path of changes leading
+to it will preserve the same conclusions. The surviving family connection
+supplies a small, independently understandable test of this requirement.
+An observed failure in one recorded version warrants a reproducible
+counterexample and a scoped conclusion, rather than a general ranking of
+reasoning methods.
+
+\subsection{The continuing value of restricted languages}
+
+A fragment's scientific value does not depend on knowing how frequently it
+is used in practice. A proven reduction in computational difficulty is
+valuable even without an adoption survey. Prior work on description logics
+whose statements take a restricted implication form, known as Horn description
+logics, illustrates this point: restricting the form of logical statements
+changes the established complexity of specified reasoning tasks
+\cite{hustadt2005}. That result concerns precisely defined languages and
+tasks. It does not, by itself, supply a complexity guarantee for the DLP L3
+fragment or the reasoning procedure studied here.
+
+Measured performance provides a different kind of evidence. On the earlier
+constructed existential family, the specialized reasoner checked consistency and identified the
+individuals satisfying the same questions faster than HermiT, which supports a broader OWL
+language~\cite{glimm2014hermit}. This demonstrates a useful computational
+specialization under the experimental conditions. It does not prove that all
+DLP L3 tasks are easier, that the advantage grows indefinitely with input size,
+or that restricting the language is the sole cause of the observed difference.
+Much of the advantage was already present before the new optimizations.
+
+That constructed family also belongs to OWL 2 EL, another established
+restricted language. This qualification concerns the constructed experiment;
+the full Bach ontology has a separate semantic scope. The result therefore leaves
+open how the approach compares with reasoners specialized for EL. Moreover,
+although the experimental statements require related individuals to exist,
+a reasoner can derive the relevant class memberships without explicitly
+constructing those individuals. The experiment establishes an advantage for the
+specified questions; it does not establish an advantage of generating unnamed
+individuals.
+
+The relationship between the examined fragments and OWL 2 RL is one of
+overlap, rather than a simple hierarchy. DLP L3 permits general statements
+requiring the existence of a related individual, which lie outside RL's
+permitted syntax. Conversely, RL includes constructs absent from the
+reconstruction~\cite{owlprofiles2012}. It would therefore be misleading
+to describe DLP L3 as a superset of RL or all the historical fragments as RL
+subsets. Language membership, the meaning assigned to statements, and the
+questions a procedure can answer completely must be assessed separately.
+
+\subsection{Limits of the evidence and further questions}
+
+The benchmark collection combines controlled examples, a university ontology,
+the thesis's original Bach examples, changes to a published rule program,
+and selected database query components.
+This diversity tests several mechanisms, but does not constitute a
+representative sample of ontology applications. The database components omit
+parts of the full published workloads. Repeated measurements on one machine
+provide local evidence, with limited information about variation across
+hardware, systems, or larger datasets. Historical published timings provide
+context, not directly comparable speed measurements.
+The Bach examples retain their original small scale; repeating their
+measurements does not turn them into a scalability study.
+
+Agreement with independently justified answers strengthens confidence in the
+reported experiments. It cannot establish correctness for every ontology,
+nor certify the thesis's historical software. Likewise, corrections to
+particular printed formulas and procedures do not invalidate the underlying
+connection between ontology semantics and rule evaluation. They indicate
+where the specification needs repair and where experimental reconstruction
+can contribute to scientific scrutiny.
+
+Further studies can test three propositions. First, the benefit of shared
+justifications should increase with the proportion of individuals that share
+both starting facts and surviving proofs. Second, selective rule-maintenance
+methods should be most advantageous when a change affects a small part of
+the reasoning dependencies. Third, choosing an evaluation order should help
+only when avoided combinations compensate for the cost of making that choice.
+Experiments that vary these properties independently would provide stronger
+causal evidence than adding more undifferentiated benchmarks.
+
+Broader comparisons should also include specialized EL reasoners and diverse
+DLP L3 tasks, with explicit termination and completeness conditions. Some recursive
+existential descriptions can make the present procedure generate an unending
+sequence of unnamed individuals. Failure of this procedure to finish does not
+establish that no other procedure could decide the same question. A separate
+study could examine how often real ontologies and their application questions
+fit each fragment. Such a survey would inform practical adoption, but its
+difficulty does not postpone the theoretical or computational case for
+studying restricted languages.

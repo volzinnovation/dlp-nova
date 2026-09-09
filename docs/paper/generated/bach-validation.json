@@ -1,0 +1,1811 @@
+{
+  "workers": 336,
+  "validated_workers": 330,
+  "failed_workers": 6,
+  "exact_query_answers_checked": 5382,
+  "failures": [
+    {
+      "block": 1,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 2.7375004719942808e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.5000005078036338e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.1709002137649804e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.00012350000179139897
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00012520800373749807
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00017825000395532697
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.266699837287888e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 6.70000008540228e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 6.091699469834566e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    },
+    {
+      "block": 4,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 3.2707997888792306e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.4000004739500582e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.1707998055499047e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.00012412499927449971
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00012041599984513596
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.0001749580042087473
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.2290998711250722e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 6.68339998810552e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 5.929199687670916e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    },
+    {
+      "block": 5,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 3.6042001738678664e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.3665994629263878e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.2290998711250722e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.0001425829977961257
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.0001236669995705597
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00017520899564260617
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.2416996469255537e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 6.695900083286688e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 5.9416997828520834e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    },
+    {
+      "block": 6,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 2.7207999664824456e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.4665994967799634e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.1374999303370714e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.00012354199861874804
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00012112499825889245
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00017716699949232861
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.2584001524373889e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 6.604100053664297e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 6.112499977461994e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    },
+    {
+      "block": 9,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 2.800000220304355e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.4416000340133905e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.1625001206994057e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.00012466699990909547
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00012170799891464412
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.0001850829939940013
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.237499964190647e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 6.691599992336705e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 6.108300294727087e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    },
+    {
+      "block": 10,
+      "mode": "incremental",
+      "case": "fact-replace",
+      "arm": "zodiac-native",
+      "error": "zodiac-native/incremental/fact-replace exited 1",
+      "diagnostic": {
+        "actual_closure": {
+          "facts": 48,
+          "sha256": "273f9d78014bfb2f3b10c1e197878d97153af75e96dd4d036a0a0d955854c816"
+        },
+        "expected_closure": {
+          "facts": 50,
+          "sha256": "568ff58c8ac0418efb5da9a44163ca2286323ab7ed2df59bb733603998546b81"
+        },
+        "missing": [
+          [
+            "http://www.jsbach.org/bach#ancestorOf",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ],
+          [
+            "http://www.jsbach.org/bach#inDynasty",
+            [
+              "johannes",
+              "wilhelm-friedemann"
+            ]
+          ]
+        ],
+        "queries": [
+          {
+            "answer": [
+              "christoph",
+              "heinrich",
+              "johann-ambrosius",
+              "johann-christian",
+              "johann-christoph",
+              "johann-michael",
+              "johann-sebastian",
+              "maria-barbara"
+            ],
+            "id": "johannes-descendants",
+            "method": "property_values",
+            "seconds": 2.7292000595480204e-05
+          },
+          {
+            "answer": [
+              "johann-christian",
+              "johann-sebastian"
+            ],
+            "id": "ambrosius-descendants",
+            "method": "property_values",
+            "seconds": 1.4708006347063929e-05
+          },
+          {
+            "answer": false,
+            "id": "johannes-reaches-wilhelm",
+            "method": "entails",
+            "seconds": 1.1582997103687376e-05
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-symmetric",
+            "method": "is_symmetric",
+            "seconds": 0.00012270799925317988
+          },
+          {
+            "answer": false,
+            "id": "base-dynasty-not-transitive",
+            "method": "is_transitive",
+            "seconds": 0.0001215839947690256
+          },
+          {
+            "answer": true,
+            "id": "base-ancestor-transitive",
+            "method": "is_transitive",
+            "seconds": 0.00019245900330133736
+          },
+          {
+            "answer": false,
+            "id": "base-cross-branch-not-entailed",
+            "method": "entails",
+            "seconds": 1.200000406242907e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-ancestorOf",
+            "method": "property_pairs",
+            "seconds": 7.629099854966626e-05
+          },
+          {
+            "answer": [
+              [
+                "christoph",
+                "johann-ambrosius"
+              ],
+              [
+                "christoph",
+                "johann-christian"
+              ],
+              [
+                "christoph",
+                "johann-sebastian"
+              ],
+              [
+                "heinrich",
+                "johann-christoph"
+              ],
+              [
+                "heinrich",
+                "johann-michael"
+              ],
+              [
+                "heinrich",
+                "maria-barbara"
+              ],
+              [
+                "heinrich",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-christian"
+              ],
+              [
+                "johann-ambrosius",
+                "johann-sebastian"
+              ],
+              [
+                "johann-christoph",
+                "johann-michael"
+              ],
+              [
+                "johann-christoph",
+                "maria-barbara"
+              ],
+              [
+                "johann-christoph",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-michael",
+                "maria-barbara"
+              ],
+              [
+                "johann-michael",
+                "wilhelm-friedemann"
+              ],
+              [
+                "johann-sebastian",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "christoph"
+              ],
+              [
+                "johannes",
+                "heinrich"
+              ],
+              [
+                "johannes",
+                "johann-ambrosius"
+              ],
+              [
+                "johannes",
+                "johann-christian"
+              ],
+              [
+                "johannes",
+                "johann-christoph"
+              ],
+              [
+                "johannes",
+                "johann-michael"
+              ],
+              [
+                "johannes",
+                "johann-sebastian"
+              ],
+              [
+                "johannes",
+                "maria-barbara"
+              ],
+              [
+                "maria-barbara",
+                "wilhelm-friedemann"
+              ]
+            ],
+            "id": "all-inDynasty",
+            "method": "property_pairs",
+            "seconds": 6.241600203793496e-05
+          }
+        ],
+        "state": "updated",
+        "unexpected": []
+      }
+    }
+  ],
+  "paired_ratio_over_candidate": {
+    "static/ontology/b1254c4": 1.6157819163969467,
+    "static/ontology/hermit": 6.253213066960408,
+    "static/initial/b1254c4": 1.2681109904753094,
+    "static/initial/hermit": 36.45891900593463,
+    "static/initial/zodiac-native": 0.5969123657507228,
+    "static/fact-replace/b1254c4": 1.2390288861829872,
+    "static/fact-replace/hermit": 35.25034249452729,
+    "static/fact-replace/zodiac-native": 0.591406118735593,
+    "static/rule-remove/b1254c4": 1.2612521004620936,
+    "static/rule-remove/hermit": 39.84159487244275,
+    "static/rule-remove/zodiac-native": 0.6150719304585958,
+    "static/symmetry-insert/b1254c4": 1.5584606048735687,
+    "static/symmetry-insert/hermit": 41.1194734449208,
+    "static/symmetry-insert/zodiac-native": 0.764463340493108,
+    "incremental/fact-replace/b1254c4": 1.199737741931811,
+    "incremental/rule-remove/b1254c4": 1.1862087983401393,
+    "incremental/rule-remove/zodiac-native": 0.11878079424159248,
+    "incremental/symmetry-insert/b1254c4": 1.8019986663042642,
+    "incremental/symmetry-insert/zodiac-native": 0.35390880371271516
+  }
+}

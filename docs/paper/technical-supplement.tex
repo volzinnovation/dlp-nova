@@ -1,0 +1,431 @@
+\documentclass{article}
+\usepackage{arxiv}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!45!black]{hyperref}
+\hypersetup{pdftitle={Technical Supplement: Description Logic Programs Revisited},pdfauthor={Raphael Volz}}
+\renewcommand{\shorttitle}{Revisiting Description Logic Programs}
+\renewcommand{\headeright}{Technical supplement}
+\renewcommand{\undertitle}{Preprint manuscript}
+\newtheorem{proposition}{Proposition}
+\newcommand{\lfp}{\operatorname{lfp}}
+\newcommand{\TOP}{\mathsf{TOP}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\title{Technical Supplement:\\Description Logic Programs Revisited}
+\author{Raphael Volz\\Pforzheim University}
+\date{9 September 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This supplement provides the semantic corrections, preservation arguments,
+experimental protocols, complete result tables, and reproducibility details
+supporting \emph{Description Logic Programs Revisited: The Benefits and Limits
+of Specialized Ontology Reasoning}. It retains the technical evidence behind
+the main paper's claims, including adverse outcomes and limitations. Earlier
+experiments and their data are preserved. The Bach comparison adds observations
+of the thesis's original examples and retains a diagnosed external update
+discrepancy.
+\end{abstract}
+
+\section{Original work, semantics, and reconstruction}
+\subsection{What is inherited from the thesis}
+The thesis provides the DLP-oriented problem decomposition, position-sensitive
+constructor translation, instance and schema reasoning services, and maintenance
+under changes to a knowledge base. Chapters 5--7 are the main implementation
+reference; chapter 8 supplies taxonomy, restriction, and update workload designs.
+The 2003 materialized-ontology paper already discusses changing both extensional
+facts and intensional rules~\cite{volz2003maintenance}.
+
+The reconstruction compiles RDF-encoded OWL expressions into immutable Horn
+rules. RDFLib supplies RDF parsing; it does not establish the correctness of the
+OWL-to-Horn translation. The engine uses relation indexes, semi-naive deltas,
+explicit equality with congruence, integrity constraints, and a distinction
+between assertions and derived facts. It supports a documented DLP fragment,
+not full OWL DL, OWL Full, or complete OWL 2 profile conformance.
+
+The local DLP L0--L3 names follow constructor-position distinctions in the
+reconstruction. For example, an existential antecedent
+$\exists R.C\sqsubseteq B$ is a Horn pattern match, whereas an existential
+consequent $A\sqsubseteq\exists R.C$ requires the witness-generating DLP L3 mode.
+General disjunctive heads, property chains, keys, arbitrary datatype restrictions,
+and maximum cardinality above one are outside the implemented contract.
+Automatic literal value identity covers only stated string, numeric, and Boolean
+families. Unsupported logical constructs fail explicitly.
+
+Negative answers require a complete consistent computation; failure to derive
+a fact is not derivation of its negation. Different IRIs are not presumed to
+denote different individuals. DLP L3 uses Skolem witnesses; unrestricted evaluation
+can fail to terminate on recursive existential ontologies, while configured
+resource limits return an incomplete result. Retractions involving equality reconstruction or existential
+witnesses use rematerialization. The certificate argument below does not extend
+to those cases.
+
+\subsection{Focused corrections and their significance}
+The audit uses the thesis's printed page numbers; the one-based PDF page is 16
+higher. Table~\ref{tab:errata} gives representative corrections. The repository's
+longer errata includes the countermodels, conditional benchmark-count
+corrections, and independent executable checks. These are findings from this
+implementation review; they do not establish how the historical software behaved.
+
+\begin{table}[ht]
+\caption{Representative audited issues in the original thesis~\cite{volz2004}.
+The corrections concern the printed specification; historical software behavior
+cannot be inferred without its implementation and raw data.}
+\label{tab:errata}
+\small
+\begin{tabularx}{\linewidth}{@{}p{0.17\linewidth}YY@{}}
+\toprule
+Location & Issue & Required interpretation or replacement \\
+\midrule
+Table 5.3, p.~122 & Subproperty and transitivity implications point in the wrong direction. & $P(x,y)\!\to\!Q(x,y)$ for $P\sqsubseteq Q$; $P(x,z)\land P(z,y)\!\to\!P(x,y)$ for transitivity. \\
+\S5.4.4.2, p.~136 & Joint class-equivalence probes can interfere through equality. & Run the two subsumption probes in separate fresh states. \\
+Eq.~(5.13), p.~140 & Exact inverse equality is inherited to a strict subproperty. & Inherit inverse inclusion, or require property equivalence for exact inverse equality. \\
+Algorithm 6.1, p.~163 & A removed rule can retain an obsolete rederivation contribution. & Identify losses using old rules; restore only with current rules. \\
+\S5.4.2.2, p.~133 & A stated distribution is false; explicit DNF need not be linear. & Correct the identity and retain factored structure or auxiliary predicates. \\
+Tables 8.9--8.10 & Restriction columns and some population labels conflict with the generator description. & Validate generated counts; do not relabel unavailable historical measurements as reconstructed data. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Two examples show why the procedural findings matter. If
+$C\sqsubseteq\{o\}$ and $D\sqsubseteq\{o\}$, a joint probe asserting $C(a)$ and
+$D(b)$ identifies $a=o=b$ and obtains both cross-memberships. Yet $C=\{o\}$,
+$D=\varnothing$ is a countermodel to $C\equiv D$. Fresh names alone do not
+isolate tests under equality. For deletion, let $A(a)$ be explicit and let
+$P(x)\leftarrow A(x)$ and $P(x)\leftarrow B(x)$ be the rules, with $B$ empty.
+Removing the first rule must remove $P(a)$. An obsolete rederivation rewrite
+can incorrectly preserve it.
+
+These findings invalidate particular printed formulas or procedures, not the
+entire research programme. The model-theoretic connection between the supported
+languages and the usefulness of rule-based ontology evaluation do not depend
+on the faulty examples. Conversely, successful modern tests cannot certify the
+historical implementation or recover which datasets produced ambiguous old
+timing entries. The audit also corrects its own earlier interpretation: loose
+restriction scope in Example 5.4.2 is reported as ambiguous parentheses rather
+than a separately proven semantic error. OWL's original direct semantics
+provides an independent reference for the relevant constructors~\cite{owl2004}.
+
+\section{Delta-sensitive unary evaluation}
+For a recognized rule body $P_1(x),\ldots,P_k(x)$, let $I_i$ be its current
+relation and $D_i$ the frontier for that relation. Duplicate predicates are
+removed. The engine ingests the frontier before evaluation, so $D_i\subseteq I_i$.
+The coalesced semi-naive result is
+\begin{equation}
+ J=\left(\bigcap_{i=1}^{k}I_i\right)\cap
+   \left(\bigcup_{i=1}^{k}D_i\right).
+ \label{eq:delta}
+\end{equation}
+The fixed plan first constructs the delta union and intersects the necessary
+full relations. This can create a large temporary set even when a small full
+relation already bounds every possible answer.
+
+The selector rejects an empty required relation and handles an already bound
+variable by exact membership tests. If a nonempty delta has the same cardinality
+as its full relation, the subset invariant proves equality: every full-join
+answer meets the delta condition. With a single nonempty delta, the engine uses
+that set directly. Otherwise define $M=\sum_i|D_i|$, $s=\min_i|I_i|$, and let
+$h\leq k$ count the nonempty deltas. The alternative branch is selected when
+$M>ks$:
+\begin{equation}
+ T=\bigcap_i I_i, \qquad J=\bigcup_i(T\cap D_i).
+ \label{eq:fullfirst}
+\end{equation}
+Set distributivity establishes equivalence with Eq.~\eqref{eq:delta}. Full
+relations are considered in cardinality order, and delta filtering may stop
+when its accumulated answer covers $T$. The selector uses current exact sizes;
+it does not infer independence or estimate overlap from samples.
+
+Under expected constant-time hashing, the full-first branch uses
+$O(k\log k+ks+hs)$ work and $O(s)$ temporary tuple storage, excluding references
+and emitted bindings. A simple scan accounting charges at most $ks$ for
+copying/intersecting the full relations and $2hs$ for filtering and collecting
+outputs. Since the branch is chosen only when $M>ks$,
+\begin{equation}
+ (k+2h)s\leq 3ks<3M.
+\end{equation}
+This is a scoped scan bound, not a three-competitive runtime theorem. Sorting,
+allocation, hash collisions, Python dispatch, and unequal operation constants
+are outside that inequality. Engine counters also omit work performed inside
+C-level set operations.
+
+An initial rule selected full-first at $M\geq s$. A pilot falsified it: 64
+identical singleton deltas over 32-row full relations have a one-row union but
+trigger many full intersections. The observed kernel slowdown was about
+2.7-fold. The width-aware threshold was adopted before the final experiment,
+and this adversary was added to its protocol. The pilot is development evidence;
+the retained confirmatory samples concern the revised selector. Equality
+reindexing and DRed variants preserve their applicable delta contracts; the
+coalesced shortcut is not imposed on unrelated arbitrary delta relations.
+
+\section{Bounded current-proof certificates}
+\subsection{State and oracle}
+Let $P,E$ be the old rules and explicit facts and let $D$ contain the old active
+domain's generated $\TOP$ facts, including the private nonempty-domain
+representative. Let $P',E',D'$ describe the complete proposed transaction state.
+Write
+\begin{equation}
+ \mathcal M=\lfp(P,E\cup D),\qquad
+ \mathcal M'=\lfp(P',E'\cup D').
+\end{equation}
+The incremental deletion setting is finite, positive, function-free, and
+equality-free, with a complete old materialization. Denials are checked
+separately. Existing explicit current facts already stop unnecessary deletion.
+
+The oracle indexes only current rules of the form
+$H(x)\leftarrow B_1(x),\ldots,B_m(x)$, with $m\geq1$ and exactly the same
+variable in every atom. It excludes constants, binary atoms, multiple variables,
+existential terms, and constraint heads. For subject $a$, the seed signature
+contains predicates explicitly asserted of $a$ in $E'$, plus $\TOP$ precisely
+when $a$ belongs to the current domain. Forward propositional Horn closure of
+the signature gives a set of proved predicates.
+
+Subjects with identical signatures share this computation. A cycle cannot
+certify itself because old derived predicates are never seeds. Newly inserted
+rules and assertions may supply valid replacement support: the oracle examines
+the complete current candidate, not only the pre-transaction program. A positive
+answer protects an old fact considered for deletion. Other oracle conclusions
+are not inserted into the store. Ordinary evaluation must still create and
+propagate new intermediate facts and consequences of newly inserted rules.
+
+\subsection{Preservation argument}
+\begin{proposition}[Sound current-proof protection]
+Under the stated finite positive assumptions, DRed may additionally protect
+queried old facts $C\subseteq\mathcal M'$ during overdeletion through the old
+program, provided restoration evaluates current definitions of deleted
+predicates, evaluates all inserted rules, and propagates new and restored facts
+to a fixed point.
+\end{proposition}
+\begin{proof}
+Every old fact has a finite derivation tree. When an old proof uses a removed
+assertion, removed rule, or departed domain seed, deletion is seeded there and
+propagates through that proof until it reaches a protected fact. A protected
+fact has a finite current proof; substituting that proof makes the cut safe.
+Current explicit and domain facts are safe leaves. Hence an unsupported old
+fact cannot survive merely through cyclic old dependencies. Restoration uses
+only current rules, so every restored consequence is sound.
+
+For completeness, consider a finite current derivation. If all premises of a
+rule survived but its old head was deleted, evaluating current definitions of
+deleted predicates recovers that head. An inserted or restored premise triggers
+ordinary delta propagation, and each inserted rule is evaluated. An unchanged
+rule with all premises already in the complete old model cannot yield a
+genuinely new head absent from that model. Induction over current derivation
+height therefore recovers every current consequence.
+\end{proof}
+
+The unary oracle supplies the required subset by induction over its rule
+firings. Every seed is current, and every added predicate follows from a
+current rule and proved premises. Even an incomplete monotone exploration is
+sound. This is a preservation argument for the implementation's interface,
+not a machine-checked proof or a claim that the general principle is new.
+
+\subsection{Budgets and expected failure modes}
+The implementation allows at most 128 cached signatures and 100,000 dependency
+visits per transaction. Exhaustion yields ``unknown'' and ordinary DRed
+continues. These bounds restrict search, not total transaction time or memory:
+index construction scans current rules and assertions, each query constructs or
+retrieves a signature, and a context may contain many predicates. Search order
+can change which contexts benefit, but never the soundness of a positive answer.
+
+Shared signatures with independent surviving support should amortize the oracle
+cost. Unsupported cycles provide no certificates and expose pure overhead.
+Unique signatures stress the cache cap. Support that depends on binary rules
+is intentionally outside the oracle, even when general DRed can recover it.
+Thus a correct oracle can still be a poor default. Learning or hand-tuning a
+dispatcher on these same cases would require a new held-out evaluation.
+
+\section{Experimental protocol and validation}
+The preserved baseline is commit
+\code{b1254c441731ca4fdf32ea83570ff99aaa84ac2a}. Its original result file and
+manifest are immutable. Commit \code{8ce254f} contains the preceding
+modernization; commit \code{5531be4} records the research implementation and
+evidence. The factorial experiment was run against a source snapshot whose
+hashes and archive are preserved. Its four variants share access-path
+specialization and differ only in fixed/adaptive unary planning and
+ordinary/certificate-guided DRed. The fixed variant is not an archived checkout
+of the historical baseline.
+
+The final v3 protocol defines ten unary cases: five shapes at widths 8 and 64.
+Each uses 2,048 subjects except the overlapping-singleton adversary with 32.
+Eight support cases combine surviving alternate support, unsupported cycles,
+mixed new support, and unique signatures with depth parameters 4 and 32 and
+256 subjects. Depth $d$ generates predicates $C_0$ through $C_d$ plus an answer
+predicate. Nine process blocks and four configurations yield 648 timed workers.
+Seeded Latin-square rotations balance position over groups of four blocks;
+the ninth is not fully balanced. No warm-up samples are discarded.
+
+The primary endpoint is outer wall time of the complete \code{Engine.update},
+including candidate validation, planning, indexing, deletion, and restoration.
+Input generation, hashing, and outcome checks are outside that interval.
+Per-case ratios are medians of the nine within-block ratios. Their paired
+bootstrap intervals are descriptive; nine blocks on one host do not establish
+population-wide significance. Earlier v1/v2 protocols and the failed pilot
+are disclosed. The protocol was saved before the experiment, but was not
+independently timestamped public preregistration.
+
+Every worker checks its full result against fresh materialization and records
+canonical input, rule, assertion, and actual closure hashes. Thirty-six small
+controls additionally use an independently written finite-grounding evaluator.
+The expected transaction digests in the primary artifact should not be confused
+with direct inspection of internal assertion storage; randomized integration
+tests separately compare that storage with independently maintained inputs.
+Seventy-two separate processes measure additional Python allocations with
+\code{tracemalloc}. Instrumented times never enter the timing summaries, and
+these allocations exclude the pre-existing store and untraced native memory.
+
+The host is an Apple M4 Max with 16 reported CPU cores, macOS 26.5.1 arm64,
+Python 3.12.9, and RDFLib 7.6.0. Exclusive host use was not established: an
+unrelated Bach report was rewritten during the primary timing window. Its
+exact CPU overlap is unknown. All original samples are retained. A post-hoc
+support replication used new seeds and 144 fresh workers, after the production
+suite finished, to check the main conditional gain and adverse overhead.
+
+The predeclared engineering screen required adaptive execution to have a
+geometric mean update ratio at most one and no case above 10\% slowdown.
+Certificates required consistent intended benefits and adverse overhead at most
+10\%. Thresholds were not adjusted after the outcomes. The completed research
+validation had 593 tests, including 1,458 exhaustive small relation/delta
+combinations and 1,000 randomized mixed transaction states, plus independent
+thesis-counterexample scripts, lint, and a package build. These validate the
+stated implementation scope, not all OWL semantics.
+
+\section{Results}
+\subsection{Adaptive evaluation: work savings without an end-to-end gain}
+\input{generated/unary-table.tex}
+The geometric mean of the ten paired ratios is 1.001446, with worst case
+1.024637; every descriptive interval includes one. The candidate therefore
+fails its at-most-one geometric-mean adoption requirement. This does not prove
+that adaptation is generally harmful, but it supplies no basis for enabling
+the feature by default.
+
+At width 64 in the dense-selective case, delta-union input visits fall from
+64,512 to zero, while 32 delta-filter visits produce the same 32 body matches.
+Additional traced peak allocation falls only from 79,735,524 to 79,679,418
+bytes. The complete transaction includes large assertion batches and index
+updates, so a favorable kernel transformation need not change user-visible
+latency. For sparse-single updates, the median fraction outside the internal
+evaluator timer is 99.46\% at width 8 and 99.88\% at width 64. This diagnostic
+suggests transaction preparation as a next target, but does not isolate its
+individual causes or prove that all of that time can be removed.
+
+\subsection{Certificates: conditional gains and adverse overhead}
+\input{generated/support-table.tex}
+At supported-cycle depth 32, primary median update times change from 60.161 to
+8.121 ms. The median paired ratio is approximately 0.1343, a 7.45-fold speedup;
+the reciprocal of separately reported medians need not equal that statistic.
+Overdeleted facts fall from 8,704 to zero and reported candidate rows from
+17,920 to 256. One shared signature takes 35 dependency visits. Additional
+traced peak allocation falls from 6,418,467 to 3,029,976 bytes, or 52.8\%.
+This is update allocation, not a total-process memory reduction.
+
+On unsupported cycles, certificate checks cannot prove surviving entry support.
+The cycles are correctly removed, but the additional work causes paired
+overhead of 18.96\% and 18.59\%. Both exceed the 10\% screen. Unique signatures
+exhaust the context cap: at depth 32, half the 256 contexts are protected while
+4,352 facts are still overdeleted. The resulting ratio is approximately 0.7907.
+At the shallow depth, partial time savings coexist with increased allocation.
+
+The separate support replication preserves the finding: depth-32 alternate
+support has ratio 0.132315, or 7.56-fold speedup, while unsupported cycles have
+ratios 1.1784 and 1.1879. All 144 workers match the original case outcome hashes
+and fresh reference closures. This post-hoc study does not replace the primary
+observations or convert a workload-specific result into a general claim.
+\input{generated/support-figure.tex}
+
+\subsection{Earlier production comparison with the fixed local baseline}
+At commit \code{5531be4}, production kept union-first unary planning and ordinary
+DRed; only the tested unary/binary lookup specialization was enabled from that
+research phase. Its thesis suite contains 54 cases with five observations each. All 270
+runs pass their checks; 51 cases match the preserved baseline's input hashes,
+and three Bach additions are outside it. Table~\ref{tab:historical} reports
+selected longitudinal comparisons, including costs. The full artifacts retain
+all results, so this selection is not a summary of aggregate superiority.
+\input{generated/historical-table.tex}
+
+Large cumulative gains on factored-union workloads and schema queries include earlier
+modernization. They cannot be attributed to the experimental certificates or
+adaptive selector, which are disabled. Sequential historical runs also differ
+in environmental noise. The worst recorded materialization regression against
+\code{b1254c4} is approximately 13.46\% on taxonomy D7/I9/P0. Neither this
+single number nor an isolated large improvement substitutes for matched
+competitive external evaluation.
+
+\section{Established benchmarks and external evaluation}
+\label{sec:external}
+\input{external-evaluation.tex}
+
+\input{followup-experiments.tex}
+
+\input{lookahead-experiment.tex}
+
+\input{hermit-evaluation.tex}
+
+\input{bach-comparison.tex}
+
+\input{final-production.tex}
+
+\input{profile-assessment.tex}
+
+\appendix
+\section{Reproducibility and provenance}
+\label{app:repro}
+The original thesis file has SHA-256
+\begin{quote}\small\ttfamily
+80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570
+\end{quote}
+and the pinned \code{b1254c4} result file has SHA-256
+\begin{quote}\small\ttfamily
+6f0bc493cae0fb96b474405eb9496dc9ce2c3155b313f2bcd3de49b3dc8b51e2.
+\end{quote}
+The source archive, protocols, raw primary observations, post-hoc replication,
+and final production observations are distinct files. Their measurement
+boundaries must remain distinct when recomputing summaries. Tables of our new
+benchmark measurements are generated from these JSON artifacts. Published
+reference values are separately attributed to their sources. The preparation
+script records input digests.
+
+The principal existing checks and reproduction commands are:
+\begin{verbatim}
+uv sync --extra dev --locked
+uv run pytest -q
+uv run ruff check src tests benchmarks scripts
+uv run python scripts/check_thesis_logic.py
+uv run python scripts/check_thesis_errata.py
+uv run python scripts/validate_research_artifacts.py
+uv run python scripts/replay_support_research.py \
+  --output /tmp/dlp-support-reproduction.json
+uv run python -m benchmarks.run --suite thesis --repeats 5 \
+  --output /tmp/dlp-thesis-reproduction.json
+\end{verbatim}
+Heavy timed reproductions should run sequentially. They record their own source
+and runtime state and are not replacements for the archived observations.
+The raw primary worker assertion/rule digests describe the expected candidate;
+the integration tests independently check the actual internal candidate state.
+The post-hoc replication checks original-report, driver, protocol, and source
+hashes and uses seeds 3000--3008.
+
+The manuscript uses George Kour's MIT-licensed \code{arxiv-style} template,
+pinned by commit and file digest in \code{template-provenance.json}. This is a
+community preprint style, not an official arXiv endorsement. The source package
+includes the local style and compiled bibliography, uses standard pdfLaTeX
+packages, requires no shell escape, and can be rebuilt without benchmark
+execution or network access. The repository's paper README documents the
+build, external dataset preparation, and packaging commands.
+
+\setlength{\bibsep}{1pt}
+\renewcommand{\bibfont}{\small\raggedright}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

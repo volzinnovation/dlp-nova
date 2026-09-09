@@ -1,0 +1,20 @@
+\subsection{Follow-up measurements}
+\input{generated/zodiac-table.tex}
+\input{generated/zodiac-facts-table.tex}
+\input{generated/tpch-joins-table.tex}
+\input{generated/tpch-total-table.tex}
+
+\subsection{An actual external engine on the same host}
+The comparator uses the pinned, unmodified ZodiacEdge Program API and parser.
+Its unary atoms use physical RDF type triples, whereas our store uses unary
+relations. An injective encoding retains RDF term identity, and both outputs
+are decoded to the same typed tuples for complete closure checks. Native input
+index creation is included in initial compute. Conversion is recorded separately
+and excluded from both implementations' compute intervals. Native whole-process
+RSS includes adapter allocations, so it is not an isolated engine-memory ranking.
+The program has no predicate variables; fixed predicate labels and injectively
+encoded data constants occupy separate namespaces. Translating unary atoms to
+type triples and binary atoms to property triples therefore gives a bijection
+between rule substitutions. This validates the adapter's semantic contract;
+full-run checks still test the engines' actual computation.
+\input{generated/zodiac-native-table.tex}

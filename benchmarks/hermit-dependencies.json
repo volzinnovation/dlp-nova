@@ -1,0 +1,77 @@
+{
+  "distribution": "net.sourceforge.owlapi:org.semanticweb.hermit:1.4.5.519",
+  "owlapi": "5.1.9",
+  "artifacts": [
+    {
+      "name": "org.semanticweb.hermit-1.4.5.519.jar",
+      "url": "https://repo.maven.apache.org/maven2/net/sourceforge/owlapi/org.semanticweb.hermit/1.4.5.519/org.semanticweb.hermit-1.4.5.519.jar",
+      "sha256": "722e79b4d1e11dd08ecc90b1bf65a7c7342cd25ca7ec2664e3a18235bfc6f278",
+      "size": 1928486
+    },
+    {
+      "name": "owlapi-osgidistribution-5.1.9.jar",
+      "url": "https://repo.maven.apache.org/maven2/net/sourceforge/owlapi/owlapi-osgidistribution/5.1.9/owlapi-osgidistribution-5.1.9.jar",
+      "sha256": "b6b226a4330e45f912e62838bbe7cc2a0e2fdefa974f173972f93d178c9fdc47",
+      "size": 10357068
+    },
+    {
+      "name": "trove4j-3.0.3.jar",
+      "url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar",
+      "sha256": "3c8616203d61a12a7e3487e8b34f3c198c2b5ba9e90da0c7ea32d99cd4958012",
+      "size": 2523218
+    },
+    {
+      "name": "guava-18.0.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar",
+      "sha256": "d664fbfc03d2e5ce9cab2a44fb01f1d0bf9dfebeccc1a473b1f9ea31f79f6f99",
+      "size": 2256213
+    },
+    {
+      "name": "slf4j-api-1.7.22.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.22/slf4j-api-1.7.22.jar",
+      "sha256": "3a4cd4969015f3beb4b5b4d81dbafc01765fb60b8a439955ca64d8476fef553e",
+      "size": 41077
+    },
+    {
+      "name": "slf4j-nop-1.7.22.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-nop/1.7.22/slf4j-nop-1.7.22.jar",
+      "sha256": "feb0fa75202caba910801bd100940282680537755eb728f28a1db51d23903e55",
+      "size": 4007
+    },
+    {
+      "name": "commons-io-2.5.jar",
+      "url": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.5/commons-io-2.5.jar",
+      "sha256": "a10418348d234968600ccb1d988efcbbd08716e1d96936ccc1880e7d22513474",
+      "size": 208700
+    },
+    {
+      "name": "commons-codec-1.10.jar",
+      "url": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.jar",
+      "sha256": "4241dfa94e711d435f29a4604a3e2de5c4aa3c165e23bd066be6fc1fc4309569",
+      "size": 284184
+    },
+    {
+      "name": "commons-logging-1.2.jar",
+      "url": "https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
+      "sha256": "daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636",
+      "size": 61829
+    },
+    {
+      "name": "org.apache.servicemix.bundles.javax-inject-1_2.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/servicemix/bundles/org.apache.servicemix.bundles.javax-inject/1_2/org.apache.servicemix.bundles.javax-inject-1_2.jar",
+      "sha256": "3f0540bb6d56269b17fe4897a1197f48e07d63b993c8b73a48b63e0cdc76a4bb",
+      "size": 10879
+    },
+    {
+      "name": "java-getopt-1.0.13.jar",
+      "url": "https://repo.maven.apache.org/maven2/gnu/getopt/java-getopt/1.0.13/java-getopt-1.0.13.jar",
+      "sha256": "f09dc6369ffc4fe4362cbd49b6ac6c4a7471375ac5d884c71b0a625a889c38c4",
+      "size": 59788
+    }
+  ],
+  "nested_jar_exclusions": [
+    "commons-logging-1.1.3.jar",
+    "lib/jcl-over-slf4j-1.7.22.jar"
+  ],
+  "exclusion_reason": "Use explicit commons-logging1.2 and slf4j-nop1.7.22; avoid duplicate JCL implementations."
+}

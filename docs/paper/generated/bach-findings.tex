@@ -1,0 +1,5 @@
+The full Bach ontology gave identical answers to all 25 questions in the three supported systems. Median complete-task time was 55.6 ms for the current reasoner, 89.5 ms for the preserved earlier implementation, and 347.4 ms for HermiT.
+
+All four systems agreed on the complete family answers when each resulting state was computed from scratch. During incremental fact replacement, however, the pinned ZodiacEdge implementation failed exact-answer validation in every second (6/12) process. This task therefore receives no ZodiacEdge timing ranking. The current and earlier implementations passed every tested update and restoration. Detailed phase and process times are given in the supplement.
+
+ZodiacEdge had lower task times on all four family reconstructions and both rule changes. For the original family, its median task time was 4.4 ms, compared with 7.5 ms for the current reasoner. Including process startup, checking and shutdown, the corresponding medians were 137.9 and 135.6 ms. The timing boundary therefore matters on these small inputs.
