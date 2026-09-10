@@ -6,7 +6,7 @@ Review date: 2026-09-09.
 *Web Ontology Reasoning with Logic Databases* (2004), [Volltext.pdf](Volltext.pdf).
 The source PDF's SHA-256 is `80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570`.
 
-*Important:* All page references use **printed page numbers**. Add **16**, so the printed page 136 is PDF page 152 in the digital PDF. Suspect formulas and tables were checked visually in rendered pages, because text extraction can move superscripts and change apparent formulas.
+*Important:* All page references use **printed page numbers**. Add **16**, so the printed page 136 is PDF page 152 in the digital PDF. 
 
 There are confirmed formula errors, substantive errors in some stated reasoning procedures, and internal inconsistencies in benchmark descriptions. **These findings do not establish that the historical KAON implementation made the same mistakes or that its recorded execution times are wrong**. 
 
