@@ -1,16 +1,20 @@
 # Thesis errata and required corrections
+*Mea culpa, maxima culpa* (Raphael Volz (original author)
 
-Review date: 2026-09-09. Source: Raphael Volz, *Web Ontology Reasoning with Logic Databases* (2004), [Volltext.pdf](Volltext.pdf). These are findings from this implementation review, not an author-issued errata list. The source PDF's SHA-256 is `80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570`.
+Review date: 2026-09-09. 
 
-All page references use **printed page numbers**. Add 16 for the one-based PDF page: printed p. 136 is PDF page 152. Suspect formulas and tables were checked visually in rendered pages, because text extraction can move superscripts and change apparent formulas.
+*Web Ontology Reasoning with Logic Databases* (2004), [Volltext.pdf](Volltext.pdf).
+The source PDF's SHA-256 is `80146ec324e0a7c342508e38cbe7712f207db8917d6655cd70b9acbcaee2f570`.
 
-There are confirmed local formula errors, substantive errors in some stated reasoning procedures, and internal inconsistencies in benchmark descriptions. These findings do not establish that the historical KAON implementation made the same mistakes or that its recorded execution times are wrong. This was a focused review of chapters 5–8 and relevant definitions, not an exhaustive verification of every proof or citation.
+*Important:* All page references use **printed page numbers**. Add **16** for the one-based PDF page: printed p. 136 is PDF page 152 in the digital PDF. Suspect formulas and tables were checked visually in rendered pages, because text extraction can move superscripts and change apparent formulas.
+
+There are confirmed formula errors, substantive errors in some stated reasoning procedures, and internal inconsistencies in benchmark descriptions. **These findings do not establish that the historical KAON implementation made the same mistakes or that its recorded execution times are wrong**. 
+
+This was a focused review more than two decades after the writing of chapters 5–8 and relevant definitions, not an exhaustive verification of every proof or citation.
 
 ## Semantic basis for the corrections
 
-The README previously said that the thesis's FOL semantics takes precedence over apparent formula slips. **FOL means first-order logic.** The intended point was to implement the stated description-logic meaning of the constructors, cross-checking inconsistent formulas against correct definitions and examples elsewhere in the thesis. For example, a subproperty inclusion must propagate an edge to the superproperty.
-
-That wording was too broad: p. 123 does not itself supply a blanket license to replace any formula, and the newly reviewed issues are not all typesetting slips. Each correction needs its own evidence. The [2004 OWL direct semantics](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/direct.html) provides an independent primary reference for class/property inclusion, inverse properties, and equality without a unique-name assumption.
+The [2004 OWL direct semantics](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/direct.html) provides an independent primary reference for class/property inclusion, inverse properties, and equality without a unique-name assumption, **the thesis was written before those definitions**.
 
 ## Confirmed local formula errors
 
