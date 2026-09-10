@@ -152,16 +152,7 @@ These corrections are conditional on the prose generator being authoritative. Th
 
 Two further small issues require these replacements: on p. 134 use `n` naive checks for retrieving the `n` classes of one given individual, reserving `n×m` for all `m` individuals. In Table 7.1's L3 existential row on p. 184, put the right-side translation marker in the head; `φᴿ(∃R.C,x) :- B` generates `C(fᵢ(x)) :- B` and `R(x,fᵢ(x)) :- B`, with well-formed parentheses. For a complex filler `C`, continue its structural head translation.
 
-## Reproducible checks and effect on this implementation
-
-The following dependency-free scripts check finite countermodels, Boolean formulas, the printed maintenance rules, and numerical identities without using this repository's reasoner as an oracle:
-
-```sh
-python3 scripts/check_thesis_logic.py
-python3 scripts/check_thesis_errata.py
-```
-
-See [logical counterexamples](../scripts/check_thesis_logic.py) and [maintenance and arithmetic checks](../scripts/check_thesis_errata.py). The finite checks substantiate the counterexamples; they are not a proof of the correctness of an entire replacement reasoner.
+## Effects on this implementation
 
 The corrected implementation and its regression coverage are mapped below. Historical regression figures and counts are corrected analytically; no historical raw data or KAON source is available in this repository to reconstruct its original experiments.
 
@@ -177,4 +168,4 @@ The corrected implementation and its regression coverage are mapped below. Histo
 | Benchmark counts and labels | Generators assert actual class, individual, filler, and restriction counts; P1 excludes root individuals; maintenance follows its separate root-inclusive population | `tests/test_benchmark_workloads.py`, corrected cardinality and maintenance benchmark cases |
 | New performance evidence | Full suite rerun with five samples per case, raw input/source hashes, validation after every update, and preserved prior observations | [Results](../benchmarks/results.md), [raw data](../benchmarks/results.json), [baseline](../benchmarks/baseline-results.json) |
 
-The matching CLI commands expose the corrected class and property queries. Equality and existential retractions retain explicit rematerialization fallbacks. These changes validate the modern replacement within its documented scope; they do not certify the historical implementation or recreate unavailable experimental data. Full test and build results are recorded in [VALIDATION.md](VALIDATION.md).
+Full test and build results are recorded in [VALIDATION.md](VALIDATION.md).
