@@ -1,6 +1,6 @@
 # Engine extension specification: temporal, spatial and mobile execution
 
-Implementation specification · 10 September 2026 · proposed production interfaces
+Implementation specification · 10 September 2026 · versioned extension interfaces
 
 The next release should answer two concrete questions: **at what age did a
 parent have their earliest recorded child, and which signs of an inferred
@@ -11,10 +11,10 @@ and road distance, and between a successful empty answer and failed computation.
 This specification turns the [research](TEMPORAL_GEOSPATIAL_RESEARCH.md),
 [provider contract](EXTERNAL_PROVIDERS.md) and
 [mobile design](MOBILE_RUNTIME_PROPOSAL.md) into implementation work and acceptance
-criteria. The new examples contain current executable DLP ontologies and separate
-reference computations. **Their `.rules.proposed` files are not supported engine
-input.** No new production operator, aggregate, mobile runtime or OSM importer is
-implemented by this document or by the example-only mappers/checkers.
+criteria. See the [implementation guide](ENGINE_EXTENSION_IMPLEMENTATION.md) for
+the implemented APIs, executable `.dlq` examples, validation evidence and remaining
+release gates. The `.rules.proposed` files remain unsupported historical design
+notation; the reference checkers remain independent calculations.
 
 ## 1. Deliverables and compatibility
 
@@ -32,7 +32,8 @@ The implementation must eventually have three equivalent execution paths:
 “Equivalent” means the same declared semantic profile, operation implementations,
 data revisions and completeness rules. Desktop Python convenience libraries may
 have different bundled versions; matching names alone does not establish parity.
-The current native backend is only the relation/join stage of this migration.
+The established native backend supplies the resident relation/join stage; the
+implementation guide distinguishes that backend from the standalone native core.
 
 The first feature release includes scoped `MIN` for Bach. This moves that
 aggregate ahead of the broader aggregate/temporal-logic exploration in the
@@ -368,7 +369,9 @@ using a native library.
 
 ## 10. Implementation backlog and release gates
 
-All production work below remains open. The examples and contracts establish
+The table below records the required work and acceptance gates. The
+[implementation status](ENGINE_EXTENSION_IMPLEMENTATION.md#remaining-release-work)
+identifies completed work and remaining qualification. The examples and contracts establish
 reviewable acceptance fixtures; they are not evidence these tasks are implemented.
 
 | ID | Work / current source seam | Dependencies | Completion evidence |

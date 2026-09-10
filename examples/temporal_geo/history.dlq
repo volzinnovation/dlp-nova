@@ -1,0 +1,28 @@
+version 1
+# Valid time and recorded time are independent, explicitly supplied probes.
+prefix query: <urn:dlp:history-query:>
+prefix time: <urn:dlp:temporal:>
+
+query:recordProbe(?recordAt) :- query:probe(?validAt, ?recordAt).
+query:recordStart(?start) :- query:openVersion(?id, ?sign, ?kmh, ?vStart, ?vEnd, ?start).
+query:started(?start, ?at) :- query:recordStart(?start), query:recordProbe(?at),
+    filter time:before(?start, ?at).
+query:started(?start, ?at) :- query:recordStart(?start), query:recordProbe(?at),
+    filter time:equal(?start, ?at).
+
+query:speed(?sign, ?kmh, ?version) :-
+    query:probe(?validAt, ?recordAt),
+    query:closedVersion(?version, ?sign, ?kmh, ?vStart, ?vEnd, ?rStart, ?rEnd),
+    bind time:interval(?vStart, ?vEnd) as ?valid,
+    bind time:interval(?rStart, ?rEnd) as ?recorded,
+    filter time:contains(?valid, ?validAt),
+    filter time:contains(?recorded, ?recordAt).
+
+# An explicitly open recorded interval is a distinct input relation. An unknown
+# endpoint must not silently enter this relation or become an infinity literal.
+query:speed(?sign, ?kmh, ?version) :-
+    query:probe(?validAt, ?recordAt),
+    query:openVersion(?version, ?sign, ?kmh, ?vStart, ?vEnd, ?rStart),
+    query:started(?rStart, ?recordAt),
+    bind time:interval(?vStart, ?vEnd) as ?valid,
+    filter time:contains(?valid, ?validAt).

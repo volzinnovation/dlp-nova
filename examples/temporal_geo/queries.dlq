@@ -1,0 +1,28 @@
+version 1
+# Executable rules over explicitly selected snapshot and window relations.
+prefix query: <urn:dlp:event-query:>
+prefix time: <urn:dlp:temporal:>
+prefix sp: <urn:dlp:spatial:>
+
+query:nearbyStop(?sign, ?lane) :-
+    query:sign(?sign, ?geometry, ?lane, ?start, ?end),
+    query:stop(?sign), query:probe(?at), query:fence(?center, ?radius),
+    bind time:interval(?start, ?end) as ?valid,
+    filter time:contains(?valid, ?at),
+    filter sp:planarDwithin(?geometry, ?center, ?radius).
+
+query:applicableStop(?sign) :-
+    query:nearbyStop(?sign, ?lane), query:requestedLane(?lane).
+
+query:inside(?event, ?vehicle) :-
+    query:active(?event, ?at, ?vehicle, ?geometry),
+    query:fence(?center, ?radius),
+    filter sp:planarDwithin(?geometry, ?center, ?radius).
+
+# previous is maintained by the window source, ordered by (time,event ID).
+# Explicit false from a successful geometry operation establishes outside.
+# Missing predecessor or a failed provider call cannot establish an entry.
+query:entry(?event, ?vehicle) :-
+    query:inside(?event, ?vehicle), query:previous(?event, ?geometry),
+    query:fence(?center, ?radius), query:falseValue(?outside),
+    bind sp:planarDwithin(?geometry, ?center, ?radius) as ?outside.

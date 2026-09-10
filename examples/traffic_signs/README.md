@@ -1,19 +1,27 @@
 # Traffic-sign taxonomy and map-linked examples
 
-This example classifies signs with the existing DLP reasoner and supplies
-separate distance references for the proposed geographic and routing extensions.
+This example classifies signs with the DLP reasoner, executes indexed geographic
+queries and supplies independent distance references.
 The ontology is runnable in **L0 with both Python and native relation backends**.
-The proposed built-ins are not implemented or executed here.
+The versioned `.dlq` rules execute WGS84 points/distances and finite spatial scans.
 
 ```sh
 .venv/bin/python examples/traffic_signs/generate.py --check
 .venv/bin/python examples/traffic_signs/check.py --backend both
+.venv/bin/python examples/traffic_signs/run_queries.py --backend both
 ```
 
 The second command needs a C++17 compiler for the existing native backend's first
 cached build. Use `--backend python` for the dependency-free reference path beyond
 the repository's existing Python/RDFLib installation. No new dependencies, road
 downloads, network requests, or provider installations are required.
+
+`queries.dlq` combines inferred categories with candidate scans and exact
+ellipsoidal refinement. `road-queries.dlq` uses an explicitly versioned directed
+road provider and keeps unreachable outcomes observable. The production runtime
+tests exercise all road fixture cases and node-move cache invalidation. See the
+[implementation guide](../../docs/ENGINE_EXTENSION_IMPLEMENTATION.md) for APIs
+and the distinction between this regional graph and a map-matching router.
 
 ## Retained source and explicit hierarchy
 

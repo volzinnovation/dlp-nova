@@ -1,6 +1,23 @@
 # Temporal and geographic design fixtures
 
-These are **synthetic reference examples for a proposed extension**. They do not run through the current DLP engine, and `queries.rules.proposed` is **unsupported design notation**, not new parser syntax. The ordinary thesis examples elsewhere in `examples/` retain their existing meaning.
+These synthetic fixtures now have both independent reference calculations and
+an executable rule driver. `queries.rules.proposed` remains unsupported historical
+design notation; `queries.dlq` uses the versioned production query language. The
+ordinary thesis examples elsewhere in `examples/` retain their existing meaning.
+
+```sh
+# Optional installed GEOS C library required:
+uv run python examples/temporal_geo/run_queries.py --backend both
+```
+
+The driver executes temporal validity, projected radius, lane assertions and
+geofence-entry rules. `WindowStore`/`NativeWindowStore` supply explicit active/predecessor relations,
+accepts the configured late correction, checkpoints/restores state and expires
+rows while idle. `history.dlq` executes the separate valid/recorded-time speed
+correction cases, including the full local C++ query path. All geometry results come through the GEOS provider; failures
+prevent complete result publication. The driver verifies actual entry additions
+and retractions. Richer proposed stream operators below retain their independent
+reference coverage.
 
 Run the independent, standard-library checker from the repository root:
 

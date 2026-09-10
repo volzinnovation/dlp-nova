@@ -1,0 +1,42 @@
+version 1
+# Executable WGS84 point and hierarchical sign-category queries.
+prefix sign: <https://example.org/traffic-sign#>
+prefix osm: <https://example.org/osm#>
+prefix sp: <urn:dlp:spatial:>
+prefix num: <urn:dlp:numeric:>
+prefix query: <urn:dlp:traffic-query:>
+
+sign:point(?sign, ?point) :-
+    sign:TrafficSign(?sign), sign:locatedAtNode(?sign, ?node),
+    query:validatedLocation(?sign, ?node),
+    osm:latitude(?node, ?latitude), osm:longitude(?node, ?longitude),
+    bind sp:wgs84Point(?longitude, ?latitude) as ?point.
+
+# rdf:type is the named-class membership view of the completed DLP ontology.
+# The provider enumerates a conservative finite candidate set, then the rules
+# refine it using exact WGS84 geodesic distance. Radius boundaries are inclusive.
+query:categoryCandidate(?anchor, ?candidate, ?radius) :-
+    query:search(?anchor, ?category, ?radius, ?snapshot),
+    sign:point(?anchor, ?point),
+    scan sp:pointCandidates(?point, ?radius, ?snapshot) as ?candidate,
+    rdf:type(?candidate, ?category).
+
+query:requestedPair(?anchor, ?candidate) :-
+    query:categoryCandidate(?anchor, ?candidate, ?radius).
+
+sign:signDistance(?from, ?to, ?metres) :-
+    query:requestedPair(?from, ?to),
+    sign:point(?from, ?point1), sign:point(?to, ?point2),
+    bind sp:wgs84Distance(?point1, ?point2) as ?metres.
+
+query:nearby(?anchor, ?candidate, ?metres) :-
+    query:categoryCandidate(?anchor, ?candidate, ?radius),
+    sign:signDistance(?anchor, ?candidate, ?metres),
+    bind num:toFloat(?radius) as ?radiusFloat,
+    filter num:floatLessThanOrEqual(?metres, ?radiusFloat).
+
+# A road-route association does not prove reachability or legal applicability.
+query:sameRoadRoute(?s1, ?s2, ?route) :-
+    query:requestedPair(?s1, ?s2),
+    sign:onRoadSegment(?s1, ?way1), sign:onRoadSegment(?s2, ?way2),
+    osm:partOfRoad(?way1, ?route), osm:partOfRoad(?way2, ?route).

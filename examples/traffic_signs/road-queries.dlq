@@ -1,0 +1,17 @@
+version 1
+# Exact shortest supplied edge lengths on a pinned directed regional graph.
+# This adapter has no map matching, turn restrictions or sign applicability.
+prefix sign: <https://example.org/traffic-sign#>
+prefix road: <urn:dlp:road:>
+prefix provider: <urn:dlp:provider:>
+prefix query: <urn:dlp:traffic-query:>
+
+query:roadResult(?from, ?to, ?result) :-
+    query:requestedRoadPair(?from, ?to, ?profile),
+    sign:locatedAtNode(?from, ?start), sign:locatedAtNode(?to, ?end),
+    bind road:shortestDistance(?start, ?end, ?profile) as ?result.
+
+sign:roadDistance(?from, ?to, ?metres) :-
+    query:roadResult(?from, ?to, ?result),
+    filter provider:isOK(?result),
+    bind provider:value(?result) as ?metres.

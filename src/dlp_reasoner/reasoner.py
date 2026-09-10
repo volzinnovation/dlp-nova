@@ -196,9 +196,9 @@ class Reasoner:
             raise InconsistentOntologyError(
                 "The ontology is inconsistent; inspect consistency/stats. "
                 "Ordinary query results are not meaningful under classical explosion.")
-        if exhaustive and not self.complete:
+        if not self.complete and (exhaustive or "failure" in self.engine.stats):
             raise IncompleteReasoningError(
-                "Materialization reached a resource limit; the complete answer is unknown.")
+                "Materialization did not complete; the requested answer is unknown.")
 
     def _aliases(self, term, include_witnesses=False):
         aliases = self.engine.equivalents(term)
@@ -496,10 +496,16 @@ class Reasoner:
         self.clear_query_cache()
         schema = self._schema_cache
         try:
-            self.engine.update(add=program.facts - self.program.facts,
-                               remove=self.program.facts - program.facts,
-                               add_rules=candidate_rules - current_rules,
-                               remove_rules=current_rules - candidate_rules)
+            if "failure" in self.engine.stats:
+                # A failed legacy mutation may have changed engine assertions
+                # without committing the RDF source. Rebuild from that source's
+                # validated candidate, never from partially applied assertions.
+                self.engine = Engine(program, **self.engine_options).materialize()
+            else:
+                self.engine.update(add=program.facts - self.program.facts,
+                                   remove=self.program.facts - program.facts,
+                                   add_rules=candidate_rules - current_rules,
+                                   remove_rules=current_rules - candidate_rules)
         finally:
             # Also discard reentrant answers if a partially applied operation
             # raises; no old answer may be mistaken for the resulting state.

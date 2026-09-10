@@ -6,7 +6,7 @@ import pytest
 from rdflib import Graph, Namespace, OWL, RDF
 
 from dlp_reasoner import Reasoner
-from dlp_reasoner.model import Atom
+from dlp_reasoner.model import Atom, IncompleteReasoningError
 
 
 EX = Namespace("urn:query-cache-reentrancy:")
@@ -68,9 +68,20 @@ def test_failed_update_discards_answers_from_before_partial_mutation(reasoner, m
 
     assert observations == [set()]
     assert Atom(EX.A, (EX.a,)) in reasoner.engine.facts
-    # The cache must agree with the surviving engine state even though the
-    # interrupted operation did not commit the RDF source graph.
+    # Surviving facts remain inspectable, but a failed mutation cannot authorize
+    # query answers, including positive answers after an interrupted deletion.
     assert (EX.a, RDF.type, EX.A) not in reasoner.graph
-    assert reasoner.instances(EX.A) == {EX.a}
-    assert EX.A in reasoner.types(EX.a)
-    assert reasoner.entails(EX.a, RDF.type, EX.A)
+    assert not reasoner.complete
+    with pytest.raises(IncompleteReasoningError):
+        reasoner.instances(EX.A)
+    with pytest.raises(IncompleteReasoningError):
+        reasoner.types(EX.a)
+    with pytest.raises(IncompleteReasoningError):
+        reasoner.entails(EX.a, RDF.type, EX.A)
+    # Recovery must use committed RDF inputs, not the failed assertion remaining
+    # in the old engine. No-op RDF update rebuilds the authoritative snapshot.
+    monkeypatch.setattr(reasoner.engine, "_store", original)
+    reasoner.update()
+    assert reasoner.complete
+    assert reasoner.instances(EX.A) == set()
+    assert not reasoner.entails(EX.a, RDF.type, EX.A)

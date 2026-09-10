@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from decimal import Decimal
-from functools import partial
+from functools import partial, wraps
 import math
 from time import perf_counter
 from typing import Iterable
@@ -87,6 +87,25 @@ def _literal_key(term):
 def _distinct_literals(left, right):
     a, b = _literal_key(left), _literal_key(right)
     return a is not None and b is not None and a != b
+
+
+def _incomplete_on_failure(method):
+    """Never leave a failed mutation advertised as a complete materialization."""
+    @wraps(method)
+    def guarded(self, *args, **kwargs):
+        revision = self._revision
+        try:
+            return method(self, *args, **kwargs)
+        except BaseException as exc:
+            # Validation failures before a transaction starts preserve the old
+            # complete state. Once mutation starts, even cancellation invalidates
+            # complete-answer caches through the revision/completeness token.
+            if self._revision != revision:
+                self.complete = False
+                self.stats["complete"] = False
+                self.stats["failure"] = type(exc).__name__
+            raise
+    return guarded
 
 
 class _Index:
@@ -850,6 +869,7 @@ class Engine:
                 self._stop(f"max_facts={self.max_facts} exceeded by a candidate batch")
             first = False
 
+    @_incomplete_on_failure
     def materialize(self):
         self._start_stats("materialize", "full")
         self.complete = True
@@ -1038,6 +1058,7 @@ class Engine:
                     list(self._heads(rule))
         return True
 
+    @_incomplete_on_failure
     def update(self, add: Iterable[Atom] = (), remove: Iterable[Atom] = (), *,
                add_rules: Iterable[Rule] = (), remove_rules: Iterable[Rule] = ()):
         """Validate and apply one fact/rule transaction; additions win overlap.

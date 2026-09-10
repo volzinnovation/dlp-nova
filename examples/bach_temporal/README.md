@@ -1,14 +1,15 @@
 # Bach: age at the earliest known child's birth
 
 This worked extension keeps the thesis's historical example files unchanged.
-It separates **executable current DLP facts/classification** from **proposed
-date functions and aggregates**. It is a selected dataset for explaining engine
+It combines DLP facts/classification with **executable date functions and scoped
+aggregates**, while retaining independent reference calculations. It is a selected dataset for explaining engine
 semantics, not a complete or authoritative Bach genealogy.
 
 Run from the repository root with the existing project environment:
 
 ```sh
 .venv/bin/python examples/bach_temporal/reference_checks.py --backend both
+.venv/bin/python examples/bach_temporal/run_queries.py --backend both
 ```
 
 The native check needs the existing optional backend's C++17 compiler. Use
@@ -18,20 +19,23 @@ or temporal native libraries are required by the checker.
 | File | What executes today |
 | --- | --- |
 | [bach-temporal.dlp](bach-temporal.dlp) | Current DLP syntax; materializes under L0, with explicit person/child/date records and inferred Father/Mother classes. It can also be merged with `../bach.dlp` under L3. |
-| [queries.rules.proposed](queries.rules.proposed) | Design notation only. `MIN`, queries, validation relations and `time:completedYears` are not supported by the current parser or engine. |
+| [queries.rules.proposed](queries.rules.proposed) | Historical unsupported design notation; use the versioned `.dlq` file for execution. |
+| [queries.dlq](queries.dlq), [run_queries.py](run_queries.py) | Parsed rules execute scoped `MIN`, tied-child join-back and `time:completedYears` on both backends, with accepted-date selection and explicit completeness certificates. |
 | [reference_checks.py](reference_checks.py) | Runs the real DLP closure and insertion/deletion operations on the chosen backends, then independently computes the proposed finite temporal answers in Python. |
 | [expected.json](expected.json) | Reviewable expected answers and earlier-child update results; JSON `null` means no answer, not an RDF literal or a zero age. |
 
 The checker verifies that Python/native base fact closures agree and that the
 extension composes with the original L3 example. Computed temporal ages are
 **not** inserted into that closure. A passing check validates these fixtures;
-it does not establish implementation of aggregates, native date functions or
-incremental aggregate maintenance.
+it does not establish implementation of aggregates or native date functions.
+The separate `run_queries.py` driver and `tests/test_query_runtime.py` execute
+those features and verify correction/retraction behavior. Native built-ins use
+the bundled date library; no network access is required.
 
 The ontology declares `bt:fatherAtAgeKnown`, `bt:motherAtAgeKnown`,
-`bt:fatherAtAge` and `bt:motherAtAge` as datatype properties. A future derived RDF
-view would export the known-age results as the following triples; these are
-expected output, not input assertions or output produced by today's engine:
+`bt:fatherAtAge` and `bt:motherAtAge` as datatype properties. The query runtime
+returns known-age relations separately from the ontology closure. An RDF exporter
+can map those rows to the following triples; they are not input assertions:
 
 ```turtle
 @prefix bach: <http://www.jsbach.org/bach#> .
@@ -46,7 +50,7 @@ Age is **completed Gregorian calendar years**, using the explicit March-1
 anniversary policy for February-29 births in common years. It is not elapsed
 days divided by 365, and this policy is not a legal age rule.
 
-| Parent | Earliest accepted exact child date in this selected dataset | Proposed known-age answer |
+| Parent | Earliest accepted exact child date in this selected dataset | Known-age answer |
 | --- | --- | --- |
 | Johann Sebastian | Catharina Dorothea, 1708-12-27 | `fatherAtAgeKnown = 23` |
 | Maria Barbara | Catharina Dorothea, 1708-12-27 | `motherAtAgeKnown = 24` |
@@ -121,7 +125,8 @@ Magdalena. Interval/uncertain-date reasoning is separate future work.
    validated normalized date value per person. Duplicate claims of that same value
    do not multiply children; different dates are a conflict. Never take the minimum
    of a person's conflicting birthdate assertions. Current DLP treats these literals
-   as ordinary terms; the reference checker owns this extra validation.
+   as ordinary terms; `BirthDateView` owns the production selection stage and
+   the reference checker independently checks the fixture.
 2. **Compute a grouped minimum after the positive stratum stabilizes.** Group by
    parent within an explicit dataset/scope and revision. Empty input emits no
    minimum. Join the minimum date back to child rows to retain every tied child;

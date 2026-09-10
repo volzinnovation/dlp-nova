@@ -210,11 +210,11 @@ def _library(path):
                 function = getattr(library, name)
                 function.argtypes, function.restype = arguments, result
             if library.dlp_abi_version() != _ABI_VERSION:
-                raise NativeBackendError(f"Native backend ABI mismatch in {path}; rebuild its cache.")
+                raise NativeBackendError(f"Native backend ABI mismatch in {path}; provide ABI {_ABI_VERSION} or rebuild it.")
         except (OSError, AttributeError) as exc:
             raise NativeBackendError(
-                f"Cannot load native backend {path}: {exc}. Remove this cache entry and rebuild "
-                "with a compatible C++17 compiler, or select backend='python'."
+                f"Cannot load native backend {path}: {exc}. Provide a compatible library via "
+                "DLP_NATIVE_LIBRARY, build with a C++17 compiler, or select backend='python'."
             ) from exc
         _LIBRARIES[path] = library
         return library
@@ -247,7 +247,9 @@ class NativeContext:
 
     def __init__(self, missing, *, compiler=None, cache_dir=None):
         self.missing = missing
-        self.library_path = build_native(compiler, cache_dir)
+        configured = os.environ.get("DLP_NATIVE_LIBRARY")
+        self.library_path = (Path(configured).expanduser().resolve() if configured
+                             else build_native(compiler, cache_dir))
         self.library = _library(self.library_path)
         self._terms = {}
         self._values = [missing]

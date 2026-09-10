@@ -1,0 +1,184 @@
+{
+  "android_alignment": {
+    "arm64-v8a": {
+      "elf_loads": [
+        {
+          "alignment": 16384,
+          "offset": 0,
+          "virtual_address": 0
+        },
+        {
+          "alignment": 16384,
+          "offset": 1139616,
+          "virtual_address": 1156000
+        },
+        {
+          "alignment": 16384,
+          "offset": 1164024,
+          "virtual_address": 1196792
+        }
+      ],
+      "gnu_relro": [
+        {
+          "end": 1196032,
+          "virtual_address": 1156000
+        }
+      ],
+      "page_size_checked": 16384
+    },
+    "x86_64": {
+      "elf_loads": [
+        {
+          "alignment": 16384,
+          "offset": 0,
+          "virtual_address": 0
+        },
+        {
+          "alignment": 16384,
+          "offset": 1156192,
+          "virtual_address": 1172576
+        },
+        {
+          "alignment": 16384,
+          "offset": 1180448,
+          "virtual_address": 1213216
+        }
+      ],
+      "gnu_relro": [
+        {
+          "end": 1212416,
+          "virtual_address": 1172576
+        }
+      ],
+      "page_size_checked": 16384
+    }
+  },
+  "android_ndk": {
+    "archive_url": "https://dl.google.com/android/repository/android-ndk-r30-darwin.zip",
+    "global_sdk_configuration_changed": false,
+    "license_acceptance_changed": false,
+    "metadata_url": "https://dl.google.com/android/repository/repository2-3.xml",
+    "revision": "30.0.16248370",
+    "sdk_license_previously_accepted_hash": "24333f8a63b6825ea9c5514f83c2829b004d1fee",
+    "sha1": "c060be96767eefbb8e0a27796d6f43115fc1a0c4",
+    "sha256": "d125634de97b26deb1e1bb1a562f9d839aa5803d1784a1e414485f5ccbe6739f",
+    "size_bytes": 974984488
+  },
+  "artifacts": {
+    "mobile/fixtures/query.dlpn": {
+      "bytes": 4004,
+      "sha256": "59ccbbbc15e65420908446d5171d423bef26bebf89827b2f19bec36ced8a97ba"
+    },
+    "tmp/mobile-final-android/jniLibs/arm64-v8a/libdlp_native.so": {
+      "bytes": 11387968,
+      "sha256": "f1c0bdd830f3f78b46749d695fdef84f8008d806952502590a0a53fe4928badb"
+    },
+    "tmp/mobile-final-android/jniLibs/x86_64/libdlp_native.so": {
+      "bytes": 11013704,
+      "sha256": "231bb0f21a6658b01c951fd3c066e3e401bf081edef55aea3470b2ad73c1b789"
+    },
+    "tmp/mobile-final-apple/device/lib/libdlp_native.a": {
+      "bytes": 612616,
+      "sha256": "6e22ef96489f59b5c4166bb18c8177058946f70f38574addd2c95c5de7cc1ff5"
+    },
+    "tmp/mobile-final-apple/simulator/lib/libdlp_native.a": {
+      "bytes": 1238152,
+      "sha256": "92e51b0bb893bd085e8665a07f1cc7eb113d6fac057461cdde5c66d5c15b2838"
+    },
+    "tmp/mobile-final-host/install/lib/libdlp_native.dylib": {
+      "bytes": 449392,
+      "sha256": "94543e78b2924bb31dc75a9ba060ed295bcb549952cda28132100e5440020e2b"
+    }
+  },
+  "checks": {
+    "android": "arm64-v8a+x86_64 API24 crosscompile; arm64 API36 emulator with4096-bytepages C++ Horn/windows/query/package and Kotlin/JNI execution passed",
+    "host_ctest": {
+      "passed": 4
+    },
+    "ios_device": "arm64 C/C++ and Swift module crosscompile; deployment 15.0; SDK26.5",
+    "ios_simulator": "arm64+x86_64 library; arm64 iPhone17Pro iOS26.5 Swift/Horn/windows/query/package execution passed",
+    "kotlin_d8": "Kotlin2.3.10 and build-tools36.1.0 D8 emitted metadata compatibility warnings; generated DEX executed successfully",
+    "precompiled_python_tests": {
+      "passed": 99,
+      "seconds": 11.92
+    },
+    "windows_reference_and_native": {
+      "passed": 43
+    },
+    "windows_sanitizers": "ASan/UBSan passed; leak detector disabled because unavailable on this macOS runtime"
+  },
+  "date": "2026-09-10",
+  "format": "dlp-mobile-validation-v1",
+  "full_manifests": [
+    "tmp/mobile-final-host/build-manifest.json",
+    "tmp/mobile-final-apple/build-manifest.json",
+    "tmp/mobile-final-android/build-manifest.json"
+  ],
+  "limits": [
+    "No physical iOS/Android device execution",
+    "No execution on iOS15 or AndroidAPI24",
+    "No execution on16KiB Android pages; ELF checks only",
+    "No APK/AAB/AAR or release packaging/lifecycle validation",
+    "Python authoring/planning/scoped selections and providers remain host responsibilities"
+  ],
+  "retained_logs": [
+    "tmp/mobile-final-host.log",
+    "tmp/mobile-final-apple.log",
+    "tmp/mobile-final-simulator.log",
+    "tmp/mobile-final-device-swift.log",
+    "tmp/mobile-final-android.log",
+    "tmp/mobile-final-android-smoke.log",
+    "tmp/mobile-final-precompiled.log",
+    "tmp/mobile-final-android/d8.log"
+  ],
+  "sources_sha256": {
+    "CMakeLists.txt": "ca2459100f176ca33981afb5c19ad854355ba954767cc2e2df90756b338fd6ee",
+    "mobile/android/NativeRuntime.kt": "7cc4982eb29d4141eb1668e7bb1e5d222a4ea14511f6029a6849c122fd165ecb",
+    "mobile/android/NativeWindowStore.kt": "9f802643fa4cf66a172936b6251c7098338dcbee90389265b93cf49f801af2a6",
+    "mobile/android/Smoke.kt": "047d5ddc194021b8dc852616c10443a52fe12d64d10e0c3595a1fec7532bf98c",
+    "mobile/android/dlp_jni.cpp": "4cb14bb06a5c41bd3a15848e709d10dc7b1d7cd5395bcbb0a401db8181e15795",
+    "mobile/build_android.sh": "3d11beeb7ba6190f1f819d1211dc6567ce9a7eee04c23705d47c42b999d614d4",
+    "mobile/build_apple.sh": "94573bbe903fc19018cbc044eaf56b89709ceed162282f189304b6e97547f8d2",
+    "mobile/build_manifest.py": "d2d6e5e485a299eb8cb947b692e87684267cbdae362498fa8fa32fcb644f187d",
+    "mobile/fixtures/query.dlpn": "59ccbbbc15e65420908446d5171d423bef26bebf89827b2f19bec36ced8a97ba",
+    "mobile/generate_fixture.py": "aba8255fc3babb41a95bd4b720800c83370e3a313bb8967a84e5b1ff35b42456",
+    "mobile/include/dlp_native.h": "62c186df241ccd14f80fc7364fb1d47502f177b3a0ac03c5a376acabcfde92f3",
+    "mobile/include/module.modulemap": "db746502d038d6a4b3bc85dea3b54688453092750c4a689fadf5041f3e5385ad",
+    "mobile/native_smoke.cpp": "c9b210edafe6fc52ff76871c8066d75861fa52655817df06f99965a3cc8778d7",
+    "mobile/package_smoke.cpp": "e19cfed7a0323615e4463ae889b5a271f110be91fdc1249d31b6a0951985e59b",
+    "mobile/query_smoke.cpp": "557da329824cf1314565ee7a1cd7ce6fe0f98ccd7dc12edbb37131709e4e7198",
+    "mobile/smoke_android.sh": "2ec47b7ec11b42a02359d97e5dd6a7a96e0291ef9481caae32ccc1b9ea4826f3",
+    "mobile/smoke_host.sh": "8324a3493a528abeacfd4c276ed2710671c2e1de0fd347cb21b513e5d327c5c6",
+    "mobile/smoke_simulator.sh": "32ce1df59eb1894926dc44de5b201cb637db544f53b495f4037eeef968c4447f",
+    "mobile/swift/DLPRuntime.swift": "ce614faf1381705ddc912b4b2ca76d679381056620c5dd79e824db59b0114917",
+    "mobile/swift/DLPWindowStore.swift": "1e89a426f2bf091d540821710ea56328d51d45e204d116616ce8f40edc563c33",
+    "mobile/swift/Smoke.swift": "abc035a4c503d269ab5e51b6cdf6a9258774c711a24fea9b7f6468021fa96a46",
+    "mobile/windows_smoke.cpp": "81087ea6ce165642156c8b2f02c4c8a209beeb04e98c1fe6792fe389f09686ac",
+    "src/dlp_reasoner/native_domains.cpp": "0721b18bf234e20cb68168073ffab829c99e9e37a076c6127affbc564f723116",
+    "src/dlp_reasoner/native_domains.h": "384488a16c2197979504f716e6ee3b1cfcc8dbf785790ce427d2d8fefc404081",
+    "src/dlp_reasoner/native_package.cpp": "bae579cd09160323daf60f96fc9b7d8309e2f4b1e0d6b986c0c7f8c08d9e713b",
+    "src/dlp_reasoner/native_package.h": "141116ea85b8b544fb7f3c999ad5aeed70f518ebdb048a2578aca120e811c299",
+    "src/dlp_reasoner/native_query.cpp": "e0fd4dcee70e170fd1f1bd511f4b2eacc3d7c5bb2a19b6ff46b160409678550d",
+    "src/dlp_reasoner/native_query.h": "170285eb9d855f3f11ca8c6497a99eea47447d8eb9d5c26d980ba9a9cc8dc100",
+    "src/dlp_reasoner/native_runtime.cpp": "cd8090a09b535addbc07072f082018e2fcb1cbf906b467eae5fbfdb3ea00389e",
+    "src/dlp_reasoner/native_runtime.h": "dc50c4e734cc228925ab09e2b17222ee47522fd7b26c62a683e86741415fcf73",
+    "src/dlp_reasoner/native_spatial.cpp": "e39b214ecd405b78504f701849898820576e16b54af488171fd29c49e769c13b",
+    "src/dlp_reasoner/native_spatial.h": "498eefe2d160c7cb7dd1dc4164cb7acb72cefd156f021c4421cab07f4a5e3f1f",
+    "src/dlp_reasoner/native_store.cpp": "60f8354e9f765b08aed96b7437f2e024fbfc1c39f4076fcd183acb05de8eb1c6",
+    "src/dlp_reasoner/native_store.h": "4f842aa8407d3d12945df4872b60c05ebdb31904787f4faba838861b9d6b60cd",
+    "src/dlp_reasoner/native_windows.cpp": "aaa1a3c874ae7a74bd8380677117a851e3b75b727e49a19da3a1457b1d2082e5",
+    "src/dlp_reasoner/native_windows.h": "fc6752886f9367df333d4cb4b0e4b0abe94d7a6dc37bc54ed6973dc341311c7c",
+    "src/dlp_reasoner/vendor/date/README.md": "ad501ca751e1599b26c4473fe0ad67e1758029d69b56faabaf6909b3d1a4b8e9",
+    "src/dlp_reasoner/vendor/date/date.h": "8c295bc53964ec02fa99ef10816c190a4c34fdcbf1ce2dcc8e451a29932f9d2c",
+    "src/dlp_reasoner/vendor/geographiclib/LICENSE.txt": "44e8d5e992a01915a3522d48296b8a684df5641e8162be44431c9911b9e9f32b",
+    "src/dlp_reasoner/vendor/geographiclib/README.md": "d26c9bb3c1415a5035dfcda7d3e1ddcb4afb57180a7d6a99849255f7f2d3b6f3",
+    "src/dlp_reasoner/vendor/geographiclib/geodesic.c": "87a91e0e30e7db839cbd1ef5aafea77487524958070565ff9155e50e9bead550",
+    "src/dlp_reasoner/vendor/geographiclib/geodesic.h": "a964a747bc4f388fb3a93cc9bc379aebe4cdd78b3ee909c071be711b82db4b10"
+  },
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "cmake": "cmake version 4.0.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+    "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0\nswift-driver version: 1.148.6",
+    "xcode": "Xcode 26.6\nBuild version 17F113"
+  }
+}

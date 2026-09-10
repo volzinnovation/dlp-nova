@@ -229,7 +229,25 @@ the guarantees and scope. Actual same-host comparisons with
 The [DLP assessment](docs/DLP_PROFILE_ASSESSMENT.md) treats computational value
 separately from the practical prevalence of fragment-only ontologies.
 
-## Temporal and geospatial extension research
+## Temporal, geospatial and stream rules
+
+The [extension implementation](docs/ENGINE_EXTENSION_IMPLEMENTATION.md) adds a
+versioned `.dlq` query language, checked Python/C++ built-ins, scoped `MIN`,
+resident native values and indexes, external computation providers, OSM ingestion,
+GEOS geometry operations and bounded event windows. It includes native Horn and
+local-query execution, portable compiled packages and mobile bindings. The guide records
+which paths execute entirely in C++ and the remaining mobile release gates.
+
+```sh
+uv run python examples/bach_temporal/run_queries.py --backend both
+uv run python examples/traffic_signs/run_queries.py --backend both
+# Optional installed GEOS C library required for projected geometry:
+uv run python examples/temporal_geo/run_queries.py --backend both
+```
+
+These commands execute parsed rules, including calendar ages, hierarchical sign
+queries, geodesic distances, validity intervals and corrected geofence entries.
+The older reference commands below remain independent acceptance evidence.
 
 The [temporal/geospatial design study](docs/TEMPORAL_GEOSPATIAL_RESEARCH.md)
 investigates typed built-ins, arithmetic, indexed spatial predicates, and
@@ -246,12 +264,13 @@ for iOS and Android, including platform bindings, offline data and the remaining
 port of Python-owned reasoning logic. The
 [traffic examples and reference checks](examples/temporal_geo/README.md)
 illustrate radius/validity queries, late events, expiration, and historical
-corrections. Their proposed rule syntax is not implemented by the current engine.
+corrections. Their `.rules.proposed` syntax remains a design record; the new
+`queries.dlq` files are executable.
 
 The [engine extension specification](docs/ENGINE_EXTENSION_SPEC.md) defines the
-remaining implementation work, dependencies and release gates. Three worked
-examples provide executable current DLP ontologies plus separately identified
-reference computations for the proposed features:
+implementation work, dependencies and release gates. Three worked examples
+provide DLP ontologies, executable extension rules and independent reference
+computations:
 
 - [Bach birthdates and age at the earliest known child](examples/bach_temporal/README.md),
   including incomplete records, tied first children and date corrections.
@@ -270,8 +289,9 @@ Run their checks with the existing environment:
 ```
 
 `--backend python` skips the existing optional native compiler requirement. These
-checks distinguish current engine classification from proposed date, aggregate
-and distance calculations; they do not claim the new rule syntax executes yet.
+checks distinguish engine classification from independent date, aggregate and
+distance calculations. Use the `run_queries.py` commands above to execute the
+new language itself.
 
 ## Implementation map
 
@@ -287,6 +307,10 @@ C++, Go, and assembly without treating a kernel result as a whole-engine speedup
 - `src/dlp_reasoner/joins.py`: positional positive joins and optional bounded ordering estimates.
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
 - `src/dlp_reasoner/query_cache.py`: bounded query-answer caching and source-graph mutation tracking.
+- `src/dlp_reasoner/query_ir.py`, `query_parser.py`, `query_runtime.py`: versioned extension rules, binding/stratum planning and scoped result publication.
+- `src/dlp_reasoner/domains.py`, `native_domains.cpp`: checked values and temporal, arithmetic and WGS84 operations.
+- `src/dlp_reasoner/providers.py`, `geometry.py`, `spatial.py`, `osm.py`, `windows.py`: external computations, geometry/index ownership, map ingestion and event sources.
+- `src/dlp_reasoner/standalone.py`, `native_runtime.cpp`, `packages.py`, `mobile/`: standalone compiled Horn execution, portable packages and mobile bindings.
 - `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
 - `src/dlp_reasoner/support.py`: experimental current-proof certificates for DRed.
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.
