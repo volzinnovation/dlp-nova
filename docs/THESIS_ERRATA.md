@@ -1,5 +1,5 @@
-# Thesis errata and required corrections
-*Mea culpa, maxima culpa* / Raphael Volz (original author)
+# Thesis errata and corrections
+*Mea culpa, mea maxima culpa* / Raphael Volz (original author)
 
 Review date: 2026-09-09. 
 
