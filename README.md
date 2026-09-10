@@ -1,13 +1,17 @@
 # DLP Nova
 
-**DLP Nova** is a runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. The desktop API uses Python and RDFLib, with optional resident C++ relation indexes. The package name (`dlp-reasoner`), Python imports (`dlp_reasoner`) and CLI (`dlp`) are unchanged.
+**DLP Nova** is a runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. Later research results are incorporated into the design leading to a highly performant reasoner for the DLP fragments of OWL.
+
+The desktop API uses Python and RDFLib, with optional resident C++ relation indexes. The package names are (`dlp-reasoner`), Python imports (`dlp_reasoner`) and CLI (`dlp`).
 
 The package provides position-sensitive L0–L3 profiles, equality with congruence, consistency constraints, RDF queries, and materialization maintenance. It is a DLP reasoner, not a complete OWL DL or OWL Full reasoner. Unsupported logical constructs fail explicitly.
 
-Extensions beyond the thesis add temporal and geospatial rules, arithmetic,
-external computation providers and event windows. A standalone C++ runtime
+Extensions beyond the 2004 thesis add **temporal** and **geospatial** rules, **arithmetic**,
+external computation providers and **event windows**. A standalone C++ runtime
 executes compiled Horn and local query plans through C, Python, Swift and Kotlin
-bindings. Native sessions retain query state and support application recovery;
+bindings. 
+
+Native sessions retain query state and support application recovery;
 the mobile apps run without Python. See [mobile integration and qualification](#native-sessions-and-mobile)
 for the tested targets and remaining physical-device work.
 
@@ -19,29 +23,22 @@ CLI commands, Python queries, updates and runtime selection. The
 fragments and their syntax with executable examples. The
 [extension guide](docs/DLP_NOVA_EXTENSIONS.md) covers `.dlq` rules, temporal
 operators, WGS84 distances, projected geometry, routing providers and event
-windows. Try the [DLP Nova tutorials](examples/dlp_nova/README.md).
+windows. 
 
-The separate systems-paper draft,
-**DLP Nova: A Reasoner with Geospatial and Temporal Extensions**, describes the
-engine, semantic contracts and focused extension evidence:
-[PDF](output/pdf/dlp-nova.pdf), [LaTeX](docs/paper/dlp-nova.tex),
-[reproducible build](docs/paper/README.md#dlp-nova-systems-paper).
+Try the [DLP Nova tutorials](examples/dlp_nova/README.md).
 
-## Paper and citation
 
-Raphael Volz (Pforzheim University), **Description Logic Programs Revisited:
-The Benefits and Limits of Specialized Ontology Reasoning**.
-Submitted to arXiv in **cs.AI** on **9 September 2026**.
-Submission reference: [arXiv:submit/8059314](https://arxiv.org/submit/8059314/view).
+## Papers
 
-Read the [complete paper with technical appendices](output/pdf/combined-report.pdf).
-The [paper documentation](docs/paper/README.md) includes the LaTeX source,
-submission archive, and reproducible build instructions.
+The systems paper 
+**DLP Nova: A Reasoner with Geospatial and Temporal Extensions**, describes specifically the geo-spatial and temporal extensions of the
+engine, semantic contracts and first benchmark evidence:
+[PDF](output/pdf/dlp-nova.pdf) .
 
-The submission link requires author access. `submit/8059314` is a submission
-reference; the [permanent arXiv identifier](https://info.arxiv.org/help/arxiv_identifier.html)
-will use the form `YYMM.NNNNN`. Until that identifier is available, use this
-BibTeX entry, which links to the manuscript in this repository:
+The technical report  **Description Logic Programs Revisited:
+The Benefits and Limits of Specialized Ontology Reasoning** (submitted to arXiv in **cs.AI** on **9 September 2026**) discusses the implementation, improvements from related work, further improvements, and corrections to errata in the PhD thesis.
+
+Until the ArXiv identifier is available, use this BibTeX entry, which links to the manuscript in this repository:
 
 ```bibtex
 @misc{volz2026dlp,
@@ -55,11 +52,8 @@ BibTeX entry, which links to the manuscript in this repository:
 }
 ```
 
-Once the paper is announced, replace `url` with its public arXiv abstract URL,
-add `eprint`, `archivePrefix = {arXiv}`, and `primaryClass = {cs.AI}`, and remove
-the temporary submission note.
 
-## Run it
+## Run DLP nova on your computer/server
 
 Requires Python 3.11 or later. With [uv](https://docs.astral.sh/uv/):
 
