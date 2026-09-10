@@ -30,6 +30,12 @@ seams are in the [spatial review](research/geospatial-evidence.md),
 The [external provider contract](EXTERNAL_PROVIDERS.md) specifies how rules can
 use an existing distance/GIS service, including batching, typed replies,
 consistency, failure handling, and recorded observations for volatile services.
+The subsequent [mobile runtime proposal](MOBILE_RUNTIME_PROPOSAL.md) refines the
+library and binding choices for iOS/Android and identifies the remaining native
+semantic runtime work required for standalone mobile execution.
+The [engine extension specification](ENGINE_EXTENSION_SPEC.md) now defines the
+concrete backlog and worked Bach/OSM/PROLIX acceptance examples. Scoped `MIN` is
+part of the first feature slice because the first-child calculation requires it.
 
 ## 1. What the engine needs to answer
 
@@ -460,10 +466,10 @@ Both workloads are release gates throughout the proposed sequence.
 | Stage | Deliverables | Static acceptance | Live acceptance |
 | --- | --- | --- | --- |
 | 0: contracts and fixtures | Datatype/metric/error contracts, separate syntax, immutable context, replay fixtures | Radius/type/validity and boundary examples are unambiguous | Late correction, expiration, duplicate support, and recorded-time examples are unambiguous |
-| 1: complete reference slice | Operator IR/registry, mode validation, numeric/time/point operations, snapshot query API, finite window adapter, external computation contract and loopback adapter | Local and external reference queries match fixtures and the same explicit metric | Replay produces expected additions/retractions and idle expiration; external failures stay explicit |
+| 1: complete reference slice | Operator IR/registry, mode validation, numeric/time/point operations, scoped MIN, snapshot query API, finite window adapter, external computation contract and loopback adapter | Bach minimum/age and local/external spatial queries match fixtures under explicit scopes/metrics | Replay produces expected additions/retractions and idle expiration; external failures stay explicit |
 | 2: indexed native slice | Native value/geometry sidecars, spatial candidate provider, temporal indexes, bounded batches, atomic commits | Indexed/native answers equal exhaustive reference answers | Stream queries share static indexes and remain correct under changing event state |
 | 3: maintenance and operation | Certified incremental combinations, provider snapshots, dependency caches, recovery and explainable provenance | Map/rule changes retract old answers and preserve safe caches | Replay/checkpoint, late-data policy, backpressure, and result revisions are verified |
-| 4: demand-driven extensions | Rich geodesic shapes, road networks, temporal logic, calendar schedules, aggregates | Each added capability has a stated semantic fragment and oracle | Each stateful extension has bounded retention or an explicit storage policy |
+| 4: demand-driven extensions | Rich geodesic shapes, road networks, temporal logic, calendar schedules, aggregates beyond the initial scoped MIN | Each added capability has a stated semantic fragment and oracle | Each stateful extension has bounded retention or an explicit storage policy |
 
 Use independent oracles, not only tests that mirror the implementation. Compare
 projected operations with selected GEOS/PostGIS contracts, WGS84 point distances

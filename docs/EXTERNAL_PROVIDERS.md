@@ -14,6 +14,12 @@ contracts. Keep transport adapters outside the logic language and network calls
 outside the native join loop. This document defines the proposed boundary and
 its acceptance criteria; no connection to an external service is configured here.
 
+The [shared native library selection](NATIVE_DOMAIN_LIBRARIES.md) maps these
+contracts to ICU/date, GEOS/PROJ, Valhalla/OSRM and Lanelet2, with Python and
+C++ binding evidence and packaging constraints.
+The [mobile refinement](MOBILE_RUNTIME_PROPOSAL.md) adds Swift/JNI bindings,
+on-device providers and offline capability/version requirements.
+
 ## Logical operations and physical adapters
 
 | Provider contract | Example | Required behavior |
@@ -23,8 +29,10 @@ its acceptance criteria; no connection to an external service is configured here
 | Observation source | Current travel-time estimate from a changing service | Recorded inputs/results with observation identity and time; updates enter as data |
 
 HTTP/JSON, gRPC, a SQL connection, a process boundary, and an in-process C/C++
-adapter are possible transports for these contracts. Start with a Python-managed
-adapter interface and HTTP/JSON for remote computation. Use a PostGIS adapter
+adapter are possible transports for these contracts. A desktop prototype can use
+a Python-managed adapter interface and HTTP/JSON for remote computation. Mobile
+uses the shared native boundary with Swift/Kotlin host networking as needed.
+Use a PostGIS adapter
 when the provider can perform indexed spatial selection. Optimize transport or
 move dispatch into native code only after measuring it.
 

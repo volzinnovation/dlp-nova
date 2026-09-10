@@ -238,9 +238,40 @@ It includes current primary sources, code extension points, cache and update
 contracts, and a staged implementation proposal. The
 [external provider design](docs/EXTERNAL_PROVIDERS.md) covers distance/GIS
 services, batch requests, provider versions, and failure handling. The
+[shared library selection](docs/NATIVE_DOMAIN_LIBRARIES.md) identifies concrete
+date/time, geometry and road-network libraries callable from Python and C++,
+with a reproducible shared-library feasibility probe. The
+[mobile runtime proposal](docs/MOBILE_RUNTIME_PROPOSAL.md) refines the choices
+for iOS and Android, including platform bindings, offline data and the remaining
+port of Python-owned reasoning logic. The
 [traffic examples and reference checks](examples/temporal_geo/README.md)
 illustrate radius/validity queries, late events, expiration, and historical
 corrections. Their proposed rule syntax is not implemented by the current engine.
+
+The [engine extension specification](docs/ENGINE_EXTENSION_SPEC.md) defines the
+remaining implementation work, dependencies and release gates. Three worked
+examples provide executable current DLP ontologies plus separately identified
+reference computations for the proposed features:
+
+- [Bach birthdates and age at the earliest known child](examples/bach_temporal/README.md),
+  including incomplete records, tied first children and date corrections.
+- [OpenStreetMap nodes, ways, relations and tag mappings](examples/osm/README.md),
+  with ordered memberships and a deterministic example importer.
+- [PROLIX traffic-sign hierarchy and distances](examples/traffic_signs/README.md),
+  preserving the supplied crosswalk, ambiguous codes and explicit road associations.
+
+Run their checks with the existing environment:
+
+```sh
+.venv/bin/python examples/bach_temporal/reference_checks.py --backend both
+.venv/bin/python examples/osm/reference_checks.py --backend both
+.venv/bin/python examples/traffic_signs/generate.py --check
+.venv/bin/python examples/traffic_signs/check.py --backend both
+```
+
+`--backend python` skips the existing optional native compiler requirement. These
+checks distinguish current engine classification from proposed date, aggregate
+and distance calculations; they do not claim the new rule syntax executes yet.
 
 ## Implementation map
 

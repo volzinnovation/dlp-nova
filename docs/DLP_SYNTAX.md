@@ -54,8 +54,10 @@ Declare namespace prefixes before a single `Ontology(...)`. Its optional first
 argument names the ontology. Use `prefix:localname` or `<absolute-IRI>` for names;
 `rdf`, `rdfs`, `owl`, and `xsd` are predefined conveniences. Prefixes in the
 printed grammar contain letters, and local names begin with a letter followed
-by letters, numbers, or underscores. Use full IRIs for names containing hyphens,
-as in the Bach examples. Keywords are case-sensitive. Statements need no commas
+by letters, numbers, or underscores. The parser additionally accepts hyphens
+after the initial letter, allowing `bach:johann-sebastian` to preserve the
+historical Bach IRI. Use full IRIs for other unsupported characters.
+Keywords are case-sensitive. Statements need no commas
 or trailing periods. Both `//` and `/* ... */` comments are supported.
 
 ```text
@@ -163,7 +165,8 @@ the thesis's complete Bach example.
 
 The parser also accepts combinations of object-property characteristics rather
 than enforcing the printed mutually exclusive characteristic production.
-Predefined namespaces are a convenience. The semantic target remains the
+Predefined namespaces and hyphens in prefixed local names are conveniences.
+The semantic target remains the
 [thesis-derived specification](THESIS_SPEC.md), including its documented errata;
 this is not a claim of byte-for-byte conformance to every Appendix A production,
 OWL Functional Syntax, or OWL DL support. Imports are never fetched automatically.

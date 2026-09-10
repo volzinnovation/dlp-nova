@@ -278,7 +278,9 @@ def test_malformed_constructs_are_errors(body):
     "Namespace(ex2 = <https://example.org/>) Ontology()",
     "Namespace(ex = <https://example.org/>) Namespace(ex = <urn:other:>) Ontology()",
     "Ontology(Class(unknown:A partial))",
-    PREFIX + "Ontology(Class(ex:has-hyphen partial))",
+    PREFIX + "Ontology(Class(ex:-leading partial))",
+    PREFIX + "Ontology(Class(ex:has/slash partial))",
+    PREFIX + "Ontology(Class(ex:has:colon partial))",
     PREFIX + "Ontology(Class(ex:123 partial))",
 ])
 def test_malformed_lexical_input_is_located(source):
@@ -287,6 +289,31 @@ def test_malformed_lexical_input_is_located(source):
     assert failure.value.source == "bad.dlp"
     assert failure.value.line >= 1 and failure.value.column >= 1
     assert str(failure.value).startswith("bad.dlp:")
+
+
+def test_hyphenated_prefixed_names_preserve_full_iri_identity():
+    bach = Namespace("http://www.jsbach.org/bach#")
+    cpe = Namespace("https://cpebach.org/timeline/")
+    graph = parse_dlp("""
+      Namespace(bach = <http://www.jsbach.org/bach#>)
+      Namespace(cpe = <https://cpebach.org/timeline/>)
+      Ontology(
+        Class(bach:Person partial)
+        ObjectProperty(bach:hasChild domain(bach:Person) range(bach:Person))
+        Individual(bach:johann-sebastian
+          annotation(rdfs:seeAlso cpe:chronology)
+          value(bach:hasChild bach:wilhelm-friedemann))
+        Individual(<http://www.jsbach.org/bach#johann-sebastian>
+          value(bach:hasChild <http://www.jsbach.org/bach#wilhelm-friedemann>))
+      )
+    """)
+    assert set(graph.subject_objects(bach.hasChild)) == {
+        (bach["johann-sebastian"], bach["wilhelm-friedemann"]),
+    }
+    assert (bach["johann-sebastian"], RDFS.seeAlso, cpe.chronology) in graph
+    assert Reasoner(graph, profile="L0").instances(bach.Person) == {
+        bach["johann-sebastian"], bach["wilhelm-friedemann"],
+    }
 
 
 def test_unknown_prefix_location_is_exact():

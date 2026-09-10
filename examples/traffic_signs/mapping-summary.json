@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "source": {
+    "snapshot": "source/panoramax-road_signs_mapping.csv",
+    "original_path": "/Users/raphaelvolz/Github/Woladen.de-analytics/deploy/prolix/class_maps/panoramax-road_signs_mapping.csv",
+    "sha256": "a1e7ad5d7e2829d3214226fd9f20e3778c90f4b8f532d82ba933d4e61c1395e9",
+    "bytes": 9471,
+    "encoding": "UTF-8",
+    "captured_on": "2026-09-10",
+    "columns": [
+      "YOLO",
+      "DE",
+      "FR",
+      "NL",
+      "CH",
+      "BE"
+    ],
+    "curation_sha256": "d15d5e25a782e336227660f51d356e01866c19cd2e488cec13b13d102396efeb",
+    "source_role": "Crosswalk associations, not a hierarchy or legal authority",
+    "license": "No license declaration supplied in this CSV; no license inferred",
+    "multi_code_policy": "Split semicolons only; retain exact raw cells and tokens"
+  },
+  "rows": 225,
+  "distinct_yolo_labels": 224,
+  "curated_labels": 224,
+  "fallback_labels": [],
+  "category_count": 41,
+  "national_code_classes": 720,
+  "blank_cells_by_country": {
+    "DE": 81,
+    "FR": 79,
+    "NL": 66,
+    "CH": 86,
+    "BE": 87
+  },
+  "multi_code_cells": [],
+  "duplicate_labels": {
+    "pedestrian:start": 2
+  },
+  "ambiguous_codes": [
+    {
+      "country": "BE",
+      "code": "BE:C23",
+      "class": "https://example.org/traffic-sign#Code_BE_BE_C23",
+      "candidate_labels": [
+        "no_hgv",
+        "no_u_turn"
+      ],
+      "csv_lines": [
+        128,
+        152
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "RegulatorySign",
+        "TrafficSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#RegulatorySign"
+      ]
+    },
+    {
+      "country": "BE",
+      "code": "BE:C27",
+      "class": "https://example.org/traffic-sign#Code_BE_BE_C27",
+      "candidate_labels": [
+        "maxheight",
+        "maxwidth"
+      ],
+      "csv_lines": [
+        88,
+        108
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "DimensionRestrictionSign",
+        "RegulatorySign",
+        "TrafficSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#DimensionRestrictionSign"
+      ]
+    },
+    {
+      "country": "BE",
+      "code": "BE:D1f",
+      "class": "https://example.org/traffic-sign#Code_BE_BE_D1f",
+      "candidate_labels": [
+        "arrow_right",
+        "arrow_turn_right"
+      ],
+      "csv_lines": [
+        7,
+        13
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "DirectionalRequirementSign",
+        "RegulatorySign",
+        "TrafficSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#DirectionalRequirementSign"
+      ]
+    },
+    {
+      "country": "DE",
+      "code": "DE:315",
+      "class": "https://example.org/traffic-sign#Code_DE_DE_315",
+      "candidate_labels": [
+        "parking:perpendicular",
+        "parking:sidewalk"
+      ],
+      "csv_lines": [
+        180,
+        182
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "InformationSign",
+        "ParkingSign",
+        "TrafficSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#ParkingSign"
+      ]
+    },
+    {
+      "country": "FR",
+      "code": "FR:B21a2",
+      "class": "https://example.org/traffic-sign#Code_FR_FR_B21a2",
+      "candidate_labels": [
+        "arrow_left_down",
+        "arrow_right_down"
+      ],
+      "csv_lines": [
+        2,
+        5
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "DirectionalRequirementSign",
+        "RegulatorySign",
+        "TrafficSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#DirectionalRequirementSign"
+      ]
+    },
+    {
+      "country": "FR",
+      "code": "FR:B9i",
+      "class": "https://example.org/traffic-sign#Code_FR_FR_B9i",
+      "candidate_labels": [
+        "no_car_trailer",
+        "no_trailer"
+      ],
+      "csv_lines": [
+        119,
+        149
+      ],
+      "ambiguous": true,
+      "common_categories": [
+        "AccessRestrictionSign",
+        "RegulatorySign",
+        "TrafficSign",
+        "VehicleRestrictionSign"
+      ],
+      "direct_superclasses": [
+        "https://example.org/traffic-sign#VehicleRestrictionSign"
+      ]
+    }
+  ],
+  "source_review_notes": [
+    "pedestrian:start occurs twice; both rows and their mappings are retained.",
+    "Zone:30:end, hazard:include:down and the FR-column value Fr:A8 are exact source spellings.",
+    "Repeated national codes have candidate sets; no OWL equivalences or candidate intersections.",
+    "Missing cells mean no mapping supplied; they are not negative assertions."
+  ]
+}

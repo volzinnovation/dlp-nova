@@ -1,0 +1,81 @@
+# DESIGN ONLY: unsupported by the current Appendix A parser and rule engine.
+# All bind/filter/scan constructs and custom provider names are proposed.
+# scan is a separately proposed indexed/table operator, not a scalar builtin.
+# Nothing in this file is executed by check.py or either relation backend.
+prefix sign:  <https://example.org/traffic-sign#>
+prefix osm:   <https://example.org/osm#>
+prefix sp:    <urn:dlp:proposed:spatial:>
+prefix road:  <urn:dlp:proposed:road:>
+prefix num:   <urn:dlp:proposed:numeric:>
+prefix query: <urn:dlp:proposed:traffic-query:>
+
+# Materialize the small, static taxonomy once. Resolve/cache points at a pinned
+# coordinate revision. The point resolver checks finite coordinates, completeness,
+# and one unambiguous location; multiple/missing locations do not become zero.
+# All point constructors use (LONGITUDE, LATITUDE), in WGS84 degrees. A native
+# geod_inverse provider internally adapts this to that library's latitude-first API.
+# validatedLocation is a runtime-produced scoped validation view: exactly one
+# location node and one valid latitude/longitude pair for this sign. It retracts
+# on conflicting/missing location records; the scalar point constructor alone
+# cannot check uniqueness across RDF facts. All rules below use one active map
+# snapshot; explicit snapshot inputs must match that context.
+sign:point(?sign, ?point) :-
+    sign:TrafficSign(?sign), sign:locatedAtNode(?sign, ?node),
+    query:validatedLocation(?sign, ?node),
+    osm:latitude(?node, ?latitude), osm:longitude(?node, ?longitude),
+    bind sp:wgs84Point(?longitude, ?latitude) as ?point.
+
+# Only requested or indexed candidate pairs enter distance evaluation. Do not
+# materialize the Cartesian product of all signs. This symmetric scalar returns
+# shortest WGS84 ellipsoidal surface distance in metres, with no altitude.
+sign:signDistance(?s1, ?s2, ?metres) :-
+    query:requestedPair(?s1, ?s2),
+    sign:point(?s1, ?point1), sign:point(?s2, ?point2),
+    bind sp:wgs84Distance(?point1, ?point2) as ?metres.
+
+# Radius is finite, nonnegative metres; boundary is inclusive. scan retrieves
+# conservative sign candidates from a point index pinned to ?snapshot; the exact
+# ellipsoid check follows. The planner can push the inferred StopSign restriction
+# into the candidate intersection. Both DE:206 and YOLO "stop" can satisfy it.
+# Exclude self explicitly at the query layer if the caller requests that policy.
+query:stopCandidate(?anchor, ?candidate, ?radius) :-
+    query:stopSearch(?anchor, ?radius, ?snapshot), sign:point(?anchor, ?point),
+    scan sp:pointCandidates(?point, ?radius, ?snapshot) as ?candidate,
+    sign:StopSign(?candidate).
+
+query:requestedPair(?anchor, ?candidate) :-
+    query:stopCandidate(?anchor, ?candidate, ?radius).
+
+query:nearbyStop(?anchor, ?candidate, ?metres) :-
+    query:stopCandidate(?anchor, ?candidate, ?radius),
+    sign:signDistance(?anchor, ?candidate, ?metres),
+    filter num:lessThanOrEqual(?metres, ?radius).
+
+# Membership in the same named road relation is an association, not connectivity,
+# equal direction, equal carriageway, or legal applicability. The fixture's
+# disconnected way_island intentionally belongs to the same synthetic RoadRoute.
+query:sameRoadRoute(?s1, ?s2, ?route) :-
+    sign:onRoadSegment(?s1, ?way1), sign:onRoadSegment(?s2, ?way2),
+    osm:partOfRoad(?way1, ?route), osm:partOfRoad(?way2, ?route).
+
+# Every scalar bind has all inputs bound. A route context pins provider/core/map
+# versions, vehicle/access profile, objective, departure time, traffic revision,
+# matching tolerance, and tie policy. Match results need directed edge offsets
+# and heading/side information; an OSM way is not one routing edge.
+# Status remains observable in ?result; only OK supplies a finite distance.
+# UNREACHABLE differs from NO_MATCH, OUT_OF_REGION and PROVIDER_UNAVAILABLE.
+# A fastest route's travelled length must not be named shortest road distance.
+query:roadResult(?s1, ?s2, ?context, ?result) :-
+    query:requestedRoadPair(?s1, ?s2, ?context),
+    bind road:matchSign(?s1, ?context) as ?start,
+    bind road:matchSign(?s2, ?context) as ?end,
+    bind road:distance(?start, ?end, ?context) as ?result.
+
+sign:roadDistance(?s1, ?s2, ?context, ?metres) :-
+    query:roadResult(?s1, ?s2, ?context, ?result),
+    filter road:isOK(?result),
+    bind road:distanceMetres(?result) as ?metres.
+
+# A useful applicability query additionally needs directed lane/path association,
+# sign orientation, valid time, vehicle restrictions and supplemental-panel rules.
+# No applicability conclusion follows from nearbyStop or sameRoadRoute alone.

@@ -1,0 +1,819 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "author": "Project-curated example taxonomy; created for this repository on 2026-09-10",
+    "source_role": "The CSV supplies crosswalk associations only, not this hierarchy. Category assignments are explicit project choices, not national legal classifications.",
+    "method": "Every distinct raw YOLO label was reviewed and assigned explicitly. The generator performs exact label lookup, never prefix inference. No disjointness or cross-country equivalence is asserted.",
+    "unknown_policy": "A previously unseen YOLO label is assigned UnclassifiedSign until manually reviewed. No absence-based inference runs inside DLP.",
+    "caveats": [
+      "Broad categories group visual/functional families and do not establish enforceability or current sign applicability.",
+      "Source labels, including hazard:include:down and Zone:30:end, are kept verbatim.",
+      "Subtype relationships between YOLO labels are not inferred from punctuation.",
+      "An end sign remains in its functional family and does not itself establish the currently applicable restriction."
+    ]
+  },
+  "parents": {
+    "TrafficSign": [],
+    "UnclassifiedSign": [
+      "TrafficSign"
+    ],
+    "WarningSign": [
+      "TrafficSign"
+    ],
+    "RegulatorySign": [
+      "TrafficSign"
+    ],
+    "InformationSign": [
+      "TrafficSign"
+    ],
+    "AnimalWarningSign": [
+      "WarningSign"
+    ],
+    "SurfaceWarningSign": [
+      "WarningSign"
+    ],
+    "CurveWarningSign": [
+      "WarningSign"
+    ],
+    "IntersectionWarningSign": [
+      "WarningSign"
+    ],
+    "RoadNarrowingWarningSign": [
+      "WarningSign"
+    ],
+    "DirectionalRequirementSign": [
+      "RegulatorySign"
+    ],
+    "PrioritySign": [
+      "RegulatorySign"
+    ],
+    "StopSign": [
+      "PrioritySign"
+    ],
+    "GiveWaySign": [
+      "PrioritySign"
+    ],
+    "SpeedSign": [
+      "TrafficSign"
+    ],
+    "MaximumSpeedSign": [
+      "SpeedSign",
+      "RegulatorySign"
+    ],
+    "MinimumSpeedSign": [
+      "SpeedSign",
+      "RegulatorySign"
+    ],
+    "DimensionRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "WeightRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "VehicleRestrictionSign": [
+      "AccessRestrictionSign"
+    ],
+    "AccessRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "TurnRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "OvertakingRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "ParkingRestrictionSign": [
+      "RegulatorySign"
+    ],
+    "PathRegulationSign": [
+      "RegulatorySign"
+    ],
+    "EquipmentRequirementSign": [
+      "RegulatorySign"
+    ],
+    "RestrictionEndSign": [
+      "RegulatorySign"
+    ],
+    "StoppingControlSign": [
+      "RegulatorySign"
+    ],
+    "RoadUseSign": [
+      "TrafficSign"
+    ],
+    "RoadStatusSign": [
+      "InformationSign"
+    ],
+    "ParkingSign": [
+      "InformationSign"
+    ],
+    "ServiceSign": [
+      "InformationSign"
+    ],
+    "CrossingInformationSign": [
+      "InformationSign"
+    ],
+    "RoadLayoutSign": [
+      "InformationSign"
+    ],
+    "NoExitSign": [
+      "InformationSign"
+    ],
+    "EnforcementInformationSign": [
+      "InformationSign"
+    ],
+    "ZoneSign": [
+      "TrafficSign"
+    ],
+    "SpeedZoneSign": [
+      "ZoneSign",
+      "SpeedSign"
+    ],
+    "ParkingZoneSign": [
+      "ZoneSign"
+    ],
+    "PedestrianZoneSign": [
+      "ZoneSign"
+    ],
+    "LowEmissionZoneSign": [
+      "ZoneSign"
+    ]
+  },
+  "label_categories": {
+    "Zone:30:end": [
+      "SpeedZoneSign"
+    ],
+    "arrow_left": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_left_down": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_left_rect": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_right": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_right_down": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_right_rect": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_through": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_turn_left": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_turn_left_right": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_turn_left_through": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_turn_right": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_turn_right_through": [
+      "DirectionalRequirementSign"
+    ],
+    "arrow_u_turn": [
+      "DirectionalRequirementSign"
+    ],
+    "bicycle:end": [
+      "PathRegulationSign"
+    ],
+    "bicycle:priority": [
+      "PrioritySign"
+    ],
+    "bicycle:priority:end": [
+      "PrioritySign"
+    ],
+    "bicycle:start": [
+      "PathRegulationSign"
+    ],
+    "bicycle_ebike:end": [
+      "PathRegulationSign"
+    ],
+    "bicycle_ebike:start": [
+      "PathRegulationSign"
+    ],
+    "bothways": [
+      "RoadLayoutSign"
+    ],
+    "bus:start": [
+      "RoadUseSign"
+    ],
+    "bus:stop": [
+      "RoadUseSign"
+    ],
+    "chains": [
+      "EquipmentRequirementSign"
+    ],
+    "chains:end": [
+      "EquipmentRequirementSign"
+    ],
+    "city:end": [
+      "RoadStatusSign"
+    ],
+    "city:start": [
+      "RoadStatusSign"
+    ],
+    "customs": [
+      "StoppingControlSign"
+    ],
+    "escape_lane": [
+      "RoadLayoutSign"
+    ],
+    "exit": [
+      "RoadLayoutSign"
+    ],
+    "give_way": [
+      "GiveWaySign"
+    ],
+    "halt": [
+      "StoppingControlSign"
+    ],
+    "hazard": [
+      "WarningSign"
+    ],
+    "hazard:airport": [
+      "WarningSign"
+    ],
+    "hazard:animals": [
+      "AnimalWarningSign"
+    ],
+    "hazard:animals:sheep": [
+      "AnimalWarningSign"
+    ],
+    "hazard:bicycle": [
+      "WarningSign"
+    ],
+    "hazard:bothways": [
+      "WarningSign"
+    ],
+    "hazard:bump": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:bumps": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:bus": [
+      "WarningSign"
+    ],
+    "hazard:crossing": [
+      "IntersectionWarningSign"
+    ],
+    "hazard:dock": [
+      "WarningSign"
+    ],
+    "hazard:fire": [
+      "WarningSign"
+    ],
+    "hazard:fog": [
+      "WarningSign"
+    ],
+    "hazard:frog": [
+      "AnimalWarningSign"
+    ],
+    "hazard:gravel": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:horse": [
+      "AnimalWarningSign"
+    ],
+    "hazard:ice": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:incline:up": [
+      "WarningSign"
+    ],
+    "hazard:include:down": [
+      "WarningSign"
+    ],
+    "hazard:intersection": [
+      "IntersectionWarningSign"
+    ],
+    "hazard:intersection:left": [
+      "IntersectionWarningSign"
+    ],
+    "hazard:intersection:right": [
+      "IntersectionWarningSign"
+    ],
+    "hazard:level_crossing": [
+      "WarningSign"
+    ],
+    "hazard:moving_bridge": [
+      "WarningSign"
+    ],
+    "hazard:narrow_both": [
+      "RoadNarrowingWarningSign"
+    ],
+    "hazard:narrow_left": [
+      "RoadNarrowingWarningSign"
+    ],
+    "hazard:narrow_right": [
+      "RoadNarrowingWarningSign"
+    ],
+    "hazard:pedestrian": [
+      "WarningSign"
+    ],
+    "hazard:pedestrian_crossing": [
+      "WarningSign"
+    ],
+    "hazard:rain": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:road_works": [
+      "WarningSign"
+    ],
+    "hazard:rocks": [
+      "WarningSign"
+    ],
+    "hazard:roundabout": [
+      "IntersectionWarningSign"
+    ],
+    "hazard:school": [
+      "WarningSign"
+    ],
+    "hazard:slippery": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:soft_shoulder": [
+      "SurfaceWarningSign"
+    ],
+    "hazard:traffic_jam": [
+      "WarningSign"
+    ],
+    "hazard:traffic_signal": [
+      "WarningSign"
+    ],
+    "hazard:train": [
+      "WarningSign"
+    ],
+    "hazard:tram": [
+      "WarningSign"
+    ],
+    "hazard:trees": [
+      "WarningSign"
+    ],
+    "hazard:turn_left": [
+      "CurveWarningSign"
+    ],
+    "hazard:turn_right": [
+      "CurveWarningSign"
+    ],
+    "hazard:wild_animals": [
+      "AnimalWarningSign"
+    ],
+    "hazard:wind": [
+      "WarningSign"
+    ],
+    "hazard:zigzag": [
+      "CurveWarningSign"
+    ],
+    "hazard:zigzag:left": [
+      "CurveWarningSign"
+    ],
+    "hgv:end": [
+      "RoadUseSign"
+    ],
+    "hgv:start": [
+      "RoadUseSign"
+    ],
+    "horse:end": [
+      "PathRegulationSign"
+    ],
+    "horse:start": [
+      "PathRegulationSign"
+    ],
+    "info:radio": [
+      "ServiceSign"
+    ],
+    "information": [
+      "ServiceSign"
+    ],
+    "lanes": [
+      "RoadLayoutSign"
+    ],
+    "maxaxleweight": [
+      "WeightRestrictionSign"
+    ],
+    "maxheight": [
+      "DimensionRestrictionSign"
+    ],
+    "maxlength": [
+      "DimensionRestrictionSign"
+    ],
+    "maxspeed:10": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:100": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:110": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:120": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:130": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:15": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:20": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:25": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:30": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:40": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:5": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:50": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:60": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:70": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:80": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:90": [
+      "MaximumSpeedSign"
+    ],
+    "maxspeed:end": [
+      "SpeedSign",
+      "RestrictionEndSign"
+    ],
+    "maxweight": [
+      "WeightRestrictionSign"
+    ],
+    "maxwidth": [
+      "DimensionRestrictionSign"
+    ],
+    "min_distance": [
+      "RegulatorySign"
+    ],
+    "min_speed": [
+      "MinimumSpeedSign"
+    ],
+    "min_speed:end": [
+      "SpeedSign",
+      "RestrictionEndSign"
+    ],
+    "motorway:end": [
+      "RoadStatusSign"
+    ],
+    "motorway:start": [
+      "RoadStatusSign"
+    ],
+    "no:end": [
+      "RestrictionEndSign"
+    ],
+    "no_agriculture": [
+      "VehicleRestrictionSign"
+    ],
+    "no_animals": [
+      "AccessRestrictionSign"
+    ],
+    "no_bicycle": [
+      "VehicleRestrictionSign"
+    ],
+    "no_bus": [
+      "VehicleRestrictionSign"
+    ],
+    "no_car": [
+      "VehicleRestrictionSign"
+    ],
+    "no_car_motorcycle": [
+      "VehicleRestrictionSign"
+    ],
+    "no_car_trailer": [
+      "VehicleRestrictionSign"
+    ],
+    "no_dangerous": [
+      "VehicleRestrictionSign"
+    ],
+    "no_dangerous_explosive": [
+      "VehicleRestrictionSign"
+    ],
+    "no_dangerous_liquid": [
+      "VehicleRestrictionSign"
+    ],
+    "no_entry": [
+      "AccessRestrictionSign"
+    ],
+    "no_exit": [
+      "NoExitSign"
+    ],
+    "no_exit:car": [
+      "NoExitSign"
+    ],
+    "no_hgv": [
+      "VehicleRestrictionSign"
+    ],
+    "no_hgv_trailer": [
+      "VehicleRestrictionSign"
+    ],
+    "no_horn": [
+      "RegulatorySign"
+    ],
+    "no_horse": [
+      "AccessRestrictionSign"
+    ],
+    "no_horse_vehicle": [
+      "VehicleRestrictionSign"
+    ],
+    "no_moped": [
+      "VehicleRestrictionSign"
+    ],
+    "no_motor_vehicle": [
+      "VehicleRestrictionSign"
+    ],
+    "no_motor_vehicle2": [
+      "VehicleRestrictionSign"
+    ],
+    "no_motorcycle": [
+      "VehicleRestrictionSign"
+    ],
+    "no_motorhome": [
+      "VehicleRestrictionSign"
+    ],
+    "no_overtaking": [
+      "OvertakingRestrictionSign"
+    ],
+    "no_overtaking:end": [
+      "OvertakingRestrictionSign",
+      "RestrictionEndSign"
+    ],
+    "no_overtaking:end:hgv": [
+      "OvertakingRestrictionSign",
+      "RestrictionEndSign"
+    ],
+    "no_overtaking:hgv": [
+      "OvertakingRestrictionSign"
+    ],
+    "no_parking": [
+      "ParkingRestrictionSign"
+    ],
+    "no_parking:1-15": [
+      "ParkingRestrictionSign"
+    ],
+    "no_parking:16-31": [
+      "ParkingRestrictionSign"
+    ],
+    "no_pedestrian": [
+      "AccessRestrictionSign"
+    ],
+    "no_roller": [
+      "AccessRestrictionSign"
+    ],
+    "no_skiing": [
+      "AccessRestrictionSign"
+    ],
+    "no_sledging": [
+      "AccessRestrictionSign"
+    ],
+    "no_stop": [
+      "ParkingRestrictionSign"
+    ],
+    "no_trailer": [
+      "VehicleRestrictionSign"
+    ],
+    "no_turn:left": [
+      "TurnRestrictionSign"
+    ],
+    "no_turn:right": [
+      "TurnRestrictionSign"
+    ],
+    "no_u_turn": [
+      "TurnRestrictionSign"
+    ],
+    "no_way": [
+      "AccessRestrictionSign"
+    ],
+    "oneway": [
+      "RoadLayoutSign"
+    ],
+    "park_ride": [
+      "ParkingSign"
+    ],
+    "parking": [
+      "ParkingSign"
+    ],
+    "parking:bicycle": [
+      "ParkingSign"
+    ],
+    "parking:bus": [
+      "ParkingSign"
+    ],
+    "parking:car": [
+      "ParkingSign"
+    ],
+    "parking:card": [
+      "ParkingSign"
+    ],
+    "parking:carpool": [
+      "ParkingSign"
+    ],
+    "parking:charging": [
+      "ParkingSign"
+    ],
+    "parking:charging:bicycle": [
+      "ParkingSign"
+    ],
+    "parking:charging:car": [
+      "ParkingSign"
+    ],
+    "parking:charging:moped": [
+      "ParkingSign"
+    ],
+    "parking:covered": [
+      "ParkingSign"
+    ],
+    "parking:delivery": [
+      "ParkingSign"
+    ],
+    "parking:disabled": [
+      "ParkingSign"
+    ],
+    "parking:disc": [
+      "ParkingSign"
+    ],
+    "parking:ebike": [
+      "ParkingSign"
+    ],
+    "parking:hgv": [
+      "ParkingSign"
+    ],
+    "parking:meter": [
+      "ParkingSign"
+    ],
+    "parking:moped": [
+      "ParkingSign"
+    ],
+    "parking:motorcycle": [
+      "ParkingSign"
+    ],
+    "parking:motorhome": [
+      "ParkingSign"
+    ],
+    "parking:park_ride": [
+      "ParkingSign"
+    ],
+    "parking:payment": [
+      "ParkingSign"
+    ],
+    "parking:pedestrian": [
+      "ParkingSign"
+    ],
+    "parking:perpendicular": [
+      "ParkingSign"
+    ],
+    "parking:police": [
+      "ParkingSign"
+    ],
+    "parking:sidewalk": [
+      "ParkingSign"
+    ],
+    "parking:taxi": [
+      "ParkingSign"
+    ],
+    "parking:women": [
+      "ParkingSign"
+    ],
+    "pedestrian:end": [
+      "PathRegulationSign"
+    ],
+    "pedestrian:overpass": [
+      "CrossingInformationSign"
+    ],
+    "pedestrian:start": [
+      "PathRegulationSign"
+    ],
+    "pedestrian:underpass": [
+      "CrossingInformationSign"
+    ],
+    "pedestrian_bicycle:designated": [
+      "PathRegulationSign"
+    ],
+    "pedestrian_bicycle:start": [
+      "PathRegulationSign"
+    ],
+    "pedestrian_crossing": [
+      "CrossingInformationSign"
+    ],
+    "priority:backward": [
+      "PrioritySign"
+    ],
+    "priority:end": [
+      "PrioritySign"
+    ],
+    "priority:forward": [
+      "PrioritySign"
+    ],
+    "priority:start": [
+      "PrioritySign"
+    ],
+    "rest": [
+      "ServiceSign"
+    ],
+    "roundabout": [
+      "DirectionalRequirementSign"
+    ],
+    "speed": [
+      "SpeedSign"
+    ],
+    "speed:end": [
+      "SpeedSign"
+    ],
+    "speed_camera": [
+      "EnforcementInformationSign"
+    ],
+    "stop": [
+      "StopSign"
+    ],
+    "traffic_calming": [
+      "RoadLayoutSign"
+    ],
+    "tram:end": [
+      "RoadUseSign"
+    ],
+    "tram:start": [
+      "RoadUseSign"
+    ],
+    "trunk:end": [
+      "RoadStatusSign"
+    ],
+    "trunk:start": [
+      "RoadStatusSign"
+    ],
+    "tunnel:end": [
+      "RoadStatusSign"
+    ],
+    "tunnel:start": [
+      "RoadStatusSign"
+    ],
+    "zone:20": [
+      "SpeedZoneSign"
+    ],
+    "zone:30": [
+      "SpeedZoneSign"
+    ],
+    "zone:calm": [
+      "SpeedZoneSign"
+    ],
+    "zone:calm:end": [
+      "SpeedZoneSign"
+    ],
+    "zone:end": [
+      "SpeedZoneSign"
+    ],
+    "zone:low_emission": [
+      "LowEmissionZoneSign"
+    ],
+    "zone:low_emission:end": [
+      "LowEmissionZoneSign"
+    ],
+    "zone:no_parking": [
+      "ParkingZoneSign"
+    ],
+    "zone:no_parking:end": [
+      "ParkingZoneSign"
+    ],
+    "zone:parking": [
+      "ParkingZoneSign"
+    ],
+    "zone:parking:alternate": [
+      "ParkingZoneSign"
+    ],
+    "zone:parking:disc": [
+      "ParkingZoneSign"
+    ],
+    "zone:parking:end": [
+      "ParkingZoneSign"
+    ],
+    "zone:parking:meter": [
+      "ParkingZoneSign"
+    ],
+    "zone:pedestrian": [
+      "PedestrianZoneSign"
+    ],
+    "zone:pedestrian:end": [
+      "PedestrianZoneSign"
+    ]
+  }
+}

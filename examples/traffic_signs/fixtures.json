@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "description": "Entirely synthetic signs and OSM-shaped elements at equatorial WGS84 coordinates; IDs identify no actual OSM feature. Countries are synthetic observation metadata, not claims about these locations.",
+  "namespace": "https://example.org/traffic-sign/example#",
+  "coordinate_contract": {
+    "crs": "WGS84 geographic coordinates",
+    "fields": ["latitude", "longitude"],
+    "unit": "degree",
+    "sign_distance": "Shortest WGS84 ellipsoidal surface distance, metres; no altitude",
+    "reference_scope": "Equatorial short arcs only; a times longitude difference in radians, a = 6378137 metres. This analytic reference is not a general geodesic implementation."
+  },
+  "nodes": [
+    {"id": "node_a", "osm_id": -101, "latitude": "0", "longitude": "0"},
+    {"id": "node_b", "osm_id": -102, "latitude": "0", "longitude": "0.001"},
+    {"id": "node_c", "osm_id": -103, "latitude": "0", "longitude": "0.002"},
+    {"id": "node_d", "osm_id": -104, "latitude": "0", "longitude": "0.003"},
+    {"id": "node_i", "osm_id": -105, "latitude": "0", "longitude": "0.010"},
+    {"id": "node_j", "osm_id": -106, "latitude": "0", "longitude": "0.011"}
+  ],
+  "road_route": {"id": "road_route_demo", "osm_id": -301},
+  "segments": [
+    {"id": "way_ab", "osm_id": -201, "nodes": ["node_a", "node_b"]},
+    {"id": "way_bc", "osm_id": -202, "nodes": ["node_b", "node_c"]},
+    {"id": "way_cd", "osm_id": -203, "nodes": ["node_c", "node_d"]},
+    {"id": "way_island", "osm_id": -204, "nodes": ["node_i", "node_j"]}
+  ],
+  "signs": [
+    {
+      "id": "stop_a", "node": "node_a", "segment": "way_ab", "yolo_label": "stop",
+      "expected_classes": ["Type_stop", "StopSign", "PrioritySign", "RegulatorySign", "TrafficSign"],
+      "forbidden_classes": ["Code_DE_DE_206", "Code_CH_CH_3_01", "Type_give_way"]
+    },
+    {
+      "id": "stop_b", "node": "node_b", "segment": "way_bc", "country": "DE", "national_code": "DE:206",
+      "expected_classes": ["Code_DE_DE_206", "Type_stop", "StopSign", "PrioritySign", "TrafficSign"],
+      "forbidden_classes": ["Code_CH_CH_3_01", "Type_give_way"]
+    },
+    {
+      "id": "speed_30", "node": "node_c", "segment": "way_cd", "yolo_label": "maxspeed:30",
+      "expected_classes": ["Type_maxspeed_30", "MaximumSpeedSign", "SpeedSign", "RegulatorySign", "TrafficSign"],
+      "forbidden_classes": ["StopSign", "Type_maxspeed_50", "Code_DE_DE_274_30"]
+    },
+    {
+      "id": "dimension_ambiguous", "node": "node_d", "segment": "way_cd", "country": "BE", "national_code": "BE:C27",
+      "expected_classes": ["Code_BE_BE_C27", "DimensionRestrictionSign", "RegulatorySign", "TrafficSign"],
+      "forbidden_classes": ["Type_maxheight", "Type_maxwidth", "Type_maxlength"]
+    },
+    {
+      "id": "access_ambiguous", "node": "node_i", "segment": "way_island", "country": "BE", "national_code": "BE:C23",
+      "expected_classes": ["Code_BE_BE_C23", "RegulatorySign", "TrafficSign"],
+      "forbidden_classes": ["Type_no_hgv", "Type_no_u_turn", "VehicleRestrictionSign", "TurnRestrictionSign"]
+    },
+    {
+      "id": "unknown", "node": "node_j", "segment": "way_island", "yolo_label": "unseen_example_label",
+      "asserted_categories": ["UnclassifiedSign"],
+      "expected_classes": ["UnclassifiedSign", "TrafficSign"],
+      "forbidden_classes": ["WarningSign", "RegulatorySign", "InformationSign"]
+    },
+    {
+      "id": "warning", "node": "node_c", "segment": "way_cd", "yolo_label": "hazard:school",
+      "expected_classes": ["Type_hazard_school", "WarningSign", "TrafficSign"],
+      "forbidden_classes": ["StopSign", "MaximumSpeedSign"]
+    },
+    {
+      "id": "wrong_country", "node": "node_b", "segment": "way_bc", "country": "DE", "national_code": "BE:C27",
+      "expected_classes": ["TrafficSign"],
+      "forbidden_classes": ["Code_BE_BE_C27", "DimensionRestrictionSign", "Type_maxheight", "Type_maxwidth"]
+    },
+    {
+      "id": "missing_country", "node": "node_a", "segment": "way_ab", "national_code": "DE:206",
+      "expected_classes": ["TrafficSign"],
+      "forbidden_classes": ["Code_DE_DE_206", "StopSign", "Type_stop"]
+    }
+  ],
+  "expected_queries": {
+    "StopSign": ["stop_a", "stop_b"],
+    "WarningSign": ["warning"],
+    "DimensionRestrictionSign": ["dimension_ambiguous"],
+    "UnclassifiedSign": ["unknown"]
+  },
+  "geodesic_cases": [
+    {"from": "stop_a", "to": "stop_b", "metres": 111.31949079327357},
+    {"from": "stop_b", "to": "stop_a", "metres": 111.31949079327357},
+    {"from": "stop_a", "to": "speed_30", "metres": 222.63898158654715},
+    {"from": "stop_a", "to": "dimension_ambiguous", "metres": 333.9584723798207},
+    {"from": "speed_30", "to": "warning", "metres": 0.0},
+    {"from": "stop_a", "to": "access_ambiguous", "metres": 1113.1949079327358}
+  ],
+  "nearby_cases": [
+    {"anchor": "stop_a", "class": "StopSign", "radius_metres": 112, "exclude_anchor": true, "expected": ["stop_b"]},
+    {"anchor": "stop_a", "class": "StopSign", "radius_metres": 111, "exclude_anchor": true, "expected": []},
+    {"anchor": "stop_a", "class": "StopSign", "radius_metres": 111.31949079327357, "exclude_anchor": true, "expected": ["stop_b"]},
+    {"anchor": "speed_30", "class": "WarningSign", "radius_metres": 0, "exclude_anchor": true, "expected": ["warning"]}
+  ],
+  "road_provider_reference": {
+    "provider": "synthetic directed weighted graph; not an external routing engine",
+    "dataset_version": "synthetic-road-v1",
+    "profile": "synthetic-car",
+    "objective": "minimum sum of supplied edge lengths",
+    "unit": "metre",
+    "limitations": "Supplied weights are independent test costs, not geometry-derived lengths. No map matching, turn restrictions, headings, traffic, sign applicability, or live provider is executed. All signs sit exactly at graph vertices.",
+    "edges": [
+      {"from": "node_a", "to": "node_b", "metres": 140},
+      {"from": "node_b", "to": "node_c", "metres": 160},
+      {"from": "node_c", "to": "node_d", "metres": 120},
+      {"from": "node_i", "to": "node_j", "metres": 130}
+    ],
+    "cases": [
+      {"from": "stop_a", "to": "stop_b", "status": "OK", "metres": 140},
+      {"from": "stop_a", "to": "speed_30", "status": "OK", "metres": 300},
+      {"from": "stop_b", "to": "stop_a", "status": "UNREACHABLE", "metres": null},
+      {"from": "stop_a", "to": "access_ambiguous", "status": "UNREACHABLE", "metres": null},
+      {"from": "speed_30", "to": "warning", "status": "OK", "metres": 0}
+    ]
+  }
+}

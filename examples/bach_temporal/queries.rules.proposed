@@ -1,0 +1,57 @@
+# DESIGN ONLY: unsupported by the current parser and rule engine.
+# All query/filter/bind/MIN/GROUP_BY constructs and custom names are proposed.
+# time: is a custom namespace, not W3C OWL-Time. No parser support is implied.
+prefix bach: <http://www.jsbach.org/bach#>
+prefix bt:   <https://example.org/bach-temporal#>
+prefix time: <urn:dlp:proposed:temporal:>
+prefix policy: <urn:dlp:proposed:calendar-policy:>
+
+# Runtime input relation acceptedBirthDate(person,date): exactly one valid,
+# normalized Gregorian date for that person at the pinned scope/revision.
+# Multiple different date values are conflicts; missing/conflicting dates have
+# no accepted row and remain visible in diagnostics. They are not silently MIN'd.
+# scope:dataset(?scope,?revision) below is explanatory context, not a builtin.
+
+query datedChild(?parent, ?child, ?date) given (?scope, ?revision) :-
+    bach:hasChild(?parent, ?child), bt:acceptedBirthDate(?child, ?date).
+
+# The aggregate runs after the positive input stratum reaches a fixed point.
+# Empty group emits no row; ordering is by date value, never lexical term IDs.
+query earliestKnownBirth(?parent, ?firstDate) given (?scope, ?revision) :-
+    MIN ?date GROUP_BY ?parent
+        FROM datedChild(?parent, ?child, ?date) AS ?firstDate.
+
+# Join back to retain ALL tied children, including twins.
+query firstKnownChild(?parent, ?child, ?date) given (?scope, ?revision) :-
+    earliestKnownBirth(?parent, ?date), datedChild(?parent, ?child, ?date).
+
+query fatherAtAgeKnown(?parent, ?years) given (?scope, ?revision) :-
+    bach:Father(?parent), earliestKnownBirth(?parent, ?firstDate),
+    bt:acceptedBirthDate(?parent, ?parentDate),
+    bind time:completedYears(?parentDate, ?firstDate, policy:march1) as ?years.
+
+query motherAtAgeKnown(?parent, ?years) given (?scope, ?revision) :-
+    bach:Mother(?parent), earliestKnownBirth(?parent, ?firstDate),
+    bt:acceptedBirthDate(?parent, ?parentDate),
+    bind time:completedYears(?parentDate, ?firstDate, policy:march1) as ?years.
+
+# completeChildDates is an explicit external certificate for this parent's full
+# child/date relation in this exact scope/revision, never absence-as-negation.
+# Runtime validates the certificate, parent identity/equality, and one exact date
+# for every child. Incomplete materialization or date diagnostics invalidate it.
+query firstChild(?parent, ?child, ?date) given (?scope, ?revision) :-
+    bt:validatedCompleteChildDates(?parent, ?scope, ?revision),
+    firstKnownChild(?parent, ?child, ?date).
+
+query fatherAtAge(?parent, ?years) given (?scope, ?revision) :-
+    bt:validatedCompleteChildDates(?parent, ?scope, ?revision),
+    fatherAtAgeKnown(?parent, ?years).
+
+query motherAtAge(?parent, ?years) given (?scope, ?revision) :-
+    bt:validatedCompleteChildDates(?parent, ?scope, ?revision),
+    motherAtAgeKnown(?parent, ?years).
+
+# Changes: inserting an earlier dated child retracts the old minimum/age and
+# adds the new one. Deleting the last witness at the minimum exposes the next
+# minimum. Deleting one twin retains the shared age and the other twin.
+# Certificates must be renewed/revalidated for every changed relevant revision.

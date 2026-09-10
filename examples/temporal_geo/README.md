@@ -51,6 +51,14 @@ The arithmetic fixture checks `50 metres / 5 seconds * 3.6 = 36 km/h` independen
 
 ## Proposed notation
 
+Additional worked ontologies are available for
+[Bach birthdates and first-child ages](../bach_temporal/README.md),
+[OpenStreetMap elements/tags](../osm/README.md), and
+[PROLIX traffic-sign categories and sign distances](../traffic_signs/README.md).
+The [implementation specification](../../docs/ENGINE_EXTENSION_SPEC.md) ties
+these fixtures to the remaining engine work. Their current DLP classifications
+and standalone extended computations are reported separately.
+
 `queries.rules.proposed` contains five snapshot queries and five stream queries. Pure custom builtins use `sp:`, `time:`, and `num:` URNs. In this file, **`time:` is not the OWL-Time namespace**. Standard `geo:` and `geof:` namespaces are reserved separately; the custom `sp:dwithin` and projected `sp:distance` names do not claim standardized GeoSPARQL function behavior.
 
 `WINDOW`, `MEMBER`, `COUNT_DISTINCT`, `PREVIOUS`, and `EMIT CHANGES` are proposed stateful operators, not scalar builtins. Function arguments must already be bound by query inputs, positive facts, or prior binds. External clocks, source completeness, and accepted revisions belong to the query/runtime context. No ordinary failed ontology query is treated as proof of event absence.

@@ -1,0 +1,81 @@
+// Executable current thesis DLP syntax, profile L0, deliberately a partial family.
+// Independent, finite extension using the historical Bach IRIs; no imports.
+// May also be merged with ../bach.dlp under L3. Historical files are unchanged.
+// Date literals below are selected, normalized input records, NOT computed by DLP.
+// See README.md for conflicting historical sources and calendar assumptions.
+Namespace(bach = <http://www.jsbach.org/bach#>)
+Namespace(bt = <https://example.org/bach-temporal#>)
+Namespace(cpe = <https://cpebach.org/timeline/>)
+Namespace(rdfs = <http://www.w3.org/2000/01/rdf-schema#>)
+Namespace(xsd = <http://www.w3.org/2001/XMLSchema#>)
+
+Ontology(<https://example.org/bach-temporal>
+    Annotation(rdfs:label "Bach: earliest known child and proposed calendar age")
+    Class(bach:Person partial)
+    Class(bach:Man partial bach:Person)
+    Class(bach:Woman partial bach:Person)
+    Class(bach:Father partial bach:Man)
+    Class(bach:Mother partial bach:Woman)
+    ObjectProperty(bach:hasChild domain(bach:Person) range(bach:Person))
+    SubClassOf(intersectionOf(bach:Man
+        restriction(bach:hasChild someValuesFrom(bach:Person))) bach:Father)
+    SubClassOf(intersectionOf(bach:Woman
+        restriction(bach:hasChild someValuesFrom(bach:Person))) bach:Mother)
+    // No datatype range axioms: datatype reasoning remains a proposed capability.
+    // Not Functional: conflicting records must be diagnosed, not merged by OWL equality.
+    DatatypeProperty(bt:birthDate)
+    DatatypeProperty(bt:reportedBirthDate)
+    DatatypeProperty(bt:reportedCalendar)
+    DatatypeProperty(bt:birthDescription)
+    DatatypeProperty(bt:completeChildDates)
+    // Proposed derived data properties: declarations only, no age facts asserted.
+    DatatypeProperty(bt:fatherAtAgeKnown)
+    DatatypeProperty(bt:motherAtAgeKnown)
+    DatatypeProperty(bt:fatherAtAge)
+    DatatypeProperty(bt:motherAtAge)
+
+    Individual(bach:johann-sebastian
+        annotation(rdfs:seeAlso cpe:chronology)
+        type(bach:Man)
+        value(bach:hasChild bach:wilhelm-friedemann)
+        value(bach:hasChild bach:catharina-dorothea)
+        value(bach:hasChild bach:christiana-sophia-henrietta)
+        value(bt:reportedBirthDate "1685-03-21")
+        value(bt:reportedCalendar "Julian: explicit normalization assumption")
+        value(bt:birthDate "1685-03-31"^^xsd:date)
+    )
+    Individual(bach:maria-barbara
+        annotation(rdfs:seeAlso cpe:chronology)
+        type(bach:Woman)
+        value(bach:hasChild bach:wilhelm-friedemann)
+        value(bach:hasChild bach:catharina-dorothea)
+        value(bt:reportedBirthDate "1684-10-20")
+        value(bt:reportedCalendar "Julian: explicit normalization assumption")
+        value(bt:birthDate "1684-10-30"^^xsd:date)
+    )
+    Individual(bach:anna-magdalena
+        annotation(rdfs:seeAlso <https://www.bach-leipzig.de/en/bach-archive/classification-system-leipzig-bach-archive>)
+        type(bach:Woman)
+        value(bach:hasChild bach:christiana-sophia-henrietta)
+        value(bt:birthDescription "1701; no exact birthdate accepted in this fixture")
+    )
+    Individual(bach:wilhelm-friedemann
+        annotation(rdfs:seeAlso cpe:chronology)
+        type(bach:Man)
+        value(bt:birthDate "1710-11-22"^^xsd:date)
+        value(bt:reportedCalendar "Gregorian: explicit normalization assumption")
+    )
+    Individual(bach:catharina-dorothea
+        annotation(rdfs:comment "Selected claim: Reimer 2010 p.248 n.5, citing Frickel. Other sources differ; see README.")
+        annotation(rdfs:seeAlso <https://mf.journals.qucosa.de/mf/issue/download/247/213>)
+        type(bach:Woman)
+        value(bt:birthDate "1708-12-27"^^xsd:date)
+        value(bt:reportedCalendar "Gregorian: explicit normalization assumption")
+    )
+    Individual(bach:christiana-sophia-henrietta
+        annotation(rdfs:seeAlso <https://www.neue-bachgesellschaft.de/jsb/biographie/>)
+        type(bach:Woman)
+        value(bt:birthDescription "Spring 1723; exact date not established")
+    )
+    // No bt:completeChildDates assertions: this selected dataset is not a complete genealogy.
+)

@@ -9,6 +9,8 @@ descriptions may use every constructor in any position, and cardinalities are
 nonnegative integers. Thus the L3 existential/minimum-cardinality consequents
 of §5.1.4 can be written; the compiler still rejects non-Horn positions.
 Property characteristics may be combined, as they may in RDF/OWL.
+Prefixed local names also allow hyphens after the initial letter, so existing
+IRIs such as ``bach:johann-sebastian`` can use namespace prefixes unchanged.
 
 Table 5.4 defines ``Class(A partial localdomain(P D))`` as ``exists P.A <= D``:
 the class A constrains the *filler*, not the subject. ``localrange(P R)`` means
@@ -201,8 +203,8 @@ class _Parser:
             prefix, local = token.value.split(":", 1)
             if (not prefix or not all(c.isalpha() for c in prefix)
                     or not local or not local[0].isalpha()
-                    or not all(c.isalpha() or c.isnumeric() or c == "_" for c in local)):
-                self.fail("Invalid QName; use <absolute-IRI> for names outside Appendix A", token)
+                    or not all(c.isalpha() or c.isnumeric() or c in "_-" for c in local)):
+                self.fail("Invalid QName; use <absolute-IRI> for unsupported names", token)
             if prefix not in self.namespaces:
                 self.fail(f"Undeclared namespace prefix {prefix!r}", token)
             return URIRef(self.namespaces[prefix] + local)

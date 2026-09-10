@@ -1,0 +1,10 @@
+{
+  "extended": {
+    "johann-sebastian": {"firstKnownChild": ["catharina-dorothea"], "earliestKnownBirth": "1708-12-27", "fatherAtAgeKnown": 23, "fatherAtAge": null, "diagnostics": ["child:christiana-sophia-henrietta:missing_date", "scope:not_certified_complete"]},
+    "maria-barbara": {"firstKnownChild": ["catharina-dorothea"], "earliestKnownBirth": "1708-12-27", "motherAtAgeKnown": 24, "motherAtAge": null, "diagnostics": ["scope:not_certified_complete"]},
+    "anna-magdalena": {"firstKnownChild": [], "earliestKnownBirth": null, "motherAtAgeKnown": null, "motherAtAge": null, "diagnostics": ["child:christiana-sophia-henrietta:missing_date", "parent:missing_date", "scope:not_certified_complete"]}
+  },
+  "before_earlier_child": {"johann-sebastian": 25, "maria-barbara": 26},
+  "after_earlier_child": {"johann-sebastian": 23, "maria-barbara": 24},
+  "after_earlier_child_deleted": {"johann-sebastian": 25, "maria-barbara": 26}
+}

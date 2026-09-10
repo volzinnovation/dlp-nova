@@ -1,0 +1,75 @@
+// A small application ontology for an OSM snapshot; accepted by profile L0.
+// Namespace and class names are ours, not an official OSM ontology.
+Namespace(osm = <https://example.org/osm#>)
+
+Ontology(<https://example.org/osm/ontology>
+    Annotation(rdfs:label "Small OpenStreetMap snapshot vocabulary"@en)
+
+    Class(osm:Element partial)
+    Class(osm:Node partial osm:Element)
+    Class(osm:Way partial osm:Element)
+    Class(osm:Relation partial osm:Element)
+    // An imported linear road WAY, not one routing edge or a legal permission.
+    Class(osm:RoadSegment partial osm:Way)
+    Class(osm:RoadRoute complete intersectionOf(
+        osm:Relation
+        restriction(osm:relationType value("route"))
+        restriction(osm:route value("road"))
+    ))
+    Class(osm:ForwardOnewayTag complete intersectionOf(
+        osm:Way restriction(osm:oneway value("yes"))
+    ))
+    Class(osm:ReverseOnewayTag complete intersectionOf(
+        osm:Way restriction(osm:oneway value("-1"))
+    ))
+    Class(osm:TwoWayTag complete intersectionOf(
+        osm:Way restriction(osm:oneway value("no"))
+    ))
+    Class(osm:WayNode partial)
+    Class(osm:RelationMembership partial)
+    Class(osm:Tag partial)
+    Class(osm:Snapshot partial)
+
+    ObjectProperty(osm:sourceSnapshot range(osm:Snapshot))
+    ObjectProperty(osm:ownerElement domain(osm:Tag) range(osm:Element))
+    ObjectProperty(osm:ownerWay domain(osm:WayNode) range(osm:Way))
+    ObjectProperty(osm:memberNode domain(osm:WayNode) range(osm:Node))
+    ObjectProperty(osm:ownerRelation domain(osm:RelationMembership) range(osm:Relation))
+    ObjectProperty(osm:memberElement domain(osm:RelationMembership) range(osm:Element))
+    // A convenience projection of direct, qualified route membership.
+    // It is neither functional nor existential: a way can have zero/many routes.
+    ObjectProperty(osm:partOfRoad domain(osm:Way) range(osm:RoadRoute))
+
+    // Datatype ranges and arithmetic are deliberately outside this L0 schema.
+    DatatypeProperty(osm:osmId domain(osm:Element))
+    DatatypeProperty(osm:version domain(osm:Element))
+    DatatypeProperty(osm:timestamp domain(osm:Element))
+    DatatypeProperty(osm:changeset domain(osm:Element))
+    DatatypeProperty(osm:latitude domain(osm:Node))
+    DatatypeProperty(osm:longitude domain(osm:Node))
+    DatatypeProperty(osm:position)
+    DatatypeProperty(osm:role domain(osm:RelationMembership))
+    DatatypeProperty(osm:memberType domain(osm:RelationMembership))
+    DatatypeProperty(osm:tagKey domain(osm:Tag))
+    DatatypeProperty(osm:tagValue domain(osm:Tag))
+    DatatypeProperty(osm:source domain(osm:Snapshot))
+    DatatypeProperty(osm:contentSha256 domain(osm:Snapshot))
+    DatatypeProperty(osm:mappingVersion domain(osm:Snapshot))
+
+    // Selected keys have stable property names; values retain source spelling.
+    DatatypeProperty(osm:highway domain(osm:Element))
+    DatatypeProperty(osm:name domain(osm:Element))
+    DatatypeProperty(osm:ref domain(osm:Element))
+    DatatypeProperty(osm:oneway domain(osm:Element))
+    DatatypeProperty(osm:maxspeedRaw domain(osm:Element))
+    DatatypeProperty(osm:maxspeedConditionalRaw domain(osm:Element))
+    DatatypeProperty(osm:lanes domain(osm:Element))
+    DatatypeProperty(osm:surface domain(osm:Element))
+    DatatypeProperty(osm:access domain(osm:Element))
+    DatatypeProperty(osm:bridge domain(osm:Element))
+    DatatypeProperty(osm:tunnel domain(osm:Element))
+    DatatypeProperty(osm:junction domain(osm:Element))
+    DatatypeProperty(osm:trafficSignRaw domain(osm:Element))
+    DatatypeProperty(osm:relationType domain(osm:Element))
+    DatatypeProperty(osm:route domain(osm:Element))
+)
