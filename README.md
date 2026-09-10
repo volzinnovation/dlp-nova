@@ -1,6 +1,6 @@
-# DLP reasoner
+# DLP Nova
 
-A runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. The desktop API uses Python and RDFLib, with optional resident C++ relation indexes.
+**DLP Nova** is a runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. The desktop API uses Python and RDFLib, with optional resident C++ relation indexes. The package name (`dlp-reasoner`), Python imports (`dlp_reasoner`) and CLI (`dlp`) are unchanged.
 
 The package provides position-sensitive L0–L3 profiles, equality with congruence, consistency constraints, RDF queries, and materialization maintenance. It is a DLP reasoner, not a complete OWL DL or OWL Full reasoner. Unsupported logical constructs fail explicitly.
 
@@ -10,6 +10,22 @@ executes compiled Horn and local query plans through C, Python, Swift and Kotlin
 bindings. Native sessions retain query state and support application recovery;
 the mobile apps run without Python. See [mobile integration and qualification](#native-sessions-and-mobile)
 for the tested targets and remaining physical-device work.
+
+## User documentation
+
+Start with the [DLP Nova user guide](docs/DLP_NOVA_USER_GUIDE.md) for installation,
+CLI commands, Python queries, updates and runtime selection. The
+[base language guide](docs/DLP_NOVA_LANGUAGE_GUIDE.md) explains the L0–L3
+fragments and their syntax with executable examples. The
+[extension guide](docs/DLP_NOVA_EXTENSIONS.md) covers `.dlq` rules, temporal
+operators, WGS84 distances, projected geometry, routing providers and event
+windows. Try the [DLP Nova tutorials](examples/dlp_nova/README.md).
+
+The separate systems-paper draft,
+**DLP Nova: A Reasoner with Geospatial and Temporal Extensions**, describes the
+engine, semantic contracts and focused extension evidence:
+[PDF](output/pdf/dlp-nova.pdf), [LaTeX](docs/paper/dlp-nova.tex),
+[reproducible build](docs/paper/README.md#dlp-nova-systems-paper).
 
 ## Paper and citation
 

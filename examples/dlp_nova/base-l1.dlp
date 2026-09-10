@@ -1,0 +1,19 @@
+// Functionality establishes equality; two names do not imply two individuals.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  ObjectProperty(ex:hasPrimaryContact Functional)
+  ObjectProperty(ex:hasIdentifier InverseFunctional)
+  Class(ex:SingleContact partial
+    restriction(ex:hasBackupContact maxCardinality(1)))
+  EnumeratedClass(ex:OnlyAnna ex:anna)
+  SubClassOf(oneOf(ex:anna ex:lea) ex:ListedPerson)
+
+  Individual(ex:office type(ex:SingleContact)
+    value(ex:hasPrimaryContact ex:anna)
+    value(ex:hasPrimaryContact ex:annaAlias)
+    value(ex:hasBackupContact ex:lea)
+    value(ex:hasBackupContact ex:leaAlias))
+  Individual(ex:anna type(ex:Composer) value(ex:hasIdentifier ex:idA))
+  Individual(ex:thirdName value(ex:hasIdentifier ex:idA))
+)

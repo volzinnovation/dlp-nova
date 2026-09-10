@@ -1,0 +1,36 @@
+version 1
+prefix nova: <urn:example:dlp-nova:>
+prefix time: <urn:dlp:temporal:>
+prefix policy: <urn:dlp:calendar-policy:>
+prefix sp: <urn:dlp:spatial:>
+prefix num: <urn:dlp:numeric:>
+
+# All rule inputs are supplied as finite relations by extension-demo.py.
+nova:age(?person, ?at, ?years) :-
+    nova:anniversary(?person, ?birth, ?at),
+    bind time:completedYears(?birth, ?at, policy:march1) as ?years.
+
+nova:shifted(?label, ?result) :-
+    nova:shift(?label, ?start, ?duration),
+    bind time:add(?start, ?duration) as ?result.
+
+nova:seconds(?label, ?result) :-
+    nova:elapsed(?label, ?start, ?end),
+    bind time:elapsedSeconds(?start, ?end) as ?result.
+
+nova:point(?id, ?point) :-
+    nova:location(?id, ?longitude, ?latitude),
+    bind sp:wgs84Point(?longitude, ?latitude) as ?point.
+
+nova:distance(?id, ?metres) :-
+    nova:search(?anchor, ?radius, ?at), nova:point(?anchor, ?from),
+    nova:sign(?id), nova:point(?id, ?to),
+    bind sp:wgs84Distance(?from, ?to) as ?metres.
+
+nova:nearbyValid(?id, ?metres) :-
+    nova:distance(?id, ?metres), nova:search(?anchor, ?radius, ?at),
+    nova:validity(?id, ?start, ?end),
+    bind time:interval(?start, ?end) as ?valid,
+    filter time:contains(?valid, ?at),
+    bind num:toFloat(?radius) as ?radiusFloat,
+    filter num:floatLessThanOrEqual(?metres, ?radiusFloat).

@@ -1,0 +1,14 @@
+// A consistent ontology with disjointness, a denial, and explicit inequality.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  DisjointClasses(ex:Person ex:Composition)
+  Class(ex:Childless partial restriction(ex:hasChild maxCardinality(0)))
+  Class(ex:InstrumentalWork partial complementOf(ex:VocalWork))
+  DifferentIndividuals(ex:anna ex:lea)
+
+  Individual(ex:anna type(ex:Person))
+  Individual(ex:lea type(ex:Person))
+  Individual(ex:solo type(ex:Composition) type(ex:InstrumentalWork))
+  Individual(ex:nora type(ex:Childless))
+)

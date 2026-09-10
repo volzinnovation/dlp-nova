@@ -1,0 +1,12 @@
+// A local domain class constrains the filler of the edge.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  Class(ex:Student partial
+    localdomain(ex:teaches ex:Teacher)
+    localrange(ex:enrolledAt ex:School))
+
+  Individual(ex:lea type(ex:Student) value(ex:enrolledAt ex:academy))
+  Individual(ex:anna value(ex:teaches ex:lea))
+  Individual(ex:other value(ex:teaches ex:unknown))
+)

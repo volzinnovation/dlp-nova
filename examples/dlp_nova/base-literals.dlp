@@ -1,0 +1,15 @@
+// Base ontology literals; date arithmetic belongs to separate .dlq queries.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  DatatypeProperty(ex:name domain(ex:Person))
+  DatatypeProperty(ex:year)
+  DatatypeProperty(ex:birthDate)
+  Class(ex:BornIn1685 complete restriction(ex:year value("1685"^^xsd:integer)))
+
+  Individual(ex:bach
+    annotation(rdfs:label "Johann Sebastian Bach"@en)
+    value(ex:name "Johann Sebastian Bach")
+    value(ex:year "01685"^^xsd:integer)
+    value(ex:birthDate "1685-03-31"^^xsd:date))
+)

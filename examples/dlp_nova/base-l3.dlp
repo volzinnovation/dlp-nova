@@ -1,0 +1,9 @@
+// Finite existential consequences and two explicitly different witnesses.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  Class(ex:Parent partial restriction(ex:hasChild someValuesFrom(ex:Person)))
+  Class(ex:PairOwner partial restriction(ex:hasPart minCardinality(2)))
+  Individual(ex:anna type(ex:Parent))
+  Individual(ex:kit type(ex:PairOwner))
+)

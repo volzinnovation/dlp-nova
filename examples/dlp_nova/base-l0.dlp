@@ -1,0 +1,24 @@
+// DLP Nova: classification and property reasoning without equality or witnesses.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(<https://example.org/nova/base-l0>
+  Annotation(rdfs:label "DLP Nova language tutorial"@en)
+
+  Class(ex:Person partial)
+  Class(ex:Musician partial ex:Person)
+  Class(ex:Composer partial ex:Musician)
+  Class(ex:KnownParent complete
+    intersectionOf(ex:Person restriction(ex:hasChild value(ex:lea))))
+  SubClassOf(restriction(ex:hasChild someValuesFrom(ex:Musician))
+             ex:ParentOfMusician)
+  SubClassOf(unionOf(ex:Composer ex:Singer) ex:Performer)
+  Class(ex:Parent partial restriction(ex:hasChild allValuesFrom(ex:Person)))
+
+  ObjectProperty(ex:hasChild
+    super(ex:ancestorOf) inverseOf(ex:hasParent)
+    domain(ex:Person) range(ex:Person))
+  ObjectProperty(ex:ancestorOf Transitive)
+
+  Individual(ex:anna type(ex:Composer) value(ex:hasChild ex:lea))
+  Individual(ex:lea type(ex:Musician) value(ex:hasChild ex:max))
+)

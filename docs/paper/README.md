@@ -1,4 +1,60 @@
-# Research preprint
+# Research papers
+
+## DLP Nova systems paper
+
+**DLP Nova: A Reasoner with Geospatial and Temporal Extensions** is a separate
+systems-paper draft by Raphael Volz, Pforzheim University. It presents the
+language layers, domain contracts, finite scoped queries, revision-aware
+providers/windows and native execution paths. The title avoids an unsupported
+priority claim; the contribution is the implemented combination and its explicit
+semantic boundaries. It has not been submitted by the build workflow.
+
+- [Compiled paper](../../output/pdf/dlp-nova.pdf)
+- [Authoritative LaTeX](dlp-nova.tex) and [bibliography](dlp-nova-references.bib)
+- [Portable source archive](../../output/arxiv/dlp-nova-source.tar.gz)
+- [Source/evidence/PDF manifest](../../output/pdf/dlp-nova-manifest.json)
+- [User documentation](../DLP_NOVA_USER_GUIDE.md)
+
+Build only this new manuscript with an existing TeX Live/MacTeX installation:
+
+```sh
+uv run python scripts/build_dlp_nova_paper.py --check-bundle
+```
+
+The build checks references and overfull boxes, packages a fresh bibliography,
+includes the saved evidence JSON files, and compiles the actual archive
+contents in an isolated directory. Temporary products live under
+`tmp/paper-build/dlp-nova/`. It does not regenerate or modify the earlier paper.
+An unpacked archive builds with
+`latexmk -norc -pdf -interaction=nonstopmode -halt-on-error dlp-nova.tex`.
+
+The evidence is deliberately scoped: executable applications assert their
+expected answers, while one synthetic selective-radius experiment compares
+complete answers using the same ellipsoidal distance kernel. Raw data are in
+[example results](../../benchmarks/dlp-nova-example-results.json) and
+[spatial results](../../benchmarks/dlp-nova-spatial-results.json). The separate
+[query-preparation results](../../benchmarks/query-preparation-results.json)
+supply the explicitly identified earlier paired experiment. Fixture
+correctness is not a proof of general conformance; the spatial timings are not
+end-to-end ontology, network-routing or mobile performance measurements.
+
+To collect **new** observations explicitly (requires native libraries/build
+tools and, for the example collector, GEOS):
+
+```sh
+uv run python scripts/collect_dlp_nova_evidence.py \
+  --output /tmp/dlp-nova-example-results.json
+uv run python -m benchmarks.extension_queries --side 100 --repeats 5 \
+  --output /tmp/dlp-nova-spatial-results.json
+```
+
+These commands write new files in `/tmp`, preserving the paper's saved
+observations. The example artifact records its source hashes and acknowledges
+the modified working tree; its Git HEAD alone does not identify all evaluated
+source. The paper build does not rerun either experiment. If adopting new
+observations, revise the manuscript's evidence and rebuild its manifest together.
+
+## Description Logic Programs Revisited
 
 Submitted to arXiv in **cs.AI** on **9 September 2026**, with author-provided
 submission reference [arXiv:submit/8059314](https://arxiv.org/submit/8059314/view).

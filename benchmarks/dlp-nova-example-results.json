@@ -1,0 +1,830 @@
+{
+  "collected_at": "2026-09-10T12:32:01.042370+00:00",
+  "git_head": "8ae485ef58dec17217742643a4fb23fdad97277a",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "purpose": "asserted example correctness; not performance or universal conformance",
+  "python": "3.12.9",
+  "runs": [
+    {
+      "command": [
+        "python",
+        "examples/bach_temporal/run_queries.py",
+        "--backend",
+        "both"
+      ],
+      "exit_code": 0,
+      "results": [
+        {
+          "answers": {
+            "fatherAtAge": [],
+            "fatherAtAgeKnown": [
+              [
+                "http://www.jsbach.org/bach#johann-sebastian",
+                23
+              ]
+            ],
+            "motherAtAge": [],
+            "motherAtAgeKnown": [
+              [
+                "http://www.jsbach.org/bach#maria-barbara",
+                24
+              ]
+            ]
+          },
+          "backend": "python",
+          "diagnostics": [
+            {
+              "code": "missing_date",
+              "subject": "http://www.jsbach.org/bach#anna-magdalena"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#anna-magdalena"
+            },
+            {
+              "code": "missing_date",
+              "subject": "http://www.jsbach.org/bach#christiana-sophia-henrietta"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#johann-sebastian"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#maria-barbara"
+            }
+          ],
+          "execution": {
+            "body_matches": 16,
+            "candidate_rows": 42,
+            "domain_evaluations": 2,
+            "execution_mode": "python",
+            "index_additions": 75,
+            "index_removals": 0,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 2,
+            "min_cache_rebuilds": 1,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 2,
+            "min_rows_scanned": 4,
+            "min_support_additions": 4,
+            "min_support_removals": 0,
+            "ontology_input_cache_hit": false,
+            "ontology_rows_enumerated": 56,
+            "operation_cache_hits": 2,
+            "operation_rows": 4,
+            "plan_cache_hit": false,
+            "rounds": 7
+          },
+          "family_history_complete": false,
+          "production_temporal_operators_executed": true,
+          "scope": "urn:example:bach:accepted-exact-records-v1",
+          "scope_revision": "1",
+          "selected_view_complete": true,
+          "selection_policy": "accepted-exact-records-v1"
+        },
+        {
+          "answers": {
+            "fatherAtAge": [],
+            "fatherAtAgeKnown": [
+              [
+                "http://www.jsbach.org/bach#johann-sebastian",
+                23
+              ]
+            ],
+            "motherAtAge": [],
+            "motherAtAgeKnown": [
+              [
+                "http://www.jsbach.org/bach#maria-barbara",
+                24
+              ]
+            ]
+          },
+          "backend": "native",
+          "diagnostics": [
+            {
+              "code": "missing_date",
+              "subject": "http://www.jsbach.org/bach#anna-magdalena"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#anna-magdalena"
+            },
+            {
+              "code": "missing_date",
+              "subject": "http://www.jsbach.org/bach#christiana-sophia-henrietta"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#johann-sebastian"
+            },
+            {
+              "code": "scope_not_certified_complete",
+              "subject": "http://www.jsbach.org/bach#maria-barbara"
+            }
+          ],
+          "execution": {
+            "body_matches": 42,
+            "candidate_rows": 46,
+            "domain_evaluations": 2,
+            "execution_mode": "native",
+            "generated_terms": 2,
+            "hybrid_reasons": [],
+            "index_additions": 75,
+            "index_removals": 0,
+            "input_additions": 75,
+            "input_removals": 0,
+            "memo_bypasses": 0,
+            "memo_bytes": 1664,
+            "memo_entries": 2,
+            "memo_evictions": 0,
+            "memo_hits": 2,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 2,
+            "min_cache_rebuilds": 1,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 2,
+            "min_retained_bytes": 5312,
+            "min_retained_groups": 2,
+            "min_retained_rows": 4,
+            "min_rows_scanned": 4,
+            "min_support_additions": 4,
+            "min_support_removals": 0,
+            "native_metadata_reused": 0,
+            "native_plan_reused": false,
+            "native_plan_reuses": 0,
+            "native_plan_validations": 1,
+            "native_term_metadata_rows": 25,
+            "ontology_input_cache_hit": false,
+            "ontology_rows_enumerated": 56,
+            "operation_cache_hits": 0,
+            "operation_rows": 4,
+            "plan_cache_hit": false,
+            "rounds": 7,
+            "work": 194
+          },
+          "family_history_complete": false,
+          "production_temporal_operators_executed": true,
+          "scope": "urn:example:bach:accepted-exact-records-v1",
+          "scope_revision": "1",
+          "selected_view_complete": true,
+          "selection_policy": "accepted-exact-records-v1"
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "examples/traffic_signs/run_queries.py",
+        "--backend",
+        "both"
+      ],
+      "exit_code": 0,
+      "results": [
+        {
+          "backend": "python",
+          "execution": {
+            "body_matches": 22,
+            "candidate_rows": 94,
+            "domain_evaluations": 1,
+            "execution_mode": "python",
+            "index_additions": 1,
+            "index_removals": 12,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 0,
+            "min_cache_rebuilds": 0,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 0,
+            "min_rows_scanned": 0,
+            "min_support_additions": 0,
+            "min_support_removals": 0,
+            "ontology_input_cache_hit": true,
+            "ontology_rows_enumerated": 0,
+            "operation_cache_hits": 19,
+            "operation_rows": 20,
+            "plan_cache_hit": true,
+            "rounds": 8
+          },
+          "geodesic_cases_passed": 6,
+          "metric": "WGS84 ellipsoidal geodesic metres",
+          "production_spatial_rules_executed": true,
+          "queries": [
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [
+                "stop_b"
+              ],
+              "radius_metres": 112
+            },
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [],
+              "radius_metres": 111
+            },
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [
+                "stop_b"
+              ],
+              "radius_metres": 111.31949079327357
+            },
+            {
+              "anchor": "speed_30",
+              "category": "WarningSign",
+              "hits": [
+                "warning"
+              ],
+              "radius_metres": 0
+            }
+          ],
+          "spatial_index": {
+            "candidates": 12,
+            "exact_evaluations": 0,
+            "queries": 4
+          }
+        },
+        {
+          "backend": "native",
+          "execution": {
+            "body_matches": 22,
+            "candidate_rows": 94,
+            "domain_evaluations": 1,
+            "execution_mode": "hybrid",
+            "hybrid_reasons": [
+              "provider scan requires host orchestration"
+            ],
+            "index_additions": 1,
+            "index_removals": 12,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 0,
+            "min_cache_rebuilds": 0,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 0,
+            "min_rows_scanned": 0,
+            "min_support_additions": 0,
+            "min_support_removals": 0,
+            "native_active_cursors": 0,
+            "native_batches": 186,
+            "native_bindings": 298,
+            "native_bulk_calls": 142,
+            "native_lookup_calls": 0,
+            "native_predicates": 49,
+            "native_queries": 186,
+            "native_rows_deleted": 130,
+            "native_rows_inserted": 1367,
+            "native_stores_created": 1,
+            "native_stores_live": 1,
+            "native_terms": 1039,
+            "ontology_input_cache_hit": true,
+            "ontology_rows_enumerated": 0,
+            "operation_cache_hits": 19,
+            "operation_rows": 20,
+            "plan_cache_hit": true,
+            "rounds": 8
+          },
+          "geodesic_cases_passed": 6,
+          "metric": "WGS84 ellipsoidal geodesic metres",
+          "production_spatial_rules_executed": true,
+          "queries": [
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [
+                "stop_b"
+              ],
+              "radius_metres": 112
+            },
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [],
+              "radius_metres": 111
+            },
+            {
+              "anchor": "stop_a",
+              "category": "StopSign",
+              "hits": [
+                "stop_b"
+              ],
+              "radius_metres": 111.31949079327357
+            },
+            {
+              "anchor": "speed_30",
+              "category": "WarningSign",
+              "hits": [
+                "warning"
+              ],
+              "radius_metres": 0
+            }
+          ],
+          "spatial_index": {
+            "candidates": 12,
+            "exact_evaluations": 0,
+            "queries": 4
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "examples/temporal_geo/run_queries.py",
+        "--backend",
+        "both"
+      ],
+      "exit_code": 0,
+      "results": [
+        {
+          "backend": "python",
+          "bitemporal_history": {
+            "cases": [
+              {
+                "kmh": [
+                  50
+                ],
+                "recorded_at": "2026-09-10T09:04:59Z",
+                "result": [
+                  50
+                ],
+                "valid_at": "2026-09-10T08:30:00Z"
+              },
+              {
+                "kmh": [
+                  30
+                ],
+                "recorded_at": "2026-09-10T09:05:00Z",
+                "result": [
+                  30
+                ],
+                "valid_at": "2026-09-10T08:30:00Z"
+              },
+              {
+                "kmh": [],
+                "recorded_at": "2026-09-10T09:06:00Z",
+                "result": [],
+                "valid_at": "2026-09-10T10:00:00Z"
+              }
+            ],
+            "execution": {
+              "body_matches": 12,
+              "candidate_rows": 19,
+              "domain_evaluations": 3,
+              "execution_mode": "python",
+              "index_additions": 1,
+              "index_removals": 5,
+              "min_cache_bypasses": 0,
+              "min_cache_hits": 0,
+              "min_cache_rebuilds": 0,
+              "min_derived_rebuilds": 0,
+              "min_groups_changed": 0,
+              "min_rows_scanned": 0,
+              "min_support_additions": 0,
+              "min_support_removals": 0,
+              "ontology_input_cache_hit": false,
+              "ontology_rows_enumerated": 0,
+              "operation_cache_hits": 5,
+              "operation_rows": 8,
+              "plan_cache_hit": true,
+              "rounds": 4
+            }
+          },
+          "checkpoint_recovery_verified": true,
+          "corrected_entry": {
+            "add": [
+              "late03"
+            ],
+            "remove": [
+              "inside05"
+            ]
+          },
+          "execution": {
+            "body_matches": 0,
+            "candidate_rows": 0,
+            "domain_evaluations": 0,
+            "execution_mode": "python",
+            "index_additions": 0,
+            "index_removals": 6,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 0,
+            "min_cache_rebuilds": 0,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 0,
+            "min_rows_scanned": 0,
+            "min_support_additions": 0,
+            "min_support_removals": 0,
+            "ontology_input_cache_hit": false,
+            "ontology_rows_enumerated": 0,
+            "operation_cache_hits": 0,
+            "operation_rows": 0,
+            "plan_cache_hit": false,
+            "rounds": 3
+          },
+          "geometry_library": "3.14.1-CAPI-1.20.5",
+          "idle_expiration_verified": true,
+          "production_temporal_spatial_rules_executed": true,
+          "snapshots": [
+            {
+              "applicable": [
+                "stop_boundary",
+                "stop_near"
+              ],
+              "at": "2026-09-10T08:30:00Z",
+              "nearby": [
+                "stop_boundary",
+                "stop_near",
+                "stop_opposite"
+              ]
+            },
+            {
+              "applicable": [
+                "stop_near"
+              ],
+              "at": "2026-09-10T09:00:00Z",
+              "nearby": [
+                "stop_near",
+                "stop_opposite"
+              ]
+            }
+          ],
+          "window": {
+            "bytes": 3924,
+            "context": [
+              [
+                "map",
+                "event-fixture-v1"
+              ]
+            ],
+            "evaluation_time": 1789027230000000,
+            "events": 4,
+            "offsets": {
+              "fixture": 3
+            },
+            "revision": 7,
+            "tombstones": 0,
+            "watermark": 1789027220000000
+          },
+          "window_backend": "python"
+        },
+        {
+          "backend": "native",
+          "bitemporal_history": {
+            "cases": [
+              {
+                "kmh": [
+                  50
+                ],
+                "recorded_at": "2026-09-10T09:04:59Z",
+                "result": [
+                  50
+                ],
+                "valid_at": "2026-09-10T08:30:00Z"
+              },
+              {
+                "kmh": [
+                  30
+                ],
+                "recorded_at": "2026-09-10T09:05:00Z",
+                "result": [
+                  30
+                ],
+                "valid_at": "2026-09-10T08:30:00Z"
+              },
+              {
+                "kmh": [],
+                "recorded_at": "2026-09-10T09:06:00Z",
+                "result": [],
+                "valid_at": "2026-09-10T10:00:00Z"
+              }
+            ],
+            "execution": {
+              "body_matches": 19,
+              "candidate_rows": 19,
+              "domain_evaluations": 3,
+              "execution_mode": "native",
+              "generated_terms": 3,
+              "hybrid_reasons": [],
+              "index_additions": 1,
+              "index_removals": 5,
+              "input_additions": 1,
+              "input_removals": 1,
+              "memo_bypasses": 0,
+              "memo_bytes": 8928,
+              "memo_entries": 12,
+              "memo_evictions": 0,
+              "memo_hits": 5,
+              "min_cache_bypasses": 0,
+              "min_cache_hits": 0,
+              "min_cache_rebuilds": 0,
+              "min_derived_rebuilds": 0,
+              "min_groups_changed": 0,
+              "min_retained_bytes": 0,
+              "min_retained_groups": 0,
+              "min_retained_rows": 0,
+              "min_rows_scanned": 0,
+              "min_support_additions": 0,
+              "min_support_removals": 0,
+              "native_metadata_reused": 9,
+              "native_plan_reused": true,
+              "native_plan_reuses": 0,
+              "native_plan_validations": 1,
+              "native_term_metadata_rows": 2,
+              "ontology_input_cache_hit": false,
+              "ontology_rows_enumerated": 0,
+              "operation_cache_hits": 0,
+              "operation_rows": 8,
+              "plan_cache_hit": true,
+              "rounds": 4,
+              "work": 71
+            }
+          },
+          "checkpoint_recovery_verified": true,
+          "corrected_entry": {
+            "add": [
+              "late03"
+            ],
+            "remove": [
+              "inside05"
+            ]
+          },
+          "execution": {
+            "body_matches": 0,
+            "candidate_rows": 0,
+            "domain_evaluations": 0,
+            "execution_mode": "hybrid",
+            "hybrid_reasons": [
+              "provider scalar requires host orchestration"
+            ],
+            "index_additions": 0,
+            "index_removals": 6,
+            "min_cache_bypasses": 0,
+            "min_cache_hits": 0,
+            "min_cache_rebuilds": 0,
+            "min_derived_rebuilds": 0,
+            "min_groups_changed": 0,
+            "min_rows_scanned": 0,
+            "min_support_additions": 0,
+            "min_support_removals": 0,
+            "native_active_cursors": 0,
+            "native_batches": 47,
+            "native_bindings": 62,
+            "native_bulk_calls": 36,
+            "native_lookup_calls": 0,
+            "native_predicates": 12,
+            "native_queries": 47,
+            "native_rows_deleted": 26,
+            "native_rows_inserted": 40,
+            "native_stores_created": 1,
+            "native_stores_live": 1,
+            "native_terms": 27,
+            "ontology_input_cache_hit": false,
+            "ontology_rows_enumerated": 0,
+            "operation_cache_hits": 0,
+            "operation_rows": 0,
+            "plan_cache_hit": false,
+            "rounds": 3
+          },
+          "geometry_library": "3.14.1-CAPI-1.20.5",
+          "idle_expiration_verified": true,
+          "production_temporal_spatial_rules_executed": true,
+          "snapshots": [
+            {
+              "applicable": [
+                "stop_boundary",
+                "stop_near"
+              ],
+              "at": "2026-09-10T08:30:00Z",
+              "nearby": [
+                "stop_boundary",
+                "stop_near",
+                "stop_opposite"
+              ]
+            },
+            {
+              "applicable": [
+                "stop_near"
+              ],
+              "at": "2026-09-10T09:00:00Z",
+              "nearby": [
+                "stop_near",
+                "stop_opposite"
+              ]
+            }
+          ],
+          "window": {
+            "bytes": 4256,
+            "context": [
+              [
+                "map",
+                "event-fixture-v1"
+              ]
+            ],
+            "evaluation_time": 1789027230000000,
+            "events": 4,
+            "offsets": {
+              "fixture": 3
+            },
+            "revision": 7,
+            "tombstones": 0,
+            "watermark": 1789027220000000
+          },
+          "window_backend": "native"
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "examples/dlp_nova/extension-demo.py",
+        "--backend",
+        "both",
+        "--geos"
+      ],
+      "exit_code": 0,
+      "results": [
+        {
+          "backend": "python",
+          "core": {
+            "completed_years": [
+              20,
+              21
+            ],
+            "distance_metres": {
+              "far": 111.31949079327357,
+              "near": 11.131949079327358
+            },
+            "execution_mode": "python",
+            "start_included_end_excluded": true
+          },
+          "geometry": {
+            "boundary_contains": false,
+            "boundary_covers": true,
+            "execution_mode": "python",
+            "geos_version": "3.14.1-CAPI-1.20.5",
+            "planar_metres": 50
+          },
+          "index": {
+            "answers": [
+              "near"
+            ],
+            "execution_mode": "python"
+          },
+          "roads": {
+            "forward_metres": 70,
+            "reverse": "NO_ROUTE",
+            "unknown": "OUT_OF_REGION"
+          },
+          "windows": {
+            "checkpoint_roundtrip": true,
+            "corrected_entry": "late-inside",
+            "idle_expiry_rows": 3,
+            "initial_entry": "inside"
+          }
+        },
+        {
+          "backend": "native",
+          "core": {
+            "completed_years": [
+              20,
+              21
+            ],
+            "distance_metres": {
+              "far": 111.31949079327357,
+              "near": 11.131949079327358
+            },
+            "execution_mode": "native",
+            "start_included_end_excluded": true
+          },
+          "geometry": {
+            "boundary_contains": false,
+            "boundary_covers": true,
+            "execution_mode": "hybrid",
+            "geos_version": "3.14.1-CAPI-1.20.5",
+            "planar_metres": 50
+          },
+          "index": {
+            "answers": [
+              "near"
+            ],
+            "execution_mode": "hybrid"
+          },
+          "roads": {
+            "forward_metres": 70,
+            "reverse": "NO_ROUTE",
+            "unknown": "OUT_OF_REGION"
+          },
+          "windows": {
+            "checkpoint_roundtrip": true,
+            "corrected_entry": "late-inside",
+            "idle_expiry_rows": 3,
+            "initial_entry": "inside"
+          }
+        }
+      ],
+      "stderr": ""
+    }
+  ],
+  "source_files_sha256": {
+    "benchmarks/extension_queries.py": "b23254950b72aea394975c2a2971b241349d425f86771cc1a7f2162ae9d01554",
+    "examples/bach_temporal/bach-temporal.dlp": "b8d53f20e8644549fae8b43f64644ffa02d3260ea33ca52b2f10de441225ad40",
+    "examples/bach_temporal/expected.json": "192bf69495cc699783196c5af136fcedcb58b0b2cbbf66619e7993a2535eab08",
+    "examples/bach_temporal/queries.dlq": "bffa9fdc15ab4bebe9b6909a95c1a0e077e353c37f0d01be483d8629d48bd084",
+    "examples/bach_temporal/reference_checks.py": "7bb1e6ff6e266938a4af21042c807c79585c0f395c201c4f3c4b9221e8232455",
+    "examples/bach_temporal/run_queries.py": "88328dd4a3c09c45344039706372e884cc1f5133dda09208e115217d2b305650",
+    "examples/dlp_nova/base-l0.dlp": "090257565a2552e37a7ab8afc0af3fc980f999e8d96f4d649bcd82f2d6b490b6",
+    "examples/dlp_nova/base-l1.dlp": "945d09f35fe8d95d2a5a312aa3a4bf132f1eeb2e9613dbbd71ac49c0e166768c",
+    "examples/dlp_nova/base-l2-inconsistent.dlp": "30c55f9372461fe545b07b2150f9e01577b97ac9f81396a76b382502e0db4601",
+    "examples/dlp_nova/base-l2.dlp": "0465ff4d8e52dd719adc599a3a48184fc7478b58b5b7ceec2653a45e791675c0",
+    "examples/dlp_nova/base-l3.dlp": "a4fadc577de4d3427eed1bb240655569a5494cb11d9c524b2e2d2c685b05f3f7",
+    "examples/dlp_nova/base-literals.dlp": "47980adbbc50956ec286fdbe931521c8985a32d8cbea60f08a7082c96df930ed",
+    "examples/dlp_nova/base-local-scope.dlp": "a4982616f7f809b164f1f8682b5905887977f349858fbf543f268eb8d5e1edfe",
+    "examples/dlp_nova/extension-core.dlq": "69ec40f1a80b4e268c0b92c86f81e509867b635c6e8bbce4bb503755b523bc56",
+    "examples/dlp_nova/extension-demo.py": "8bedf7cdd06348e0bd65bc06f4b5de598ad6517b7bc3408b16f585caa41a1e0f",
+    "examples/temporal_geo/fixtures.json": "828b9c6e3c1fec87946bfc8d7495550dce34f998e61df63bf30423fc5c76fdcb",
+    "examples/temporal_geo/history.dlq": "e44fe671545196a97e258d2a0ea1980ded2eb38b960c4f9635fa1cf4ac03d131",
+    "examples/temporal_geo/library_probe/check_ctypes.py": "f123ed6ead20d5bd20b57544e1374a14c24d839111fac53a4eb14e0d30c026f6",
+    "examples/temporal_geo/library_probe/driver.cpp": "1c6e69d88bd67752b6244f4a72bbd721e1decf58dbd7db77c6aa318d028cdd95",
+    "examples/temporal_geo/library_probe/smoke.cpp": "7bdbb5a7c910f5c411f9e8071dc9c0577f4817dac981818ea52a3af94402347d",
+    "examples/temporal_geo/library_probe/smoke.h": "1a4f9267c64cb5e2e9e1da08c2b933d300ab9fa8cdfd247cdeffce9823718bd6",
+    "examples/temporal_geo/queries.dlq": "747993ef932975263efd0bff2b5e0145a317a945b23e4ebbe7281f4d93215e2a",
+    "examples/temporal_geo/reference_checks.py": "d76b6d956f3b715911b2737df5ed9e2cec42f55b8358cfd803e93a3ea4faf063",
+    "examples/temporal_geo/run_queries.py": "9a4a813581b09683ba365f29e00e3ec15d38d552596ce69934d554d189eb2754",
+    "examples/traffic_signs/check.py": "985968ffaef260981a363ec0782c44aaa633bf72ac5da78d4f9fcd9b253c6eb0",
+    "examples/traffic_signs/curation.json": "d15d5e25a782e336227660f51d356e01866c19cd2e488cec13b13d102396efeb",
+    "examples/traffic_signs/fixtures.dlp": "1a878addee74054616eab6524703bfabb180e096495fc1706ed5308cad0d7853",
+    "examples/traffic_signs/fixtures.json": "d16e1e078e772082db5a57b035cc8a3d694adc46bc4f943f549759d0060cf647",
+    "examples/traffic_signs/generate.py": "a2a2a1d28d2869cc43341411dce7c027cde239e9b364aa62ab2336c5c6a9caf7",
+    "examples/traffic_signs/mapping-summary.json": "e2a32919cfc5bcd3e492707a237c8e21d4166dfbcba5727224a2dc3d00af0fe8",
+    "examples/traffic_signs/mapping.json": "e36e9865f712a27549214a8445861c7b99ff0b0dab085ab8c145eb272239aa3f",
+    "examples/traffic_signs/queries.dlq": "a824b1b189a60ea7ef35a11a89668969a735a7684deb5cf8e86673a320361dc7",
+    "examples/traffic_signs/road-queries.dlq": "8b24e7aefe5fb7eb3ffcee69d70ca97c03ade777d2a3cbde20f69380af09a345",
+    "examples/traffic_signs/run_queries.py": "4985f5f519d1658b62edd7c46ebeb656f15218aaab76a2f13ccbbabe2cb1d6e1",
+    "examples/traffic_signs/taxonomy.dlp": "a0637f960b8226b62fdeb640bc81b4ee79906eca000eaf512c5a953a64d33d97",
+    "pyproject.toml": "e4593d8e07db2cdfd3ea1ee633639d60288b7728564a7df3390ef38813608f5a",
+    "scripts/collect_dlp_nova_evidence.py": "7cbe5de0e8a79178c8e438b5806754d462b9acaaf1b5cb6583a260fa72b54592",
+    "src/dlp_reasoner/__init__.py": "985fa12feccff45e7891e629266c282b596ea4a2d18b5604071225032f5462af",
+    "src/dlp_reasoner/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/dlp_reasoner/cli.py": "bd58df46ef3466fdf3f3b292a1700eba815baa21e60bb6eac07b78b5263067b0",
+    "src/dlp_reasoner/compiler.py": "4cfe3a9f6cc1a82bcf7deb77b71294a727a5b78cfa95b727f2a1e1ec511ad87c",
+    "src/dlp_reasoner/domain_native.py": "d388dcf2fa0afad523e40d400a0e17fc32b1d00206156a5b954e95ab83de6689",
+    "src/dlp_reasoner/domains.py": "70042f5ae4fe85f1b02bf4df281d743205bb605583ff056c8df56b03ca115a47",
+    "src/dlp_reasoner/engine.py": "a95f74ae37ccc00de480804a03a78e3b64cc1648f4ca14e67eb1fc55c1e20ffa",
+    "src/dlp_reasoner/geometry.py": "6d1544245fcba93a4ee6fa12207003200be3328ceaba2dc1e6cf100302e530f6",
+    "src/dlp_reasoner/joins.py": "9e7a1cca7db9a4e4f9071abd617fdbb8cbebee8863a85b7d70f346eeb73476b5",
+    "src/dlp_reasoner/map_runtime.py": "eb1c42f41a391f7272cb92800c046ae677264e16e1e9a48302f8d2824e61d35c",
+    "src/dlp_reasoner/model.py": "0be853672b403fc6c867fb36071972a81f3339324a56e2d1aee9d9dd84951b00",
+    "src/dlp_reasoner/native.py": "4412cb09868d6bb76366c4de7fb832a2d0b615365ac780a65ce8d8736d141e74",
+    "src/dlp_reasoner/native_domains.cpp": "0721b18bf234e20cb68168073ffab829c99e9e37a076c6127affbc564f723116",
+    "src/dlp_reasoner/native_domains.h": "384488a16c2197979504f716e6ee3b1cfcc8dbf785790ce427d2d8fefc404081",
+    "src/dlp_reasoner/native_package.cpp": "970dfc4c201058be66a2313e90539fcd28be3d09be5ccb18da3af49d36e22b7e",
+    "src/dlp_reasoner/native_package.h": "b58e57b2fcf080f58fee37dbbb251625d788d61b3db201447ae7a6924a21891f",
+    "src/dlp_reasoner/native_package.py": "27caaf21043d8b91f49b7ab9cbc9bd9a5de529b063872b0ec661981febeb9583",
+    "src/dlp_reasoner/native_query.cpp": "66e1ab72e69c2ee938b2df2277debec6486407ea8e6e95a19887edbfdb2b2b62",
+    "src/dlp_reasoner/native_query.h": "8138070529c4e03e67b72ee5a768cc9a0abb9fbe90eab94d5981df6616d3eb63",
+    "src/dlp_reasoner/native_query_package.py": "4a703696e66da2c55e8e7c361693d28334aeef1daeeb6c4bac0612cf729b890a",
+    "src/dlp_reasoner/native_recovery.cpp": "04451bb8b10031fafdfef1c2389df4263f29eed5a14293cd92b97d88dc0569cd",
+    "src/dlp_reasoner/native_recovery.h": "825d88747eca4dec9155b4b284628a78355f0676444ac74d3cc790d6aa0eb45a",
+    "src/dlp_reasoner/native_runtime.cpp": "cd8090a09b535addbc07072f082018e2fcb1cbf906b467eae5fbfdb3ea00389e",
+    "src/dlp_reasoner/native_runtime.h": "dc50c4e734cc228925ab09e2b17222ee47522fd7b26c62a683e86741415fcf73",
+    "src/dlp_reasoner/native_session.cpp": "1c2ba477720aa9c53c1149976a22b8e07545a69cbae389a3a8daca57035c18ac",
+    "src/dlp_reasoner/native_session.h": "19de72bc5ea4eb02919f6207b91fb2ca4358185f5280f4d2b2dd71afa1253cd2",
+    "src/dlp_reasoner/native_session.py": "f701b23120bcd127c128df4764f9fbbb6559b67e2779231557f6ece760f71d7f",
+    "src/dlp_reasoner/native_spatial.cpp": "e39b214ecd405b78504f701849898820576e16b54af488171fd29c49e769c13b",
+    "src/dlp_reasoner/native_spatial.h": "498eefe2d160c7cb7dd1dc4164cb7acb72cefd156f021c4421cab07f4a5e3f1f",
+    "src/dlp_reasoner/native_store.cpp": "60f8354e9f765b08aed96b7437f2e024fbfc1c39f4076fcd183acb05de8eb1c6",
+    "src/dlp_reasoner/native_store.h": "4f842aa8407d3d12945df4872b60c05ebdb31904787f4faba838861b9d6b60cd",
+    "src/dlp_reasoner/native_windows.cpp": "aaa1a3c874ae7a74bd8380677117a851e3b75b727e49a19da3a1457b1d2082e5",
+    "src/dlp_reasoner/native_windows.h": "fc6752886f9367df333d4cb4b0e4b0abe94d7a6dc37bc54ed6973dc341311c7c",
+    "src/dlp_reasoner/native_windows.py": "6ca6b952656421199cc645c82d804d59579cd97fd599b324ac2a5103f2b48ebe",
+    "src/dlp_reasoner/osm.py": "0e3c23b1de4775707100e19dcb2bfc72c4d45d075f5cafee1c94971aa8d25172",
+    "src/dlp_reasoner/osrm.py": "aef02c67513be110a57af38d0fc9ba403dba931a9ebe7e6a3fbbf02d7e3d4dfd",
+    "src/dlp_reasoner/packages.py": "dfca5064644b6e8fd3e144dc54379f1a35002e466f4cb40979545058b5450c50",
+    "src/dlp_reasoner/parser.py": "f40a96c9feea62fc41233437ab8db68cfd9cf61cda7a68983dd85afdbfc05745",
+    "src/dlp_reasoner/providers.py": "ecb3b73871ff9ccf40c520cefc7c46267fed597bda5b230a12da9d7660ba379c",
+    "src/dlp_reasoner/query_cache.py": "b346b6505d62b72169357404a8eb7c866b43c3ab84358e12c51a947dcfaa9d67",
+    "src/dlp_reasoner/query_ir.py": "218fe1209b3675f4c7cc988eda1ca030e95e85a2f5199384270d6c284b715725",
+    "src/dlp_reasoner/query_minimum.py": "acaa1e767f8b268a0d811d6b89ee0757da4737942f0a4078e5bf2e4844ad7bc1",
+    "src/dlp_reasoner/query_native.py": "ab16004f9d193285709f9a86ee4f45cc5f087e6ef27bbe42d1eb1df4ea4c946c",
+    "src/dlp_reasoner/query_parser.py": "04aa196876f427b5ed753110fe13186d03d30f101a4098b6b94474ea67e3bc62",
+    "src/dlp_reasoner/query_runtime.py": "395932eea4b1e04fb1fad3fdd3c17cda301b33448308836741a85871ba301990",
+    "src/dlp_reasoner/reasoner.py": "ce3507b91077738f67da206bef32a17a7a0dfbb6d619865119ed7e3b6a386365",
+    "src/dlp_reasoner/recovery.py": "1e5c913b7f7f4f60e2fcb831976721cd106edbb0c94b3864b2a6bd30a345c82f",
+    "src/dlp_reasoner/schema.py": "e59e7002f269c28715af8fb0828ea34dae27b0641aff7a2b3d3da7d9da10050c",
+    "src/dlp_reasoner/scoped_views.py": "ae65e75cc2f3d23ef27016f72de58b3a263c939d41f745f6e9a99a116b28506b",
+    "src/dlp_reasoner/spatial.py": "b13ce26be773c5d50e15d73404be2d908b5ef5e256694b6d63c3724de5b7b409",
+    "src/dlp_reasoner/spatial_native.py": "3325023f34db5f91a46e100b7a6e19512cfd6bd763745360d0ddc41b5223e2d6",
+    "src/dlp_reasoner/standalone.py": "00b16cfd6b8821f60f2e13d51d01d750d5e552cc4c859bb984b23636014e40e8",
+    "src/dlp_reasoner/support.py": "a066f44bf31230158fc4151d09eabe4d98b813bed5266d61f9a860c17b63a851",
+    "src/dlp_reasoner/vendor/date/date.h": "8c295bc53964ec02fa99ef10816c190a4c34fdcbf1ce2dcc8e451a29932f9d2c",
+    "src/dlp_reasoner/vendor/geographiclib/geodesic.c": "87a91e0e30e7db839cbd1ef5aafea77487524958070565ff9155e50e9bead550",
+    "src/dlp_reasoner/vendor/geographiclib/geodesic.h": "a964a747bc4f388fb3a93cc9bc379aebe4cdd78b3ee909c071be711b82db4b10",
+    "src/dlp_reasoner/windows.py": "de67ab5c225996531818d3047cedb1280490ec3cf84c7080467f01818374a4a9",
+    "uv.lock": "28f48618dac5ee9d43c65534bc8d0be6719a70fdef6d15e3d5ed351de7bf6a57"
+  },
+  "working_tree_dirty": true
+}

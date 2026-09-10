@@ -1,0 +1,25 @@
+{
+  "document": "DLP Nova: A Reasoner with Geospatial and Temporal Extensions",
+  "source_files_sha256": {
+    "TEMPLATE-LICENSE": "30341c1894f9f766c1969a808d8e81d46d88108456571f4dc0f1f2937a3f6c84",
+    "arxiv.sty": "5ca551dbda41573265dd8c1e9c983ba9729f7d4070a9f1503dd8c7fd65d1dc46",
+    "dlp-nova-references.bib": "f12866cbefc8fcf82613559829cbbfb82d6e40e5f43e0ad0391d79947a6276da",
+    "dlp-nova.bbl": "db1358942a7525681252b0d349a286f95f8e92c64d2fccbe5e4d9f5f131b16cf",
+    "dlp-nova.tex": "2cb0ec5d6cd4cd8513afc1e901adf7445df7e4d199710075806b65a819a28f35",
+    "evidence/dlp-nova-example-results.json": "d684a765608be8b19d283b7b17289408f6816ed500ebe52d29d3d24486c42137",
+    "evidence/dlp-nova-spatial-results.json": "b63b2e41b24b766637107add2f3a989bf4c7d4843363a4a6e5a133f6dcb7c098",
+    "evidence/query-preparation-results.json": "0f1cfecda331ea09f5ac11577be552b356f30ed5399b4e091430ed9adb6c460c",
+    "template-provenance.json": "e8481ea95c708468daafbf6227b527c9418d4c7cf2c7b849be085dc87013f02b"
+  },
+  "evidence_files_sha256": {
+    "benchmarks/dlp-nova-spatial-results.json": "b63b2e41b24b766637107add2f3a989bf4c7d4843363a4a6e5a133f6dcb7c098",
+    "benchmarks/dlp-nova-example-results.json": "d684a765608be8b19d283b7b17289408f6816ed500ebe52d29d3d24486c42137",
+    "benchmarks/query-preparation-results.json": "0f1cfecda331ea09f5ac11577be552b356f30ed5399b4e091430ed9adb6c460c"
+  },
+  "build_script_sha256": "7dd5018807f5f76acd8315a4bf98f9bb319cde03ad49e8458a81f00654f44dc6",
+  "pdf_sha256": "05b24acdda5cfb1bf0e76ec407deaff788b545fd37a2197656da6564eaf31f15",
+  "source_bundle_sha256": "d54245be5308bbf76a82d6d7cf817fc587ad26a58a1039b50c15b26e2c9a400d",
+  "isolated_bundle_build_passed": true,
+  "compiler": "pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023)",
+  "publication_status": "local draft; not submitted by this build"
+}

@@ -1,0 +1,10 @@
+// Intentionally inconsistent: functionality and explicit inequality conflict.
+Namespace(ex = <https://example.org/nova#>)
+
+Ontology(
+  ObjectProperty(ex:hasPrimaryContact Functional)
+  DifferentIndividuals(ex:anna ex:lea)
+  Individual(ex:office
+    value(ex:hasPrimaryContact ex:anna)
+    value(ex:hasPrimaryContact ex:lea))
+)

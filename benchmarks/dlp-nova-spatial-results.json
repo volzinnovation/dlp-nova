@@ -1,0 +1,62 @@
+{
+  "workload": "selective-radius-v1",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "processor": "arm64",
+  "points": 10000,
+  "repeats": 5,
+  "input_sha256": "4a2536c3bf5522d2ff30df1fa6ef056272aaab20febce79e59cf8c5de1926915",
+  "radius_metres": 150,
+  "metric": "WGS84 ellipsoidal",
+  "domain_load_ms": 26.49750000273343,
+  "exhaustive_first_ms": 132.69174999732058,
+  "exhaustive_warm_ms": [
+    108.99575000803452,
+    116.12375000549946,
+    110.48662500979844,
+    109.81604200787842,
+    115.1892920024693
+  ],
+  "exhaustive_exact_evaluations_per_query": 10000,
+  "answers": 11,
+  "indexes": [
+    {
+      "backend": "python",
+      "build_ms": 8.31754200044088,
+      "complete_answer_ms": [
+        0.5079999973531812,
+        0.36670800182037055,
+        0.35975000355392694,
+        0.34866700298152864,
+        0.33887500467244536
+      ],
+      "median_speedup_vs_warm_exhaustive": 307.1205668333965,
+      "exact_evaluations_per_query": 13.0,
+      "candidates_per_query": 13.0
+    },
+    {
+      "backend": "native",
+      "build_ms": 29.56412499770522,
+      "complete_answer_ms": [
+        0.3542500053299591,
+        0.17887500871438533,
+        0.1642499992158264,
+        0.16116700135171413,
+        0.1593329943716526
+      ],
+      "median_speedup_vs_warm_exhaustive": 672.6735192529148,
+      "exact_evaluations_per_query": 13.0,
+      "candidates_per_query": 13.0
+    }
+  ],
+  "native_values": {
+    "retained_values": 15100,
+    "capacity": 30016,
+    "generation": 1,
+    "intern_requests": 10000,
+    "intern_hits": 55031,
+    "transferred_inputs": 10000,
+    "transferred_outputs": 5100,
+    "evaluated_rows": 60131,
+    "clears": 0
+  }
+}
