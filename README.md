@@ -1,8 +1,15 @@
 # DLP reasoner
 
-A runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. Python and RDFLib replace the historical Java/KAON/XSB components.
+A runnable implementation of **Description Logic Programs** from Raphael Volz's 2004 PhD thesis, [*Web Ontology Reasoning with Logic Databases*](docs/Volltext.pdf). It reads the thesis's concrete DLP syntax or an OWL ontology, compiles to Horn rules, and materializes their consequences with indexed semi-naive evaluation. The desktop API uses Python and RDFLib, with optional resident C++ relation indexes.
 
 The package provides position-sensitive L0–L3 profiles, equality with congruence, consistency constraints, RDF queries, and materialization maintenance. It is a DLP reasoner, not a complete OWL DL or OWL Full reasoner. Unsupported logical constructs fail explicitly.
+
+Extensions beyond the thesis add temporal and geospatial rules, arithmetic,
+external computation providers and event windows. A standalone C++ runtime
+executes compiled Horn and local query plans through C, Python, Swift and Kotlin
+bindings. Native sessions retain query state and support application recovery;
+the mobile apps run without Python. See [mobile integration and qualification](#native-sessions-and-mobile)
+for the tested targets and remaining physical-device work.
 
 ## Paper and citation
 
@@ -81,10 +88,12 @@ uv run python -m dlp_reasoner.native --build
 uv run dlp validate examples/bach.dlp --profile L3 --backend native
 ```
 
-The first native use builds a cached library with a local C++17 compiler. No
-additional Python dependencies are needed. Both backends support the same input,
-query, equality, constraint, and update APIs; this stage keeps semantic
-orchestration in Python. The [matched backend measurements](docs/NATIVE_BACKEND_PERFORMANCE.md)
+The first native use builds a cached library with a local C++17 compiler, unless
+a precompiled library is configured. No additional Python dependencies are
+needed. Both `Reasoner` backends support the same input, query, equality,
+constraint and update APIs; this native-index adapter keeps semantic orchestration
+in Python. The separate [native session API](docs/NATIVE_SESSION.md) executes
+compiled packages in C++. The [matched backend measurements](docs/NATIVE_BACKEND_PERFORMANCE.md)
 report actual reasoning and update timings, including workloads that regress.
 
 ## Python API
@@ -114,6 +123,9 @@ r.to_graph().serialize(destination="/tmp/family-closure.ttl", format="turtle")
 `Reasoner.from_dlp(text, profile="L2")` accepts an in-memory DLP document.
 `parse_dlp(text)` returns its RDFLib graph without reasoning; use
 `Reasoner(graph, ...)` or `compile_graph(graph, ...)` to validate profile legality.
+For reproducible package authoring, `parse_dlp(text, blank_node_prefix="documentA")`
+assigns deterministic anonymous-node IDs. Use a different prefix for each merged
+document; the default continues to create fresh blank nodes on every parse.
 Pass `backend="native"` to `Reasoner`, `Reasoner.from_file`,
 `Reasoner.from_dlp`, or the low-level `Engine` to select persistent native indexes.
 
@@ -157,7 +169,11 @@ A false entailment result means **not entailed**, not an assertion of its negati
 
 L3 can diverge, for example `A ⊑ ∃p.A`. The engine bounds rounds, facts and witness depth (defaults: 1,000 rounds, 1,000,000 facts, depth 32). On exhaustion, `complete` is false and consistency is `unknown` unless a contradiction has already been proved. Positive facts already derived can still be checked; negative and exhaustive answers raise `IncompleteReasoningError`. Witnesses are hidden from named-instance results unless `include_witnesses=True`. They are existential placeholders, not additional known individuals.
 
-Datatype literals can be stored as values. Automatic value identity is limited to well-typed plain/language strings, `xsd:string`, the integer/decimal family, and booleans. Other literal datatypes are opaque RDF terms; their OWL value identities and clashes are not decided. The engine detects equality of incompatible values in the supported families. **Datatype ranges, facets, datatype definitions and complete OWL datatype entailment are unsupported** and explicit datatype constraints are rejected. Consistency and entailment results therefore concern this stated datatype interpretation, not complete OWL datatype semantics. Python equality is not used to identify URI/string, decimal/float/double, or binary values across datatype boundaries. See the [W3C datatype specification](https://www.w3.org/TR/owl2-syntax/#Datatype_Maps). General disjunctive consequents, max-cardinality above one, universal antecedents, property chains, keys and unsupported OWL vocabulary are rejected. There is no remote import resolver, full OWL syntax/profile conformance checker, backward-chaining Prolog backend or persistent database backend.
+Datatype literals can be stored as values. Automatic value identity is limited to well-typed plain/language strings, `xsd:string`, the integer/decimal family, and booleans. Other literal datatypes are opaque RDF terms for ontology entailment; their OWL value identities and clashes are not decided. The engine detects equality of incompatible values in the supported families. **Datatype ranges, facets, datatype definitions and complete OWL datatype entailment are unsupported** and explicit datatype constraints are rejected. Consistency and entailment results therefore concern this stated datatype interpretation, not complete OWL datatype semantics. Python equality is not used to identify URI/string, decimal/float/double, or binary values across datatype boundaries. See the [W3C datatype specification](https://www.w3.org/TR/owl2-syntax/#Datatype_Maps). General disjunctive consequents, max-cardinality above one, universal antecedents, property chains, keys and unsupported OWL vocabulary are rejected. There is no remote import resolver, full OWL syntax/profile conformance checker, backward-chaining Prolog backend or persistent database backend.
+
+The separate [`.dlq` query layer](#temporal-geospatial-and-stream-rules) explicitly
+validates and computes with dates, instants, durations, numbers and geometries.
+These built-ins preserve the ontology's stated datatype-entailment boundary.
 
 ## Updates and performance
 
@@ -235,8 +251,15 @@ The [extension implementation](docs/ENGINE_EXTENSION_IMPLEMENTATION.md) adds a
 versioned `.dlq` query language, checked Python/C++ built-ins, scoped `MIN`,
 resident native values and indexes, external computation providers, OSM ingestion,
 GEOS geometry operations and bounded event windows. It includes native Horn and
-local-query execution, portable compiled packages and mobile bindings. The guide records
-which paths execute entirely in C++ and the remaining mobile release gates.
+local-query execution and portable compiled packages. The thesis's `.dlp`
+ontology syntax remains compatible; new query rules use the separately versioned
+`.dlq` language.
+
+Native calendar operations use Howard Hinnant `date`, and WGS84 point distances use
+GeographicLib-C in both backends. Optional GEOS handles projected geometries;
+road-network computations use explicitly configured providers. Provider results
+carry revision and status information, preserving `NO_ROUTE` and `OUT_OF_REGION`
+without deriving a distance from either outcome.
 
 ```sh
 uv run python examples/bach_temporal/run_queries.py --backend both
@@ -247,6 +270,10 @@ uv run python examples/temporal_geo/run_queries.py --backend both
 
 These commands execute parsed rules, including calendar ages, hierarchical sign
 queries, geodesic distances, validity intervals and corrected geofence entries.
+The Bach example derives known-record parental ages of **23** for Johann
+Sebastian and **24** for Maria Barbara. Completeness-dependent family answers
+remain absent without an explicit validated certificate. Traffic queries combine
+the PROLIX sign hierarchy, OSM associations and exact distance refinement.
 The older reference commands below remain independent acceptance evidence.
 
 The [temporal/geospatial design study](docs/TEMPORAL_GEOSPATIAL_RESEARCH.md)
@@ -259,9 +286,9 @@ services, batch requests, provider versions, and failure handling. The
 [shared library selection](docs/NATIVE_DOMAIN_LIBRARIES.md) identifies concrete
 date/time, geometry and road-network libraries callable from Python and C++,
 with a reproducible shared-library feasibility probe. The
-[mobile runtime proposal](docs/MOBILE_RUNTIME_PROPOSAL.md) refines the choices
-for iOS and Android, including platform bindings, offline data and the remaining
-port of Python-owned reasoning logic. The
+[mobile runtime proposal](docs/MOBILE_RUNTIME_PROPOSAL.md) records the library
+selection and portability design; the [mobile integration guide](docs/MOBILE_APP_INTEGRATION.md)
+describes the implemented bindings, packages and host responsibilities. The
 [traffic examples and reference checks](examples/temporal_geo/README.md)
 illustrate radius/validity queries, late events, expiration, and historical
 corrections. Their `.rules.proposed` syntax remains a design record; the new
@@ -293,6 +320,73 @@ checks distinguish engine classification from independent date, aggregate and
 distance calculations. Use the `run_queries.py` commands above to execute the
 new language itself.
 
+### Reusing queries over a stable ontology
+
+Keep the `Reasoner`, `QueryRuntime` and provider/domain contexts alive across
+queries. The runtime reuses immutable ontology snapshots, prepared plans and
+unchanged native term metadata as parameters change. Bounded ordered `MIN`
+supports update affected groups, including the Bach first-child query, while
+preserving ties and handling insertions, deletions and date corrections.
+Upstream joins still evaluate complete snapshots; generated-term aggregate
+sources retain a rebuild path. Source revisions, limits and cancellation remain
+checked before publishing an answer.
+
+The [query reuse measurements](docs/QUERY_OPTIMIZATION.md) compare each backend
+with the same backend at commit `521b82a`, with whole-answer caching disabled:
+
+| Measured warm query | Python speedup | Native speedup |
+| --- | ---: | ---: |
+| Selective lookup | 2.18× | 3.18× |
+| Selected arithmetic | 2.20× | 3.11× |
+| One changed minimum group | 1.75× | 2.00× |
+| Bach child-date correction | 2.19× | 2.88× |
+
+These are macOS arm64 results from five paired repetitions over 500 base
+records, with ten changing warm inputs per process. First queries are slower
+because they build reusable state. Native timings include the Python
+`QueryRuntime` boundary, which remains slower than Python in absolute time on
+these small cases; they do not measure standalone mobile sessions. The guide and
+[raw observations](benchmarks/query-preparation-results.json) retain timings,
+answer checks and source hashes.
+
+## Native sessions and mobile
+
+The [typed native session](docs/NATIVE_SESSION.md) loads a compiled `.dlpn`
+package, accepts named parameters and mutable supplemental rows, executes local
+queries, and returns bounded pages of typed results. C, Python, Swift and
+Kotlin/JNI use the same C++ implementation. Sessions reuse their Horn data, query
+plans and metadata, and support cancellation from another thread.
+
+[Application recovery](docs/APPLICATION_RECOVERY.md) groups session inputs,
+event-window checkpoints and source-version context. Restore validates every
+expected component and checks replay availability when supplied, then requires
+query execution before exposing a current answer. Mobile provider callbacks
+accept finite typed batches with revision/completion checks. Applications supply
+source selection, transport and live routing configuration; the packaged traffic
+fixture uses explicitly synthetic road outcomes.
+
+The [mobile build recipes](mobile/README.md) produce an Android AAR/debug APK
+and an Apple XCFramework/local Swift package with a simulator app. Runtime
+execution uses precompiled libraries and authored packages without Python or a
+compiler on the phone. Build requirements and qualification commands are in the
+[integration guide](docs/MOBILE_APP_INTEGRATION.md).
+
+| Target | Recorded qualification |
+| --- | --- |
+| iOS | arm64 device and arm64/x86_64 simulator libraries target iOS 15; Swift 6 app execution passed on an arm64 iOS 26.5 simulator |
+| Android | arm64-v8a/x86_64 libraries target API 24; debug APK execution passed on an arm64 API 36 emulator with **16 KiB pages**, including ELF and APK ZIP alignment |
+| Physical phones | Qualification remains pending on connected iPhone and Android hardware |
+
+Both apps execute the actual Bach and traffic packages and pass typed-result,
+input-update, background/restart, idle-expiration, checkpoint-rejection and
+outstanding-query cancellation checks. The
+[application qualification record](docs/MOBILE_APP_QUALIFICATION.md) includes
+artifact hashes and simulator/emulator memory observations. Physical-device
+latency, energy, memory pressure and production routing/delivery remain release
+gates. The recorded desktop validation includes **1,569 full-suite tests** and
+**172 checks against the combined precompiled library**, with subsequent focused
+checks documented in the [implementation guide](docs/ENGINE_EXTENSION_IMPLEMENTATION.md).
+
 ## Implementation map
 
 The [native performance experiment](docs/NATIVE_PERFORMANCE.md) profiles the
@@ -308,9 +402,12 @@ C++, Go, and assembly without treating a kernel result as a whole-engine speedup
 - `src/dlp_reasoner/reasoner.py`: RDF API, queries, fresh probes and exports.
 - `src/dlp_reasoner/query_cache.py`: bounded query-answer caching and source-graph mutation tracking.
 - `src/dlp_reasoner/query_ir.py`, `query_parser.py`, `query_runtime.py`: versioned extension rules, binding/stratum planning and scoped result publication.
+- `src/dlp_reasoner/query_minimum.py`, `query_native.py`, `native_query.cpp`: ordered minimum supports, retained native plans and local query execution.
 - `src/dlp_reasoner/domains.py`, `native_domains.cpp`: checked values and temporal, arithmetic and WGS84 operations.
 - `src/dlp_reasoner/providers.py`, `geometry.py`, `spatial.py`, `osm.py`, `windows.py`: external computations, geometry/index ownership, map ingestion and event sources.
-- `src/dlp_reasoner/standalone.py`, `native_runtime.cpp`, `packages.py`, `mobile/`: standalone compiled Horn execution, portable packages and mobile bindings.
+- `src/dlp_reasoner/standalone.py`, `native_runtime.cpp`, `packages.py`: standalone compiled Horn execution and portable packages.
+- `src/dlp_reasoner/native_session.py`, `native_session.cpp`, `recovery.py`, `native_recovery.cpp`: reusable typed query sessions and transactional application recovery.
+- `mobile/`, `examples/mobile_session/`: Swift/Kotlin bindings, app build/qualification scripts and authored Bach/traffic packages.
 - `src/dlp_reasoner/schema.py`: lazy positive class/property consequence indexes.
 - `src/dlp_reasoner/support.py`: experimental current-proof certificates for DRed.
 - `src/dlp_reasoner/cli.py`: executable interface and inspectable rule output.
